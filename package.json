@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon dist/server.js & tsc -w",
-    "serve": "nodemon dist/serverx.js"
+    "serve": "nodemon dist/serverx.js",
+    "migrate": "npx prisma migrate dev --name init"
   },
   "keywords": [],
   "author": "",

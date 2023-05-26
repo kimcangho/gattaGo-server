@@ -9,3 +9,111 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Regatta {
+  id        String            @id @default(uuid())
+  name      String            @db.VarChar(255)
+  address   String            @db.VarChar(255)
+  phone     String            @db.VarChar(255)
+  email     String            @db.VarChar(255)
+  startDate DateTime
+  endDate   DateTime
+  events    Event[]
+  teams     TeamsInRegattas[]
+
+  @@map(name: "regatta")
+}
+
+model Event {
+  id              String          @id @default(uuid())
+  distance        String          @db.VarChar(255)
+  division        String          @db.VarChar(255)
+  level           String          @db.VarChar(255)
+  gender          String          @db.VarChar(255)
+  boatSize        String          @db.VarChar(255)
+  progressionType String          @db.VarChar(255)
+  startTime       DateTime
+  lanes           Int
+  entries         Int
+  isSeeded        Boolean
+  isCompleted     Boolean
+  competition     Regatta         @relation(fields: [competitionId], references: [id])
+  competitionId   String
+  teams           TeamsInEvents[]
+}
+
+model Team {
+  id       String            @id @default(uuid())
+  name     String            @db.VarChar(255)
+  division String            @db.VarChar(255)
+  level    String            @db.VarChar(255)
+  gender   String            @db.VarChar(255)
+  Lineups  Lineup[]
+  Athletes AthletesInTeams[]
+  Events   TeamsInEvents[]
+  Regattas TeamsInRegattas[]
+}
+
+model Lineup {
+  id       String              @id @default(uuid())
+  name     String              @db.VarChar(255)
+  Athletes AthletesInLineups[]
+  roster   Team                @relation(fields: [rosterId], references: [id])
+  rosterId String
+}
+
+model Athlete {
+  id          String              @id @default(uuid())
+  firstName   String              @db.VarChar(255)
+  lastName    String              @db.VarChar(255)
+  paddleSide  String              @db.VarChar(255)
+  weight      String              @db.VarChar(255)
+  phone       String              @db.VarChar(255)
+  email       String              @unique @db.VarChar(255)
+  content     String              @db.MediumText
+  isAvailable Boolean
+  isManager   Boolean
+  Teams       AthletesInTeams[]
+  Lineups     AthletesInLineups[]
+}
+
+model TeamsInRegattas {
+  regatta   Regatta  @relation(fields: [regattaId], references: [id])
+  regattaId String
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  updatedAt DateTime @default(now())
+
+  @@id([regattaId, teamId])
+}
+
+model TeamsInEvents {
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  updatedAt DateTime @default(now())
+
+  @@id([eventId, teamId])
+}
+
+model AthletesInTeams {
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  athlete   Athlete  @relation(fields: [athleteId], references: [id])
+  athleteId String
+  updatedAt DateTime @default(now())
+
+  @@id([teamId, athleteId])
+}
+
+model AthletesInLineups {
+  lineup    Lineup   @relation(fields: [lineupId], references: [id])
+  lineupId  String
+  athlete   Athlete  @relation(fields: [athleteId], references: [id])
+  athleteId String
+  position Int
+  updatedAt DateTime @default(now())
+
+  @@id([lineupId, athleteId])
+}
