@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Regatta {
+  id        String            @id @default(uuid())
+  name      String            @db.VarChar(255)
+  address   String            @db.VarChar(255)
+  phone     String            @db.VarChar(255)
+  email     String            @db.VarChar(255)
+  startDate DateTime
+  endDate   DateTime
+  events    Event[]
+  teams     TeamsInRegattas[]
+
+  @@map(name: "regatta")
+}
+
+model Event {
+  id              String          @id @default(uuid())
+  distance        String          @db.VarChar(255)
+  division        String          @db.VarChar(255)
+  level           String          @db.VarChar(255)
+  gender          String          @db.VarChar(255)
+  boatSize        String          @db.VarChar(255)
+  progressionType String          @db.VarChar(255)
+  startTime       DateTime
+  lanes           Int
+  entries         Int
+  isSeeded        Boolean
+  isCompleted     Boolean
+  competition     Regatta         @relation(fields: [competitionId], references: [id])
+  competitionId   String
+  teams           TeamsInEvents[]
+
+  @@map(name: "event")
+}
+
+model Team {
+  id       String            @id @default(uuid())
+  name     String            @db.VarChar(255)
+  division String            @db.VarChar(255)
+  level    String            @db.VarChar(255)
+  gender   String            @db.VarChar(255)
+  lineups  Lineup[]
+  athletes AthletesInTeams[]
+  events   TeamsInEvents[]
+  regattas TeamsInRegattas[]
+
+  @@map(name: "team")
+}
+
+model Lineup {
+  id       String              @id @default(uuid())
+  name     String              @db.VarChar(255)
+  athletes AthletesInLineups[]
+  roster   Team                @relation(fields: [rosterId], references: [id])
+  rosterId String
+
+  @@map(name: "lineup")
+}
+
+model Athlete {
+  id           String              @id @default(uuid())
+  firstName    String              @db.VarChar(255)
+  lastName     String              @db.VarChar(255)
+  gender       String              @db.VarChar(255)
+  paddleSide   String              @db.VarChar(255)
+  weight       Int
+  birthDate    DateTime
+  phone        String              @db.VarChar(255)
+  email        String              @unique @db.VarChar(255)
+  notes        String              @db.MediumText
+  isAvailable  Boolean
+  isManager    Boolean
+  paddlerStats PaddlerStats?
+  teams        AthletesInTeams[]
+  lineups      AthletesInLineups[]
+
+  @@map(name: "athlete")
+}
+
+model PaddlerStats {
+  id           String   @id @default(uuid())
+  athlete      Athlete  @relation(fields: [athleteId], references: [id])
+  athleteId    String   @unique
+  paddledSince DateTime
+  isDrummer    Boolean
+  isSteers     Boolean
+  isSprinter   Boolean
+  isMarathoner Boolean
+  isLeader     Boolean
+  isStroker    Boolean
+
+  @@map(name: "paddlerStats")
+}
+
+model TeamsInRegattas {
+  regatta   Regatta  @relation(fields: [regattaId], references: [id])
+  regattaId String
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  updatedAt DateTime @default(now())
+
+  @@id([regattaId, teamId])
+  @@map(name: "teamsInRegattas")
+}
+
+model TeamsInEvents {
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  updatedAt DateTime @default(now())
+
+  @@id([eventId, teamId])
+  @@map(name: "teamsInEvents")
+}
+
+model AthletesInTeams {
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  athlete   Athlete  @relation(fields: [athleteId], references: [id])
+  athleteId String
+  updatedAt DateTime @default(now())
+
+  @@id([teamId, athleteId])
+  @@map(name: "athletesInTeams")
+}
+
+model AthletesInLineups {
+  lineup    Lineup   @relation(fields: [lineupId], references: [id])
+  lineupId  String
+  athlete   Athlete  @relation(fields: [athleteId], references: [id])
+  athleteId String
+  position  Int
+  updatedAt DateTime @default(now())
+
+  @@id([lineupId, athleteId])
+  @@map(name: "athletesInLineups")
+}
