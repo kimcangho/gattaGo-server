@@ -40,6 +40,8 @@ model Event {
   competition     Regatta         @relation(fields: [competitionId], references: [id])
   competitionId   String
   teams           TeamsInEvents[]
+
+  @@map(name: "event")
 }
 
 model Team {
@@ -48,33 +50,57 @@ model Team {
   division String            @db.VarChar(255)
   level    String            @db.VarChar(255)
   gender   String            @db.VarChar(255)
-  Lineups  Lineup[]
-  Athletes AthletesInTeams[]
-  Events   TeamsInEvents[]
-  Regattas TeamsInRegattas[]
+  lineups  Lineup[]
+  athletes AthletesInTeams[]
+  events   TeamsInEvents[]
+  regattas TeamsInRegattas[]
+
+  @@map(name: "team")
 }
 
 model Lineup {
   id       String              @id @default(uuid())
   name     String              @db.VarChar(255)
-  Athletes AthletesInLineups[]
+  athletes AthletesInLineups[]
   roster   Team                @relation(fields: [rosterId], references: [id])
   rosterId String
+
+  @@map(name: "lineup")
 }
 
 model Athlete {
-  id          String              @id @default(uuid())
-  firstName   String              @db.VarChar(255)
-  lastName    String              @db.VarChar(255)
-  paddleSide  String              @db.VarChar(255)
-  weight      String              @db.VarChar(255)
-  phone       String              @db.VarChar(255)
-  email       String              @unique @db.VarChar(255)
-  content     String              @db.MediumText
-  isAvailable Boolean
-  isManager   Boolean
-  Teams       AthletesInTeams[]
-  Lineups     AthletesInLineups[]
+  id           String              @id @default(uuid())
+  firstName    String              @db.VarChar(255)
+  lastName     String              @db.VarChar(255)
+  gender       String              @db.VarChar(255)
+  paddleSide   String              @db.VarChar(255)
+  weight       Int
+  birthDate    DateTime
+  phone        String              @db.VarChar(255)
+  email        String              @unique @db.VarChar(255)
+  notes        String              @db.MediumText
+  isAvailable  Boolean
+  isManager    Boolean
+  paddlerStats PaddlerStats?
+  teams        AthletesInTeams[]
+  lineups      AthletesInLineups[]
+
+  @@map(name: "athlete")
+}
+
+model PaddlerStats {
+  id           String   @id @default(uuid())
+  athlete      Athlete  @relation(fields: [athleteId], references: [id])
+  athleteId    String   @unique
+  paddledSince DateTime
+  isDrummer    Boolean
+  isSteers     Boolean
+  isSprinter   Boolean
+  isMarathoner Boolean
+  isLeader     Boolean
+  isStroker    Boolean
+
+  @@map(name: "paddlerStats")
 }
 
 model TeamsInRegattas {
@@ -85,6 +111,7 @@ model TeamsInRegattas {
   updatedAt DateTime @default(now())
 
   @@id([regattaId, teamId])
+  @@map(name: "teamsInRegattas")
 }
 
 model TeamsInEvents {
@@ -95,6 +122,7 @@ model TeamsInEvents {
   updatedAt DateTime @default(now())
 
   @@id([eventId, teamId])
+  @@map(name: "teamsInEvents")
 }
 
 model AthletesInTeams {
@@ -105,6 +133,7 @@ model AthletesInTeams {
   updatedAt DateTime @default(now())
 
   @@id([teamId, athleteId])
+  @@map(name: "athletesInTeams")
 }
 
 model AthletesInLineups {
@@ -112,8 +141,9 @@ model AthletesInLineups {
   lineupId  String
   athlete   Athlete  @relation(fields: [athleteId], references: [id])
   athleteId String
-  position Int
+  position  Int
   updatedAt DateTime @default(now())
 
   @@id([lineupId, athleteId])
+  @@map(name: "athletesInLineups")
 }

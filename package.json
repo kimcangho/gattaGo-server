@@ -7,9 +7,14 @@
     "build": "tsc",
     "dev": "nodemon dist/server.js & tsc -w",
     "serve": "nodemon dist/serverx.js",
-    "migrate": "npx prisma migrate dev --name init"
+    "migrate": "npx prisma migrate dev --name init",
+    "seed": "npx prisma db seed --preview-feature",
+    "reseed": "npx prisma migrate reset"
   },
   "keywords": [],
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
