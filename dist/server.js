@@ -34,6 +34,10 @@ const PORT = process.env.PORT || "8888";
 app.get("/", (_req, res) => {
     res.send(`Paddles up! gattaGo is taking it away on PORT ${PORT}! 🚣🏼`);
 });
+app.get("/api/regattas", (req, res) => {
+    console.log('get regattas');
+    res.send('regattas here');
+});
 app.listen(PORT, () => {
     console.log(`Paddles up! gattaGo is taking it away on PORT ${PORT}! 🚣🏼`);
 });

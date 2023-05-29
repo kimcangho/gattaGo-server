@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon dist/server.js & tsc -w",
-    "serve": "nodemon dist/server.js",
+    "dev": "nodemon dist/app.js & tsc -w",
+    "serve": "nodemon dist/app.js",
     "migrate": "npx prisma migrate dev --name init",
     "seed": "npx prisma db seed --preview-feature",
     "reseed": "npx prisma migrate reset"
