@@ -75,15 +75,9 @@ const seedTeams = async () => {
   }
 };
 
-//  To-do: seed teamsInEvents for Pickering Regatta
 const seedTeamsInEvents = async () => {
-  //  Iterate through all prelim 500m events and 2k
-  //  Get event ID
-  //  add teams to event - include event number and lane number as well
-  //  NOTE: 500m heats are 4/4/4, 200m+500m finals are 5/5/2, 2k includees all 12 teams
-  //  We are assuming that only heats are seeded and all teams participate in 2k
 
-  // 500m heats
+  //  500m Heat
   const foundFiveHundoHeats = await prisma.event.findMany({
     where: {
       distance: "500m",
@@ -112,7 +106,6 @@ const seedTeamsInEvents = async () => {
     });
   }
 
-  //  2000m final
   const foundTwoKiloFinalEventId = await prisma.event.findFirst({
     where: {
       distance: "2000m",
@@ -175,7 +168,6 @@ const seedAthletesInTeams = async () => {
   }
 };
 
-//  To-do: seed athletesInLineups table with dodgefather athletes
 const seedAthletesInLineups = async () => {
   const foundLineupIds = await prisma.lineup.findMany({
     select: {
@@ -403,7 +395,7 @@ const seedDatabase = async () => {
     await seedTeamsInEvents();
     await seedAthletes();
     await seedAthletesInTeams();
-    await seedAthletesInLineups(); //  To-do
+    await seedAthletesInLineups();
     prisma.$disconnect;
   } catch (err) {
     console.error(err);
