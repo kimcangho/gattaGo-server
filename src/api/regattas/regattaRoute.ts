@@ -13,7 +13,7 @@ import {
   updateSingleEventByRegattaId,
 } from "./regattaController";
 
-const router = Router();
+const router: Router = Router();
 
 //  No regatta ID
 router
@@ -41,5 +41,17 @@ router
   .get(getSingleEventByRegattaId) //    get single event of regatta
   .put(updateSingleEventByRegattaId) //  update single event of regatta
   .delete(deleteSingleEventByRegattaId); //  delete single event of regatta
+
+//  No team ID
+router
+  .route("/:regattaId/teams")
+  .get() //  get all teams in regatta
+  .post() //  add team to regatta
+
+//  Team ID
+router
+  .route("/:regattaId/teams/:teamId")
+  .put() //  update single team in regatta
+  .delete(); //  delete single team from regatta
 
 export default router;

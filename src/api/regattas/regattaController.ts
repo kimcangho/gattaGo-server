@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { REPLCommand } from "repl";
 const { regatta, teamsInRegattas, teamsInEvents, event } = new PrismaClient();
 
 //  *** Regatta Requests ***
