@@ -2,12 +2,15 @@ import { Router } from "express";
 import {
   deleteEventsByRegattaId,
   deleteRegattaById,
+  deleteSingleEventByRegattaId,
   getEventsByRegattaId,
   getRegattaById,
   getRegattas,
+  getSingleEventByRegattaId,
   postEventByRegattaId,
   postRegatta,
   updateRegattaById,
+  updateSingleEventByRegattaId,
 } from "./regattaController";
 
 const router = Router();
@@ -35,7 +38,8 @@ router
 //  Event ID
 router
   .route("/:regattaId/events/:eventId")
-  .put() //  update event for single regatta
-  .delete(); //  delete single event for single regatta
+  .get(getSingleEventByRegattaId) //    get single event of regatta
+  .put(updateSingleEventByRegattaId) //  update single event of regatta
+  .delete(deleteSingleEventByRegattaId); //  delete single event of regatta
 
 export default router;
