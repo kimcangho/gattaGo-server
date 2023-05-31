@@ -9,11 +9,14 @@ app.get("/", (_req: Request, res: Response) => {
   res.send(`Paddles up! gattaGo is taking it away on PORT ${PORT}! 🚣🏼`);
 });
 
-app.use(express.json());
 
 //  Routing
 import regattaRoute from "./api/regattas/regattaRoute";
+//  teams
+//  lineups
+//  athletes
 
+app.use(express.json());
 app.use("/regattas", regattaRoute);
 
 app.listen(PORT, () => {
