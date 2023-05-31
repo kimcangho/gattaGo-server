@@ -120,28 +120,40 @@ const deleteRegattaById = async (req: Request, res: Response) => {
 
 //  *** Regatta Event Requests ***
 
-//  To-do: Get single regatta events
+//  Get single regatta events
 const getEventsByRegattaId = async (req: Request, res: Response) => {
   const { regattaId } = req.body;
 
-  const foundRegatta = await regatta.findUnique({
+  const checkedRegatta = await regatta.findUnique({
     where: {
       id: regattaId,
     },
   });
 
-  if (!foundRegatta) return res.send({ msg: "No regatta found!" }).status(404);
+  if (!checkedRegatta)
+    return res.send({ msg: "No regatta found!" }).status(404);
 
-  const foundEvents = await event.findMany({
+  const checkedEvents = await event.findMany({
     where: {
       competitionId: regattaId,
     },
   });
 
-  if (foundEvents.length === 0)
+  if (checkedEvents.length === 0)
     return res.send({ msg: "No events in regatta!" }).status(404);
 
-  res.json(foundEvents);
+  const foundRegattaEvents = await regatta.findUnique({
+    where: {
+      id: regattaId,
+    },
+    include: {
+      events: {
+        include: { teams: {} },
+      },
+    },
+  });
+
+  res.json(foundRegattaEvents);
 };
 
 //  Create new regatta event
@@ -238,7 +250,6 @@ const deleteEventsByRegattaId = async (req: Request, res: Response) => {
 const getSingleEventByRegattaId = async (req: Request, res: Response) => {
   const { regattaId, eventId } = req.body;
 
-  //  Check for regatta
   const checkedRegatta = await regatta.findUnique({
     where: {
       id: regattaId,
@@ -248,7 +259,6 @@ const getSingleEventByRegattaId = async (req: Request, res: Response) => {
   if (!checkedRegatta)
     return res.send({ msg: "No regatta found!" }).status(404);
 
-  //  Check for event
   const checkedEvent = await event.findUnique({
     where: {
       id: eventId,
@@ -256,11 +266,11 @@ const getSingleEventByRegattaId = async (req: Request, res: Response) => {
   });
   if (!checkedEvent) return res.send({ msg: "No event found!" }).status(404);
 
-  //  Get event from teamsInEvents
-  const foundEvent = await teamsInEvents.findMany({
+  const foundEvent = await event.findUnique({
     where: {
-      eventId,
+      id: eventId,
     },
+    include: { teams: {} },
   });
 
   res.json(foundEvent);
