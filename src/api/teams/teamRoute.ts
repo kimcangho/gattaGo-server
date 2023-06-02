@@ -5,6 +5,9 @@ import {
   getSingleTeamByID,
   updateSingleTeamByID,
   deleteSingleTeamByID,
+  getAllRegattasRegisteredTo,
+  withdrawTeamFromRegattas,
+  getAllTeamEventsByRegattaID,
 } from "./teamController";
 
 const router: Router = Router();
@@ -21,5 +24,14 @@ router
   .get(getSingleTeamByID) //  get single team
   .put(updateSingleTeamByID) //  update single team
   .delete(deleteSingleTeamByID); //  delete single team
+
+//  No Regatta ID
+router
+  .route("/:teamId/regattas")
+  .get(getAllRegattasRegisteredTo) //  get all regattas team is registered to
+  .delete(withdrawTeamFromRegattas); // withdraw team from all regattas
+
+//  Regatta ID
+router.route("/:teamId/events/:regattaId").get(getAllTeamEventsByRegattaID); //  get all events team registered to
 
 export default router;

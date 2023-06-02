@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-const { regatta, teamsInRegattas, teamsInEvents, event } = new PrismaClient();
+const { regatta, team, teamsInRegattas, teamsInEvents, event } =
+  new PrismaClient();
 
 //  *** Regatta Requests ***
 
@@ -27,7 +28,7 @@ const postRegatta = async (req: Request, res: Response) => {
   res.json({ msg: "Regatta added!" });
 };
 
-//  Get single regatta
+//  Get single regatta - coach
 const getRegattaById = async (req: Request, res: Response) => {
   const { regattaId } = req.body;
   const foundRegatta = await regatta.findUnique({
@@ -81,7 +82,7 @@ const deleteRegattaById = async (req: Request, res: Response) => {
 
   const foundEvents = await event.findMany({
     where: {
-      competitionId: regattaId,
+      regattaId,
     },
     select: {
       id: true,
@@ -104,7 +105,7 @@ const deleteRegattaById = async (req: Request, res: Response) => {
 
   await event.deleteMany({
     where: {
-      competitionId: regattaId,
+      regattaId,
     },
   });
 
@@ -119,7 +120,7 @@ const deleteRegattaById = async (req: Request, res: Response) => {
 
 //  *** Regatta Event Requests ***
 
-//  Get single regatta events
+//  Get single regatta events - coach
 const getEventsByRegattaId = async (req: Request, res: Response) => {
   const { regattaId } = req.body;
 
@@ -134,7 +135,7 @@ const getEventsByRegattaId = async (req: Request, res: Response) => {
 
   const checkedEvents = await event.findMany({
     where: {
-      competitionId: regattaId,
+      regattaId,
     },
   });
 
@@ -190,7 +191,7 @@ const postEventByRegattaId = async (req: Request, res: Response) => {
       entries,
       isSeeded: false,
       isCompleted: false,
-      competitionId: regattaId,
+      regattaId,
     },
   });
 
@@ -215,7 +216,7 @@ const deleteEventsByRegattaId = async (req: Request, res: Response) => {
 
   const foundEvents = await event.findMany({
     where: {
-      competitionId: regattaId,
+      regattaId,
     },
     select: {
       id: true,
@@ -234,7 +235,7 @@ const deleteEventsByRegattaId = async (req: Request, res: Response) => {
   //  Delete events by regattaID
   await event.deleteMany({
     where: {
-      competitionId: regattaId,
+      regattaId,
     },
   });
 
@@ -245,7 +246,7 @@ const deleteEventsByRegattaId = async (req: Request, res: Response) => {
     .status(204);
 };
 
-//  Get single event from regatta
+//  Get single event from regatta - coach
 const getSingleEventByRegattaId = async (req: Request, res: Response) => {
   const { regattaId, eventId } = req.body;
 
@@ -363,6 +364,114 @@ const deleteSingleEventByRegattaId = async (req: Request, res: Response) => {
   res.send({ msg: `Event ${eventId} successfully deleted` });
 };
 
+//  *** Regatta Team Requests ***
+
+//  No team ID requests - coach
+const getAllTeamsByRegattaID = async (req: Request, res: Response) => {
+  const { regattaId } = req.body;
+
+  const checkedRegatta = await regatta.findUnique({
+    where: {
+      id: regattaId,
+    },
+  });
+  if (!checkedRegatta)
+    return res.send({ msg: "No regatta found!" }).status(404);
+
+  const foundTeams = await teamsInRegattas.findMany({
+    where: {
+      regattaId,
+    },
+  });
+  if (foundTeams.length === 0) return res.send({ msg: "No teams in regatta!" });
+
+  res.send(foundTeams).status(200);
+};
+
+//  Team ID requests
+
+//  Register team to regatta - coach
+const postTeamtoRegatta = async (req: Request, res: Response) => {
+  const { regattaId, teamId } = req.body;
+
+  const checkedRegatta = await regatta.findUnique({
+    where: {
+      id: regattaId,
+    },
+  });
+  if (!checkedRegatta)
+    return res.send({ msg: "No regatta found!" }).status(404);
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+
+  const existingTeam = await teamsInRegattas.findMany({
+    where: {
+      regattaId,
+      teamId,
+    },
+  });
+
+  if (existingTeam.length !== 0)
+    return res.send({
+      msg: `Team ${teamId} already registered to regatta ${regattaId}`,
+    });
+
+  await teamsInRegattas.create({
+    data: {
+      regattaId,
+      teamId,
+    },
+  });
+
+  res.send({
+    msg: `Team ${teamId} successfully registered to regatta ${regattaId}!`,
+  });
+};
+
+//  Withdraw team from regatta - coach
+const deleteTeamFromRegatta = async (req: Request, res: Response) => {
+  const { regattaId, teamId } = req.body;
+
+  const checkedRegatta = await regatta.findUnique({
+    where: {
+      id: regattaId,
+    },
+  });
+  if (!checkedRegatta)
+    return res.send({ msg: "No regatta found!" }).status(404);
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+
+  await teamsInRegattas.deleteMany({
+    where: {
+      teamId,
+      regattaId,
+    },
+  });
+
+  await teamsInEvents.deleteMany({
+    where: {
+      teamId,
+    },
+  });
+
+  res
+    .send({
+      msg: `Team ${teamId} successfully de-listed from regatta ${regattaId}!`,
+    })
+    .status(204);
+};
+
 export {
   getRegattas,
   postRegatta,
@@ -375,4 +484,7 @@ export {
   getSingleEventByRegattaId,
   updateSingleEventByRegattaId,
   deleteSingleEventByRegattaId,
+  getAllTeamsByRegattaID,
+  postTeamtoRegatta,
+  deleteTeamFromRegatta,
 };

@@ -3,12 +3,15 @@ import {
   deleteEventsByRegattaId,
   deleteRegattaById,
   deleteSingleEventByRegattaId,
+  deleteTeamFromRegatta,
+  getAllTeamsByRegattaID,
   getEventsByRegattaId,
   getRegattaById,
   getRegattas,
   getSingleEventByRegattaId,
   postEventByRegattaId,
   postRegatta,
+  postTeamtoRegatta,
   updateRegattaById,
   updateSingleEventByRegattaId,
 } from "./regattaController";
@@ -45,13 +48,12 @@ router
 //  No team ID
 router
   .route("/:regattaId/teams")
-  .get() //  get all teams in regatta
-  .post() //  add team to regatta
-
-//  Team ID
-router
+  .get(getAllTeamsByRegattaID) //  get all teams in regatta
+  
+  //  Team ID
+  router
   .route("/:regattaId/teams/:teamId")
-  .put() //  update single team in regatta
-  .delete(); //  delete single team from regatta
+  .post(postTeamtoRegatta) //  add team to regatta
+  .delete(deleteTeamFromRegatta); //  delete single team from regatta
 
 export default router;

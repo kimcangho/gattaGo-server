@@ -132,21 +132,3 @@ const events = [
 ];
 
 export default events;
-
-// model Event {
-//     id              String          @id @default(uuid())
-//     distance        String          @db.VarChar(255)
-//     division        String          @db.VarChar(255)
-//     level           String          @db.VarChar(255)
-//     gender          String          @db.VarChar(255)
-//     boatSize        String          @db.VarChar(255)
-//     progressionType String          @db.VarChar(255)
-//     startTime       DateTime
-//     lanes           Int
-//     entries         Int
-//     isSeeded        Boolean
-//     isCompleted     Boolean
-//     competition     Regatta         @relation(fields: [competitionId], references: [id])
-//     competitionId   String
-//     teams           TeamsInEvents[]
-//   }

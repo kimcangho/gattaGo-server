@@ -37,8 +37,8 @@ model Event {
   entries         Int
   isSeeded        Boolean
   isCompleted     Boolean
-  competition     Regatta         @relation(fields: [competitionId], references: [id], onDelete: Cascade)
-  competitionId   String
+  regatta     Regatta         @relation(fields: [regattaId], references: [id])
+  regattaId   String
   teams           TeamsInEvents[]
 
   @@map(name: "event")

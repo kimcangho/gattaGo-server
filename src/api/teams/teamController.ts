@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 const {
+  regatta,
   team,
   lineup,
   athletesInTeams,
@@ -50,7 +51,7 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
   });
   if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
 
-  res.send(checkedTeam).status(200)
+  res.send(checkedTeam).status(200);
 };
 
 //  update single team
@@ -135,10 +136,85 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
   res.send({ msg: `Successfully deleted team ${teamId}!` }).status(204);
 };
 
+//  No regatta ID
+const getAllRegattasRegisteredTo = async (req: Request, res: Response) => {
+  const { teamId } = req.body;
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(204);
+
+  const registeredRegattas = await teamsInRegattas.findMany({
+    where: {
+      teamId,
+    },
+  });
+  res.send(registeredRegattas).status(200);
+};
+
+const withdrawTeamFromRegattas = async (req: Request, res: Response) => {
+  const { teamId } = req.body;
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(204);
+
+  await teamsInRegattas.deleteMany({
+    where: {
+      teamId,
+    },
+  });
+
+  res.send({ msg: `Team ${teamId} withdrawn from all regattas!` });
+};
+
+//  Regatta ID
+const getAllTeamEventsByRegattaID = async (req: Request, res: Response) => {
+  const { regattaId, teamId } = req.body;
+
+  const checkedRegatta = await regatta.findUnique({
+    where: {
+      id: regattaId,
+    },
+  });
+  if (!checkedRegatta)
+    return res.send({ msg: "No regatta found!" }).status(404);
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+
+  //    Get all events in regatta containing team
+
+  const foundTeamEvents = await teamsInEvents.findMany({
+    where: {
+      teamId,
+    },
+  });
+  if (foundTeamEvents.length === 0)
+    return res.send({
+      msg: `Team ${teamId} not in any events within regatta ${regattaId}`,
+    });
+
+  res.send(foundTeamEvents).status(200);
+};
+
 export {
   getAllTeams,
   createTeam,
   getSingleTeamByID,
   updateSingleTeamByID,
   deleteSingleTeamByID,
+  getAllRegattasRegisteredTo,
+  withdrawTeamFromRegattas,
+  getAllTeamEventsByRegattaID,
 };
