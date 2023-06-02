@@ -19,13 +19,16 @@ const postNewAthlete = async (req: Request, res: Response) => {
     email,
     notes,
   } = req.body;
+
   const checkedEmail = await athlete.findUnique({
     where: {
       email,
     },
   });
   if (checkedEmail)
-    return res.send({ msg: `Athlete with email ${email} already exists!` });
+    return res
+      .send({ msg: `Athlete with email ${email} already exists!` })
+      .status(404);
 
   const postedAthlete = await athlete.create({
     data: {
@@ -43,19 +46,23 @@ const postNewAthlete = async (req: Request, res: Response) => {
     },
   });
 
-  res.send(`New athlete ${postedAthlete.id} created!`);
+  res.send(`New athlete ${postedAthlete.id} created!`).status(201);
 };
 
 //  Athlete ID
 
 const getAthleteByID = async (req: Request, res: Response) => {
   const { athleteId } = req.params;
+  if (!athleteId)
+    return res.send({ msg: `Please include athleteId!` }).status(404);
 
   const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
-    return res.send({ msg: `Unable to find athlete ${athleteId}!` });
+    return res
+      .send({ msg: `Unable to find athlete ${athleteId}!` })
+      .status(404);
 
-  res.send(checkedAthlete);
+  res.send(checkedAthlete).status(200);
 };
 
 const updateAthleteByID = async (req: Request, res: Response) => {
@@ -71,10 +78,14 @@ const updateAthleteByID = async (req: Request, res: Response) => {
     email,
     notes,
   } = req.body;
+  if (!athleteId)
+    return res.send({ msg: `Please include athleteId!` }).status(404);
 
   const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
-    return res.send({ msg: `Athlete with email ${athleteId} not found!` });
+    return res
+      .send({ msg: `Athlete with email ${athleteId} not found!` })
+      .status(404);
 
   await athlete.update({
     where: {
@@ -93,15 +104,19 @@ const updateAthleteByID = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Athlete ${athleteId} successfully updated!` });
+  res.send({ msg: `Athlete ${athleteId} successfully updated!` }).status(200);
 };
 
 const deleteAthleteByID = async (req: Request, res: Response) => {
   const { athleteId } = req.params;
+  if (!athleteId)
+    return res.send({ msg: `Please include athleteId!` }).status(404);
 
   const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
-    return res.send({ msg: `Unable to find athlete ${athleteId}!` });
+    return res
+      .send({ msg: `Unable to find athlete ${athleteId}!` })
+      .status(404);
 
   await athletesInLineups.deleteMany({
     where: {
@@ -121,7 +136,7 @@ const deleteAthleteByID = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Athlete ${athleteId} successfully deleted!` });
+  res.send({ msg: `Athlete ${athleteId} successfully deleted!` }).status(204);
 };
 
 export { postNewAthlete, getAthleteByID, updateAthleteByID, deleteAthleteByID };

@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-const { regatta, team, teamsInRegattas, teamsInEvents, event, athlete } =
-  new PrismaClient();
+const { regatta, team, event, athlete, lineup } = new PrismaClient();
 
 //  Check for regatta
 const checkForRegatta = async (id: string) => {
@@ -54,6 +53,14 @@ const checkForAthlete = async (id: string) => {
 };
 
 //  Check for lineup
+const checkForLineup = async (id: string) => {
+  const foundLineup = lineup.findUnique({
+    where: {
+      id,
+    },
+  });
+  return foundLineup;
+};
 
 export {
   checkForRegatta,
@@ -61,4 +68,5 @@ export {
   checkForEvents,
   checkForTeam,
   checkForAthlete,
+  checkForLineup,
 };
