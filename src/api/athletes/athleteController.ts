@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { checkForAthlete } from "../utility/checks";
 const { athlete, athletesInLineups, athletesInTeams } = new PrismaClient();
 
 //  *** Athlete Requests ***
 
 //  No Athlete ID
 
-//  create new athlete
 const postNewAthlete = async (req: Request, res: Response) => {
   const {
     firstName,
@@ -27,7 +27,7 @@ const postNewAthlete = async (req: Request, res: Response) => {
   if (checkedEmail)
     return res.send({ msg: `Athlete with email ${email} already exists!` });
 
-  await athlete.create({
+  const postedAthlete = await athlete.create({
     data: {
       firstName,
       lastName,
@@ -43,31 +43,24 @@ const postNewAthlete = async (req: Request, res: Response) => {
     },
   });
 
-  res.send(`New athlete created!`);
+  res.send(`New athlete ${postedAthlete.id} created!`);
 };
 
 //  Athlete ID
 
-//  get individual athlete
 const getAthleteByID = async (req: Request, res: Response) => {
-  const { athleteId } = req.body;
+  const { athleteId } = req.params;
 
-  const checkedAthlete = await athlete.findUnique({
-    where: {
-      id: athleteId,
-    },
-  });
-
+  const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
     return res.send({ msg: `Unable to find athlete ${athleteId}!` });
 
   res.send(checkedAthlete);
 };
 
-//  update individual athlete
 const updateAthleteByID = async (req: Request, res: Response) => {
+  const { athleteId } = req.params;
   const {
-    athleteId,
     firstName,
     lastName,
     gender,
@@ -78,11 +71,8 @@ const updateAthleteByID = async (req: Request, res: Response) => {
     email,
     notes,
   } = req.body;
-  const checkedAthlete = await athlete.findUnique({
-    where: {
-      id: athleteId,
-    },
-  });
+
+  const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
     return res.send({ msg: `Athlete with email ${athleteId} not found!` });
 
@@ -106,16 +96,10 @@ const updateAthleteByID = async (req: Request, res: Response) => {
   res.send({ msg: `Athlete ${athleteId} successfully updated!` });
 };
 
-//  delete individual athlete
 const deleteAthleteByID = async (req: Request, res: Response) => {
-  const { athleteId } = req.body;
+  const { athleteId } = req.params;
 
-  const checkedAthlete = await athlete.findUnique({
-    where: {
-      id: athleteId,
-    },
-  });
-
+  const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
     return res.send({ msg: `Unable to find athlete ${athleteId}!` });
 

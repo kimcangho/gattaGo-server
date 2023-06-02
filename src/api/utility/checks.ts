@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-const { regatta, team, teamsInRegattas, teamsInEvents, event } =
+const { regatta, team, teamsInRegattas, teamsInEvents, event, athlete } =
   new PrismaClient();
 
 //  Check for regatta
-const checkForRegatta = async (regattaId: string) => {
+const checkForRegatta = async (id: string) => {
   const foundRegatta = await regatta.findUnique({
     where: {
-      id: regattaId,
+      id,
     },
   });
 
@@ -14,36 +14,51 @@ const checkForRegatta = async (regattaId: string) => {
 };
 
 //  Check for single event
-const checkForEvent = async (eventId: string) => {
+const checkForEvent = async (id: string) => {
   const foundEvent = await event.findUnique({
     where: {
-      id: eventId,
+      id,
     },
   });
   return foundEvent;
 };
 
 //  Check for many events
-const checkForEvents = async (regattaId: string) => {
+const checkForEvents = async (id: string) => {
   const foundEvents = await event.findMany({
     where: {
-      regattaId,
+      id,
     },
   });
   return foundEvents;
 };
 
 //  Check for team
-const checkForTeam = async (teamId: string) => {
+const checkForTeam = async (id: string) => {
   const foundTeam = team.findUnique({
     where: {
-      id: teamId,
+      id,
     },
   });
   return foundTeam;
 };
 
 //  Check for athlete
+const checkForAthlete = async (id: string) => {
+  const foundAthlete = athlete.findUnique({
+    where: {
+      id,
+    },
+  });
+  return foundAthlete;
+};
+
 //  Check for lineup
 
-export { checkForRegatta, checkForEvent, checkForEvents, checkForTeam };
+export {
+  checkForRegatta,
+  checkForEvent,
+  checkForEvents,
+  checkForTeam,
+  checkForAthlete,
+};
