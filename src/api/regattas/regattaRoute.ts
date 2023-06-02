@@ -46,12 +46,10 @@ router
   .delete(deleteSingleEventByRegattaId); //  delete single event of regatta
 
 //  No team ID
+router.route("/:regattaId/teams").get(getAllTeamsByRegattaID); //  get all teams in regatta
+
+//  Team ID
 router
-  .route("/:regattaId/teams")
-  .get(getAllTeamsByRegattaID) //  get all teams in regatta
-  
-  //  Team ID
-  router
   .route("/:regattaId/teams/:teamId")
   .post(postTeamtoRegatta) //  add team to regatta
   .delete(deleteTeamFromRegatta); //  delete single team from regatta
