@@ -34,4 +34,9 @@ router
 //  Regatta ID
 router.route("/:teamId/events/:regattaId").get(getAllTeamEventsByRegattaID); //  get all events team registered to
 
+//  No Athlete ID
+router.route("/:teamId/athletes")
+.get()  //  get all team athletes
+.delete() //  remove all athletes from team
+
 export default router;
