@@ -302,6 +302,253 @@ const deleteAthleteFromTeamByID = async (req: Request, res: Response) => {
   res.send({ msg: `Successfully delete athlete ${athleteId} from ${teamId}!` });
 };
 
+//  No Lineup ID
+const getAllTeamLineups = async (req: Request, res: Response) => {
+  const { teamId } = req.body;
+  if (!teamId) return res.send({ msg: `Please include teamid!` });
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+
+  const foundTeamLineups = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+    include: {
+      lineups: {
+        include: {
+          athletes: {
+            orderBy: {
+              position: "asc",
+            },
+          },
+        },
+      },
+    },
+  });
+
+  res.send(foundTeamLineups).status(201);
+};
+
+const postNewTeamLineup = async (req: Request, res: Response) => {
+  const { teamId, athletes, name } = req.body;
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+
+  const newLineup = await lineup.create({
+    data: {
+      name,
+      teamId,
+    },
+  });
+
+  for (let athleteUnit of athletes) {
+    console.log(athleteUnit);
+
+    await athletesInLineups.create({
+      data: {
+        lineupId: newLineup.id,
+        athleteId: athleteUnit.id,
+        position: athleteUnit.position,
+      },
+    });
+  }
+
+  res.send({ msg: `New lineup ${lineup} created and populated!` });
+};
+
+const deleteAllTeamLineups = async (req: Request, res: Response) => {
+  const { teamId } = req.body;
+  if (!teamId) return res.send({ msg: `Please include teamid!` });
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+
+  const foundLineupIDs = await lineup.findMany({
+    where: {
+      teamId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  for (let lineupUnit of foundLineupIDs) {
+    await athletesInLineups.deleteMany({
+      where: {
+        lineupId: lineupUnit.id,
+      },
+    });
+  }
+
+  await lineup.deleteMany({
+    where: {
+      teamId,
+    },
+  });
+
+  res
+    .send({ msg: `Successfully deleted lineups from team ${teamId}!` })
+    .status(204);
+};
+
+//  Lineup ID
+const getSingleTeamLineup = async (req: Request, res: Response) => {
+  const { teamId, lineupId } = req.body;
+  if (!teamId || !lineupId)
+    return res.send({ msg: `Please include teamId and lineupId!` });
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+
+  const checkedLineup = await lineup.findUnique({
+    where: {
+      id: lineupId,
+    },
+  });
+
+  if (!checkedLineup)
+    return res.send({ msg: `Lineup ${teamId} not found!` }).status(404);
+
+  const foundTeamLineup = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+    include: {
+      lineups: {
+        where: {
+          id: lineupId,
+        },
+        include: {
+          athletes: {
+            orderBy: {
+              position: "asc",
+            },
+          },
+        },
+      },
+    },
+  });
+
+  res.send(foundTeamLineup).status(201);
+};
+
+const updateSingleLineup = async (req: Request, res: Response) => {
+  const { teamId, lineupId, athletes, name } = req.body;
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+
+  const checkedLineup = await lineup.findUnique({
+    where: {
+      id: lineupId,
+    },
+  });
+
+  if (!checkedLineup)
+    return res.send({ msg: `Lineup ${lineupId} not found!` }).status(404);
+
+  //  Update lineup
+  await lineup.update({
+    where: {
+      id: lineupId,
+    },
+    data: {
+      name,
+    },
+  });
+
+  await athletesInLineups.deleteMany({
+    where: {
+      lineupId,
+    },
+  });
+
+  for (let athleteUnit of athletes) {
+    await athletesInLineups.create({
+      data: {
+        position: athleteUnit.position,
+        lineupId,
+        athleteId: athleteUnit.id,
+      },
+    });
+  }
+
+  res.send({ msg: `New lineup ${lineupId} updated!` });
+};
+
+const deleteSingleLineup = async (req: Request, res: Response) => {
+  const { teamId, lineupId } = req.body;
+  if (!teamId || !lineupId) return res.send({ msg: `Please include teamid!` });
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+
+  const checkedLineup = await lineup.findUnique({
+    where: {
+      id: lineupId,
+    },
+  });
+
+  if (!checkedLineup)
+    return res.send({ msg: `Lineup ${lineupId} not found!` }).status(404);
+
+  await athletesInLineups.deleteMany({
+    where: {
+      lineupId,
+    },
+  });
+
+  await lineup.delete({
+    where: {
+      id: lineupId,
+    },
+  });
+
+  res
+    .send({
+      msg: `Successfully deleted lineup ${lineupId} from team ${teamId}!`,
+    })
+    .status(204);
+};
+
 export {
   getAllTeams,
   createTeam,
@@ -315,4 +562,10 @@ export {
   deleteAllAthletesByTeamID,
   addAthleteToTeamByID,
   deleteAthleteFromTeamByID,
+  getAllTeamLineups,
+  postNewTeamLineup,
+  deleteAllTeamLineups,
+  getSingleTeamLineup,
+  updateSingleLineup,
+  deleteSingleLineup,
 };

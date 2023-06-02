@@ -12,6 +12,12 @@ import {
   deleteAllAthletesByTeamID,
   addAthleteToTeamByID,
   deleteAthleteFromTeamByID,
+  getAllTeamLineups,
+  getSingleTeamLineup,
+  deleteAllTeamLineups,
+  deleteSingleLineup,
+  postNewTeamLineup,
+  updateSingleLineup,
 } from "./teamController";
 
 const router: Router = Router();
@@ -49,5 +55,19 @@ router
   .route("/:teamId/athletes/:athleteId")
   .post(addAthleteToTeamByID) //  add athlete to team
   .delete(deleteAthleteFromTeamByID); //  delete athlete from team
+
+//  No Lineup ID
+router
+  .route("/:teamId/lineups")
+  .get(getAllTeamLineups) //  get all team lineups
+  .post(postNewTeamLineup) //  create new team lineup
+  .delete(deleteAllTeamLineups); //  delete all team lineups
+
+//  Lineup ID
+router
+  .route("/:teamId/lineups/:lineupId")
+  .get(getSingleTeamLineup) //  get single lineup
+  .put(updateSingleLineup) //  update single lineup
+  .delete(deleteSingleLineup); //  delete single lineup
 
 export default router;
