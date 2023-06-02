@@ -208,6 +208,100 @@ const getAllTeamEventsByRegattaID = async (req: Request, res: Response) => {
   res.send(foundTeamEvents).status(200);
 };
 
+//  No Athlete ID
+const getAllAthletesByTeamID = async (req: Request, res: Response) => {
+  const { teamId } = req.body;
+  if (!teamId) return res.send({ msg: `Please include teamId!` });
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam) return res.send({ msg: `Team ${teamId} not found!` });
+
+  const foundTeamAthletes = await athletesInTeams.findMany({
+    where: {
+      teamId,
+    },
+  });
+  if (foundTeamAthletes.length === 0)
+    return res.send({ msg: `No athletes in team ${teamId}!` });
+
+  res.send(foundTeamAthletes);
+};
+
+const deleteAllAthletesByTeamID = async (req: Request, res: Response) => {
+  const { teamId } = req.body;
+  if (!teamId) return res.send({ msg: `Please include teamId!` });
+
+  if (!teamId) return res.send({ msg: `Please include teamId!` });
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+
+  await athletesInTeams.deleteMany({
+    where: {
+      teamId,
+    },
+  });
+
+  res.send({ msg: `Athletes removed from team ${teamId}` }).status(204);
+};
+
+//  Athlete ID
+const addAthleteToTeamByID = async (req: Request, res: Response) => {
+  const { teamId, athleteId } = req.body;
+  if (!teamId || !athleteId)
+    return res.send({ msg: `Please include teamId and athleteId!` });
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+};
+
+const deleteAthleteFromTeamByID = async (req: Request, res: Response) => {
+  const { teamId, athleteId } = req.body;
+  if (!teamId || !athleteId)
+    return res.send({ msg: `Please include teamId and athleteId!` });
+
+  const checkedTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+  });
+
+  if (!checkedTeam)
+    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+
+  await athletesInLineups.deleteMany({
+    where: {
+      athleteId,
+    },
+  });
+
+  await athletesInTeams.deleteMany({
+    where: {
+      athleteId,
+      teamId,
+    },
+  });
+
+  res.send({ msg: `Successfully delete athlete ${athleteId} from ${teamId}!` });
+};
+
 export {
   getAllTeams,
   createTeam,
@@ -217,4 +311,8 @@ export {
   getAllRegattasRegisteredTo,
   withdrawTeamFromRegattas,
   getAllTeamEventsByRegattaID,
+  getAllAthletesByTeamID,
+  deleteAllAthletesByTeamID,
+  addAthleteToTeamByID,
+  deleteAthleteFromTeamByID,
 };

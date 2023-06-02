@@ -8,6 +8,10 @@ import {
   getAllRegattasRegisteredTo,
   withdrawTeamFromRegattas,
   getAllTeamEventsByRegattaID,
+  getAllAthletesByTeamID,
+  deleteAllAthletesByTeamID,
+  addAthleteToTeamByID,
+  deleteAthleteFromTeamByID,
 } from "./teamController";
 
 const router: Router = Router();
@@ -35,8 +39,15 @@ router
 router.route("/:teamId/events/:regattaId").get(getAllTeamEventsByRegattaID); //  get all events team registered to
 
 //  No Athlete ID
-router.route("/:teamId/athletes")
-.get()  //  get all team athletes
-.delete() //  remove all athletes from team
+router
+  .route("/:teamId/athletes")
+  .get(getAllAthletesByTeamID) //  get all team athletes
+  .delete(deleteAllAthletesByTeamID); //  remove all athletes from team
+
+//  Athlete ID
+router
+  .route("/:teamId/athletes/:athleteId")
+  .post(addAthleteToTeamByID) //  add athlete to team
+  .delete(deleteAthleteFromTeamByID); //  delete athlete from team
 
 export default router;
