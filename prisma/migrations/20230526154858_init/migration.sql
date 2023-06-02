@@ -45,7 +45,7 @@ CREATE TABLE `Team` (
 CREATE TABLE `Lineup` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
-    `rosterId` VARCHAR(191) NOT NULL,
+    `teamId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -108,7 +108,7 @@ CREATE TABLE `AthletesInLineups` (
 ALTER TABLE `Event` ADD CONSTRAINT `Event_competitionId_fkey` FOREIGN KEY (`competitionId`) REFERENCES `regatta`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Lineup` ADD CONSTRAINT `Lineup_rosterId_fkey` FOREIGN KEY (`rosterId`) REFERENCES `Team`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Lineup` ADD CONSTRAINT `Lineup_teamId_fkey` FOREIGN KEY (`teamId`) REFERENCES `Team`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `TeamsInRegattas` ADD CONSTRAINT `TeamsInRegattas_regattaId_fkey` FOREIGN KEY (`regattaId`) REFERENCES `regatta`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -27,7 +27,7 @@ ALTER TABLE `AthletesInTeams` DROP FOREIGN KEY `AthletesInTeams_teamId_fkey`;
 ALTER TABLE `Event` DROP FOREIGN KEY `Event_competitionId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `Lineup` DROP FOREIGN KEY `Lineup_rosterId_fkey`;
+ALTER TABLE `Lineup` DROP FOREIGN KEY `Lineup_teamId_fkey`;
 
 -- DropForeignKey
 ALTER TABLE `TeamsInEvents` DROP FOREIGN KEY `TeamsInEvents_eventId_fkey`;
@@ -99,7 +99,7 @@ CREATE TABLE `team` (
 CREATE TABLE `lineup` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
-    `rosterId` VARCHAR(191) NOT NULL,
+    `teamId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -143,7 +143,7 @@ CREATE TABLE `paddlerStats` (
 ALTER TABLE `event` ADD CONSTRAINT `event_competitionId_fkey` FOREIGN KEY (`competitionId`) REFERENCES `regatta`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `lineup` ADD CONSTRAINT `lineup_rosterId_fkey` FOREIGN KEY (`rosterId`) REFERENCES `team`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `lineup` ADD CONSTRAINT `lineup_teamId_fkey` FOREIGN KEY (`teamId`) REFERENCES `team`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `paddlerStats` ADD CONSTRAINT `paddlerStats_athleteId_fkey` FOREIGN KEY (`athleteId`) REFERENCES `athlete`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

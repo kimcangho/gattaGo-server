@@ -11,11 +11,3 @@ const lineups = [
 ];
 
 export default lineups;
-
-// model Lineup {
-//     id       String              @id @default(uuid())
-//     name     String              @db.VarChar(255)
-//     Athletes AthletesInLineups[]
-//     roster   Team                @relation(fields: [rosterId], references: [id])
-//     rosterId String
-//   }

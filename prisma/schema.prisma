@@ -62,8 +62,8 @@ model Lineup {
   id       String              @id @default(uuid())
   name     String              @db.VarChar(255)
   athletes AthletesInLineups[]
-  roster   Team                @relation(fields: [rosterId], references: [id])
-  rosterId String
+  team   Team                @relation(fields: [teamId], references: [id])
+  teamId String
 
   @@map(name: "lineup")
 }

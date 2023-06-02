@@ -123,7 +123,7 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
 
   await lineup.deleteMany({
     where: {
-      rosterId: teamId,
+      teamId,
     },
   });
 
