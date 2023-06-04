@@ -5,15 +5,14 @@ import {
   checkForEvents,
   checkForRegatta,
   checkForTeam,
-} from "../utility/checks";
+} from "../middleware/checks";
 const { regatta, teamsInRegattas, teamsInEvents, event } = new PrismaClient();
 
 //  *** Regatta Requests ***
 
 const getRegattas = async (_req: Request, res: Response) => {
   const regattas = await regatta.findMany();
-  if (regattas) return res.json(regattas).status(200);
-  res.send({ msg: "No regattas found!" }).status(404);
+  return res.status(200).send(regattas);
 };
 
 const postRegatta = async (req: Request, res: Response) => {
@@ -28,27 +27,27 @@ const postRegatta = async (req: Request, res: Response) => {
       endDate: new Date(endDate),
     },
   });
-  res.json({ msg: "Regatta added!" }).status(201);
+  res.status(201).send({ msg: "Regatta added!" });
 };
 
 const getRegattaById = async (req: Request, res: Response) => {
   const { regattaId } = req.params;
   if (!regattaId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const foundRegatta = await checkForRegatta(regattaId);
-  if (!foundRegatta) return res.send({ msg: "Regatta not found" }).status(404);
-  res.json(foundRegatta).status(200);
+  if (!foundRegatta) return res.status(404).send({ msg: "Regatta not found" });
+  res.status(200).send(foundRegatta);
 };
 
 const updateRegattaById = async (req: Request, res: Response) => {
   const { regattaId } = req.params;
   const { name, address, phone, email, startDate, endDate } = req.body;
   if (!regattaId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const foundRegatta = await checkForRegatta(regattaId);
-  if (!foundRegatta) return res.send({ msg: "Regatta not found" }).status(404);
+  if (!foundRegatta) return res.status(404).send({ msg: "Regatta not found" });
 
   await regatta.update({
     where: {
@@ -64,16 +63,16 @@ const updateRegattaById = async (req: Request, res: Response) => {
     },
   });
 
-  return res.send({ msg: "Successfully updated" }).status(200);
+  return res.status(200).send({ msg: "Successfully updated" });
 };
 
 const deleteRegattaById = async (req: Request, res: Response) => {
   const { regattaId } = req.params;
   if (!regattaId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const foundRegatta = await checkForRegatta(regattaId);
-  if (!foundRegatta) return res.send({ msg: "Regatta not found" }).status(404);
+  if (!foundRegatta) return res.status(404).send({ msg: "Regatta not found" });
 
   const foundEvents = await checkForEvents(regattaId);
 
@@ -104,8 +103,8 @@ const deleteRegattaById = async (req: Request, res: Response) => {
   });
 
   return res
-    .send({ msg: `Regatta ${regattaId} successfully deleted!` })
-    .status(204);
+    .status(204)
+    .send({ msg: `Regatta ${regattaId} successfully deleted!` });
 };
 
 //  *** Regatta Event Requests ***
@@ -113,15 +112,15 @@ const deleteRegattaById = async (req: Request, res: Response) => {
 const getEventsByRegattaId = async (req: Request, res: Response) => {
   const { regattaId } = req.params;
   if (!regattaId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "No regatta found!" }).status(404);
+    return res.status(404).send({ msg: "No regatta found!" });
 
   const checkedEvents = await checkForEvents(regattaId);
   if (checkedEvents.length === 0)
-    return res.send({ msg: "No events in regatta!" }).status(404);
+    return res.status(404).send({ msg: "No events in regatta!" });
 
   const foundRegattaEvents = await regatta.findUnique({
     where: {
@@ -134,7 +133,7 @@ const getEventsByRegattaId = async (req: Request, res: Response) => {
     },
   });
 
-  res.json(foundRegattaEvents).status(200);
+  res.status(200).send(foundRegattaEvents);
 };
 
 const postEventByRegattaId = async (req: Request, res: Response) => {
@@ -151,10 +150,10 @@ const postEventByRegattaId = async (req: Request, res: Response) => {
     entries,
   } = req.body;
   if (!regattaId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const foundRegatta = await checkForRegatta(regattaId);
-  if (!foundRegatta) return res.send({ msg: "Regatta not found" }).status(404);
+  if (!foundRegatta) return res.status(404).send({ msg: "Regatta not found" });
 
   const postedEvent = await event.create({
     data: {
@@ -173,21 +172,19 @@ const postEventByRegattaId = async (req: Request, res: Response) => {
     },
   });
 
-  res
-    .send({
-      msg: `Created new event ${postedEvent.id} for regatta ${regattaId}`,
-    })
-    .status(201);
+  res.status(201).send({
+    msg: `Created new event ${postedEvent.id} for regatta ${regattaId}`,
+  });
 };
 
 const deleteEventsByRegattaId = async (req: Request, res: Response) => {
   const { regattaId } = req.params;
   if (!regattaId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "Regatta not found" }).status(404);
+    return res.status(404).send({ msg: "Regatta not found" });
 
   const foundEvents = await checkForEvents(regattaId);
 
@@ -207,26 +204,24 @@ const deleteEventsByRegattaId = async (req: Request, res: Response) => {
     },
   });
 
-  res
-    .send({
-      msg: `At end of deleteEventsByRegattaId for regatta: ${regattaId}`,
-    })
-    .status(204);
+  res.status(204).send({
+    msg: `At end of deleteEventsByRegattaId for regatta: ${regattaId}`,
+  });
 };
 
 const getSingleEventByRegattaId = async (req: Request, res: Response) => {
   const { regattaId, eventId } = req.params;
   if (!regattaId || !eventId)
     return res
-      .send({ msg: `Please include regattaId and eventId!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Please include regattaId and eventId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "No regatta found!" }).status(404);
+    return res.status(404).send({ msg: "No regatta found!" });
 
   const checkedEvent = await checkForEvents(eventId);
-  if (!checkedEvent) return res.send({ msg: "No event found!" }).status(404);
+  if (!checkedEvent) return res.status(404).send({ msg: "No event found!" });
 
   const foundEvent = await event.findUnique({
     where: {
@@ -235,7 +230,7 @@ const getSingleEventByRegattaId = async (req: Request, res: Response) => {
     include: { teams: {} },
   });
 
-  res.json(foundEvent).status(200);
+  res.status(200).send(foundEvent);
 };
 
 const updateSingleEventByRegattaId = async (req: Request, res: Response) => {
@@ -253,14 +248,14 @@ const updateSingleEventByRegattaId = async (req: Request, res: Response) => {
     entries,
   } = req.body;
   if (!regattaId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "No regatta found!" }).status(404);
+    return res.status(404).send({ msg: "No regatta found!" });
 
   const checkedEvent = await checkForEvent(eventId);
-  if (!checkedEvent) return res.send({ msg: "No event found!" }).status(404);
+  if (!checkedEvent) return res.status(404).send({ msg: "No event found!" });
 
   await event.update({
     where: {
@@ -279,22 +274,22 @@ const updateSingleEventByRegattaId = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Event ${eventId} successfully updated!` }).status(200);
+  res.status(200).send({ msg: `Event ${eventId} successfully updated!` });
 };
 
 const deleteSingleEventByRegattaId = async (req: Request, res: Response) => {
   const { regattaId, eventId } = req.params;
   if (!regattaId || !eventId)
     return res
-      .send({ msg: `Please include regattaId and eventId!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Please include regattaId and eventId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "No regatta found!" }).status(404);
+    return res.status(404).send({ msg: "No regatta found!" });
 
   const checkedEvent = checkForEvent(eventId);
-  if (!checkedEvent) return res.send({ msg: "No event found!" }).status(404);
+  if (!checkedEvent) return res.status(404).send({ msg: "No event found!" });
 
   await teamsInEvents.deleteMany({
     where: {
@@ -308,7 +303,7 @@ const deleteSingleEventByRegattaId = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Event ${eventId} successfully deleted` }).status(204);
+  res.status(204).send({ msg: `Event ${eventId} successfully deleted` });
 };
 
 //  *** Regatta Team Requests ***
@@ -316,11 +311,11 @@ const deleteSingleEventByRegattaId = async (req: Request, res: Response) => {
 const getAllTeamsByRegattaID = async (req: Request, res: Response) => {
   const { regattaId } = req.params;
   if (!regattaId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "No regatta found!" }).status(404);
+    return res.status(404).send({ msg: "No regatta found!" });
 
   const foundTeams = await teamsInRegattas.findMany({
     where: {
@@ -329,22 +324,22 @@ const getAllTeamsByRegattaID = async (req: Request, res: Response) => {
   });
   if (foundTeams.length === 0) return res.send({ msg: "No teams in regatta!" });
 
-  res.send(foundTeams).status(200);
+  res.status(200).send(foundTeams);
 };
 
 const postTeamtoRegatta = async (req: Request, res: Response) => {
   const { regattaId, teamId } = req.params;
   if (!regattaId || !teamId)
     return res
-      .send({ msg: `Please include regattaId and teamId!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Please include regattaId and teamId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "No regatta found!" }).status(404);
+    return res.status(404).send({ msg: "No regatta found!" });
 
   const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
   const existingTeam = await teamsInRegattas.findMany({
     where: {
@@ -364,24 +359,22 @@ const postTeamtoRegatta = async (req: Request, res: Response) => {
     },
   });
 
-  res
-    .send({
-      msg: `Team ${teamId} successfully registered to regatta ${regattaId}!`,
-    })
-    .status(201);
+  res.status(201).send({
+    msg: `Team ${teamId} successfully registered to regatta ${regattaId}!`,
+  });
 };
 
 const deleteTeamFromRegatta = async (req: Request, res: Response) => {
   const { regattaId, teamId } = req.params;
   if (!regattaId || !teamId)
-    return res.send({ msg: `Please include regattaId!` }).status(404);
+    return res.status(404).send({ msg: `Please include regattaId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "No regatta found!" }).status(404);
+    return res.status(404).send({ msg: "No regatta found!" });
 
   const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
   await teamsInRegattas.deleteMany({
     where: {
@@ -396,11 +389,9 @@ const deleteTeamFromRegatta = async (req: Request, res: Response) => {
     },
   });
 
-  res
-    .send({
-      msg: `Team ${teamId} successfully de-listed from regatta ${regattaId}!`,
-    })
-    .status(204);
+  res.status(204).send({
+    msg: `Team ${teamId} successfully de-listed from regatta ${regattaId}!`,
+  });
 };
 
 export {

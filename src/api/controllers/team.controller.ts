@@ -5,7 +5,7 @@ import {
   checkForLineup,
   checkForRegatta,
   checkForTeam,
-} from "../utility/checks";
+} from "../middleware/checks";
 const {
   team,
   lineup,
@@ -22,8 +22,8 @@ const {
 const getAllTeams = async (_req: Request, res: Response) => {
   const foundTeams = await team.findMany();
 
-  if (foundTeams) return res.send(foundTeams).status(200);
-  res.send({ msg: "No teams found" }).status(404);
+  if (foundTeams) return res.status(200).send(foundTeams);
+  res.status(404).send({ msg: "No teams found" });
 };
 
 const createTeam = async (req: Request, res: Response) => {
@@ -38,34 +38,32 @@ const createTeam = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: "Successfully created new team!" }).status(201);
+  res.status(201).send({ msg: "Successfully created new team!" });
 };
 
 //  Team ID
 
 const getSingleTeamByID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  if (!teamId) return res.send({ msg: `Please include teamId!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  res.send(checkedTeam).status(200);
+  res.status(200).send(checkedTeam);
 };
 
 const updateSingleTeamByID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   const { name, division, level, gender } = req.body;
-  if (!teamId) return res.send({ msg: `Please include teamId!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
   if (!name || !division || !level || !gender)
-    return res
-      .send({
-        msg: `Please include name, division, level and gender!`,
-      })
-      .status(404);
+    return res.status(404).send({
+      msg: `Please include name, division, level and gender!`,
+    });
 
   const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
   await team.update({
     where: {
@@ -79,15 +77,15 @@ const updateSingleTeamByID = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Successfully updated team ${teamId}` }).status(200);
+  res.status(200).send({ msg: `Successfully updated team ${teamId}` });
 };
 
 const deleteSingleTeamByID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  if (!teamId) return res.send({ msg: `Please include teamId!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
   const athletesInTeam = await athletesInTeams.findMany({
     where: { teamId },
@@ -131,32 +129,32 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Successfully deleted team ${teamId}!` }).status(204);
+  res.status(204).send({ msg: `Successfully deleted team ${teamId}!` });
 };
 
 //  No regatta ID
 
 const getAllRegattasRegisteredTo = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  if (!teamId) return res.send({ msg: `Please include teamId!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
   const registeredRegattas = await teamsInRegattas.findMany({
     where: {
       teamId,
     },
   });
-  res.send(registeredRegattas).status(200);
+  res.status(200).send(registeredRegattas);
 };
 
 const deleteTeamFromRegattas = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  if (!teamId) return res.send({ msg: `Please include teamId!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
   await teamsInRegattas.deleteMany({
     where: {
@@ -164,7 +162,7 @@ const deleteTeamFromRegattas = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Team ${teamId} deleted from all regattas!` }).status(204);
+  res.status(204).send({ msg: `Team ${teamId} deleted from all regattas!` });
 };
 
 //  Regatta ID
@@ -173,15 +171,15 @@ const getAllTeamEventsByRegattaID = async (req: Request, res: Response) => {
   const { regattaId, teamId } = req.params;
   if (!regattaId || !teamId)
     return res
-      .send({ msg: `Please include regattaId and teamId!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Please include regattaId and teamId!` });
 
   const checkedRegatta = await checkForRegatta(regattaId);
   if (!checkedRegatta)
-    return res.send({ msg: "No regatta found!" }).status(404);
+    return res.status(404).send({ msg: "No regatta found!" });
 
   const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam) return res.send({ msg: "Team not found!" }).status(404);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
   //    Get all events in regatta containing team
 
@@ -195,18 +193,18 @@ const getAllTeamEventsByRegattaID = async (req: Request, res: Response) => {
       msg: `Team ${teamId} not in any events within regatta ${regattaId}`,
     });
 
-  res.send(foundTeamEvents).status(200);
+  res.status(200).send(foundTeamEvents);
 };
 
 //  No Athlete ID
 
 const getAllAthletesByTeamID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  if (!teamId) return res.send({ msg: `Please include teamId!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const foundTeamAthletes = await athletesInTeams.findMany({
     where: {
@@ -214,18 +212,18 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
     },
   });
   if (foundTeamAthletes.length === 0)
-    return res.send({ msg: `No athletes in team ${teamId}!` }).status(404);
+    return res.status(404).send({ msg: `No athletes in team ${teamId}!` });
 
-  res.send(foundTeamAthletes).status(200);
+  res.status(200).send(foundTeamAthletes);
 };
 
 const deleteAllAthletesByTeamID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  if (!teamId) return res.send({ msg: `Please include teamId!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   await athletesInTeams.deleteMany({
     where: {
@@ -233,7 +231,7 @@ const deleteAllAthletesByTeamID = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Athletes removed from team ${teamId}!` }).status(204);
+  res.status(204).send({ msg: `Athletes removed from team ${teamId}!` });
 };
 
 //  Athlete ID
@@ -242,12 +240,12 @@ const addAthleteToTeamByID = async (req: Request, res: Response) => {
   const { teamId, athleteId } = req.params;
   if (!teamId || !athleteId)
     return res
-      .send({ msg: `Please include teamId and athleteId!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Please include teamId and athleteId!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
@@ -261,8 +259,8 @@ const addAthleteToTeamByID = async (req: Request, res: Response) => {
   });
   if (checkExistingAthleteInTeam)
     return res
-      .send(`Athlete ${athleteId} already exists in team ${teamId}!`)
-      .status(404);
+      .status(404)
+      .send(`Athlete ${athleteId} already exists in team ${teamId}!`);
 
   await athletesInTeams.create({
     data: {
@@ -271,21 +269,21 @@ const addAthleteToTeamByID = async (req: Request, res: Response) => {
     },
   });
 
-  res
-    .send({ msg: `Athlete ${athleteId} successfully added to team ${teamId}!` })
-    .status(201);
+  res.status(201).send({
+    msg: `Athlete ${athleteId} successfully added to team ${teamId}!`,
+  });
 };
 
 const deleteAthleteFromTeamByID = async (req: Request, res: Response) => {
   const { teamId, athleteId } = req.body;
   if (!teamId || !athleteId)
     return res
-      .send({ msg: `Please include teamId and athleteId!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Please include teamId and athleteId!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   await athletesInLineups.deleteMany({
     where: {
@@ -301,19 +299,19 @@ const deleteAthleteFromTeamByID = async (req: Request, res: Response) => {
   });
 
   res
-    .send({ msg: `Successfully delete athlete ${athleteId} from ${teamId}!` })
-    .status(204);
+    .status(204)
+    .send({ msg: `Successfully delete athlete ${athleteId} from ${teamId}!` });
 };
 
 //  No Lineup ID
 
 const getAllTeamLineups = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  if (!teamId) return res.send({ msg: `Please include teamid!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const foundTeamLineups = await team.findUnique({
     where: {
@@ -332,17 +330,17 @@ const getAllTeamLineups = async (req: Request, res: Response) => {
     },
   });
 
-  res.send(foundTeamLineups).status(200);
+  res.status(200).send(foundTeamLineups);
 };
 
 const postNewTeamLineup = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   const { athletes, name } = req.body;
-  if (!teamId) return res.send(`Please include teamId!`).status(404);
+  if (!teamId) return res.status(404).send(`Please include teamId!`);
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const newLineup = await lineup.create({
     data: {
@@ -363,16 +361,16 @@ const postNewTeamLineup = async (req: Request, res: Response) => {
     });
   }
 
-  res.send({ msg: `New lineup ${lineup} created and populated!` }).status(201);
+  res.status(201).send({ msg: `New lineup ${lineup} created and populated!` });
 };
 
 const deleteAllTeamLineups = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  if (!teamId) return res.send({ msg: `Please include teamid!` }).status(404);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const foundLineupIDs = await lineup.findMany({
     where: {
@@ -398,8 +396,8 @@ const deleteAllTeamLineups = async (req: Request, res: Response) => {
   });
 
   res
-    .send({ msg: `Successfully deleted lineups from team ${teamId}!` })
-    .status(204);
+    .status(204)
+    .send({ msg: `Successfully deleted lineups from team ${teamId}!` });
 };
 
 //  Lineup ID
@@ -407,15 +405,15 @@ const deleteAllTeamLineups = async (req: Request, res: Response) => {
 const getSingleTeamLineup = async (req: Request, res: Response) => {
   const { teamId, lineupId } = req.params;
   if (!teamId || !lineupId)
-    return res.send({ msg: `Please include teamId and lineupId!` }).status(404);
+    return res.status(404).send({ msg: `Please include teamId and lineupId!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const checkedLineup = await checkForLineup(lineupId);
   if (!checkedLineup)
-    return res.send({ msg: `Lineup ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Lineup ${teamId} not found!` });
 
   const foundTeamLineup = await team.findUnique({
     where: {
@@ -437,22 +435,22 @@ const getSingleTeamLineup = async (req: Request, res: Response) => {
     },
   });
 
-  res.send(foundTeamLineup).status(200);
+  res.status(200).send(foundTeamLineup);
 };
 
 const updateSingleLineup = async (req: Request, res: Response) => {
   const { teamId, lineupId } = req.params;
   const { athletes, name } = req.body;
   if (!teamId || !lineupId)
-    return res.send({ msg: `Please include teamId and lineupId!` }).status(404);
+    return res.status(404).send({ msg: `Please include teamId and lineupId!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const checkedLineup = await checkForLineup(lineupId);
   if (!checkedLineup)
-    return res.send({ msg: `Lineup ${lineupId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Lineup ${lineupId} not found!` });
 
   await lineup.update({
     where: {
@@ -479,21 +477,21 @@ const updateSingleLineup = async (req: Request, res: Response) => {
     });
   }
 
-  res.send({ msg: `New lineup ${lineupId} updated!` }).status(200);
+  res.status(200).send({ msg: `New lineup ${lineupId} updated!` });
 };
 
 const deleteSingleLineup = async (req: Request, res: Response) => {
   const { teamId, lineupId } = req.body;
   if (!teamId || !lineupId)
-    return res.send({ msg: `Please include teamid!` }).status(404);
+    return res.status(404).send({ msg: `Please include teamid!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-    return res.send({ msg: `Team ${teamId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const checkedLineup = await checkForLineup(lineupId);
   if (!checkedLineup)
-    return res.send({ msg: `Lineup ${lineupId} not found!` }).status(404);
+    return res.status(404).send({ msg: `Lineup ${lineupId} not found!` });
 
   await athletesInLineups.deleteMany({
     where: {
@@ -507,11 +505,9 @@ const deleteSingleLineup = async (req: Request, res: Response) => {
     },
   });
 
-  res
-    .send({
-      msg: `Successfully deleted lineup ${lineupId} from team ${teamId}!`,
-    })
-    .status(204);
+  res.status(204).send({
+    msg: `Successfully deleted lineup ${lineupId} from team ${teamId}!`,
+  });
 };
 
 export {

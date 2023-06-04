@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { checkForAthlete } from "../utility/checks";
+import { checkForAthlete } from "../middleware/checks";
 const { athlete, athletesInLineups, athletesInTeams } = new PrismaClient();
 
 //  *** Athlete Requests ***
@@ -27,8 +27,8 @@ const postNewAthlete = async (req: Request, res: Response) => {
   });
   if (checkedEmail)
     return res
-      .send({ msg: `Athlete with email ${email} already exists!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Athlete with email ${email} already exists!` });
 
   const postedAthlete = await athlete.create({
     data: {
@@ -46,7 +46,7 @@ const postNewAthlete = async (req: Request, res: Response) => {
     },
   });
 
-  res.send(`New athlete ${postedAthlete.id} created!`).status(201);
+  res.status(201).send(`New athlete ${postedAthlete.id} created!`);
 };
 
 //  Athlete ID
@@ -54,15 +54,15 @@ const postNewAthlete = async (req: Request, res: Response) => {
 const getAthleteByID = async (req: Request, res: Response) => {
   const { athleteId } = req.params;
   if (!athleteId)
-    return res.send({ msg: `Please include athleteId!` }).status(404);
+    return res.status(404).send({ msg: `Please include athleteId!` });
 
   const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
     return res
-      .send({ msg: `Unable to find athlete ${athleteId}!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Unable to find athlete ${athleteId}!` });
 
-  res.send(checkedAthlete).status(200);
+  res.status(200).send(checkedAthlete);
 };
 
 const updateAthleteByID = async (req: Request, res: Response) => {
@@ -79,13 +79,13 @@ const updateAthleteByID = async (req: Request, res: Response) => {
     notes,
   } = req.body;
   if (!athleteId)
-    return res.send({ msg: `Please include athleteId!` }).status(404);
+    return res.status(404).send({ msg: `Please include athleteId!` });
 
   const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
     return res
-      .send({ msg: `Athlete with email ${athleteId} not found!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Athlete with email ${athleteId} not found!` });
 
   await athlete.update({
     where: {
@@ -104,19 +104,19 @@ const updateAthleteByID = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Athlete ${athleteId} successfully updated!` }).status(200);
+  res.status(200).send({ msg: `Athlete ${athleteId} successfully updated!` });
 };
 
 const deleteAthleteByID = async (req: Request, res: Response) => {
   const { athleteId } = req.params;
   if (!athleteId)
-    return res.send({ msg: `Please include athleteId!` }).status(404);
+    return res.status(404).send({ msg: `Please include athleteId!` });
 
   const checkedAthlete = await checkForAthlete(athleteId);
   if (!checkedAthlete)
     return res
-      .send({ msg: `Unable to find athlete ${athleteId}!` })
-      .status(404);
+      .status(404)
+      .send({ msg: `Unable to find athlete ${athleteId}!` });
 
   await athletesInLineups.deleteMany({
     where: {
@@ -136,7 +136,7 @@ const deleteAthleteByID = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ msg: `Athlete ${athleteId} successfully deleted!` }).status(204);
+  res.status(204).send({ msg: `Athlete ${athleteId} successfully deleted!` });
 };
 
 export { postNewAthlete, getAthleteByID, updateAthleteByID, deleteAthleteByID };
