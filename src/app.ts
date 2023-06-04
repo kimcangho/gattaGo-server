@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response, urlencoded } from "express";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -14,6 +14,8 @@ import teamRoute from "./api/teams/teamRoute";
 import athleteRoute from "./api/athletes/athleteRoute";
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.use("/regattas", regattaRoute);
 app.use("/teams", teamRoute);
 app.use("/athletes", athleteRoute);
