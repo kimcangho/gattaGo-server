@@ -10,6 +10,8 @@ const PORT: number | string = process.env.AUTH_PORT || 7777;
 
 //  Middleware
 app.use(express.json());
+// app.use(cors());
+// app.use(cookieParser())
 
 //  Routes
 // app.use("/login", loginRouter);     //  creates access and refresh tokens
@@ -17,5 +19,5 @@ app.use(express.json());
 // app.use("/token", tokenRouter);    //  creates access token with existing refresh token
 
 app.listen(PORT, (): void => {
-  console.log(`Auth server listening in on PORT ${PORT}`);
+  console.log(`gattaGo auth server marshalling on PORT ${PORT}! 🪪`);
 });
