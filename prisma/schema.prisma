@@ -10,6 +10,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String @id @default(uuid())
+  email    String @unique @db.VarChar(255)
+  password String @db.VarChar(255)
+
+  @@map(name: "user")
+}
+
+model RefreshToken {
+  id String @id
+
+  @@map(name: "refreshToken")
+}
+
 model Regatta {
   id        String            @id @default(uuid())
   name      String            @db.VarChar(255)
@@ -37,8 +51,8 @@ model Event {
   entries         Int
   isSeeded        Boolean
   isCompleted     Boolean
-  regatta     Regatta         @relation(fields: [regattaId], references: [id])
-  regattaId   String
+  regatta         Regatta         @relation(fields: [regattaId], references: [id])
+  regattaId       String
   teams           TeamsInEvents[]
 
   @@map(name: "event")
@@ -62,8 +76,8 @@ model Lineup {
   id       String              @id @default(uuid())
   name     String              @db.VarChar(255)
   athletes AthletesInLineups[]
-  team   Team                @relation(fields: [teamId], references: [id])
-  teamId String
+  team     Team                @relation(fields: [teamId], references: [id])
+  teamId   String
 
   @@map(name: "lineup")
 }
