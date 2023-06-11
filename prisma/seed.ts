@@ -3,11 +3,14 @@ import events from "./data/events";
 import teams from "./data/teams";
 import lineups from "./data/lineups";
 import athletes from "./data/athletes";
+import users from "./data/users";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 //  Seed Database Tables
+
+//  Seed API Tables
 const seedRegattas = async () => {
   for (let regattaUnit of regattas) {
     if (regattaUnit.name === "Pickering Dragon Boat Festival") {
@@ -76,7 +79,6 @@ const seedTeams = async () => {
 };
 
 const seedTeamsInEvents = async () => {
-
   //  500m Heat
   const foundFiveHundoHeats = await prisma.event.findMany({
     where: {
@@ -387,6 +389,16 @@ const seedAthletesInLineups = async () => {
   seedTwoKayFinal();
 };
 
+//  Seed Auth Tables
+
+const seedUsers = async () => {
+  for (let userUnit of users) {
+    await prisma.user.create({
+      data: { ...userUnit },
+    });
+  }
+};
+
 const seedDatabase = async () => {
   try {
     await seedRegattas();
@@ -396,6 +408,7 @@ const seedDatabase = async () => {
     await seedAthletes();
     await seedAthletesInTeams();
     await seedAthletesInLineups();
+    await seedUsers();
     prisma.$disconnect;
   } catch (err) {
     console.error(err);
