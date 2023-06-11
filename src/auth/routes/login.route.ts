@@ -11,6 +11,7 @@ logoutRouter.route("/").post(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   //  To-do: Check for email against database records
+  
   //  To-do: Check for hashed password against database records
 
   //    Create access token

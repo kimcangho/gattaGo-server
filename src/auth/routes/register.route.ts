@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 const { user } = new PrismaClient();
 
@@ -16,14 +17,17 @@ registerRouter.route("/").post(async (req: Request, res: Response) => {
   if (foundEmail)
     return res.status(400).send("Email exists! Cannot register doe");
 
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
   await user.create({
     data: {
       email,
-      password,
+      password: hashedPassword,
     },
   });
 
-  res.status(200).send("Successfully registered user!");
+  res.status(200).send(`Successfully registered user with email ${email}!`);
 });
 
 export default registerRouter;
