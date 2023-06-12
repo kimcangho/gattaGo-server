@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt, { compare } from "bcrypt";
 import { PrismaClient } from "@prisma/client";
-const { user } = new PrismaClient();
+const { user, authRefreshToken } = new PrismaClient();
 
 dotenv.config();
 
@@ -46,12 +46,16 @@ logoutRouter.route("/").post(async (req: Request, res: Response) => {
     process.env.REFRESH_TOKEN_SECRET!
   );
 
+  //    Hash Refresh Token String
+  const saltRounds = 10;
+  const hashedRefreshToken = await bcrypt.hash(refreshToken, saltRounds);
+
   //    To-do: add refresh token to DB
-
-  
-
-  //    Note: Ensure that token password is encrypted!
-
+  await authRefreshToken.create({
+    data: {
+      id: hashedRefreshToken,
+    },
+  });
   res.status(200).send({ accessToken, refreshToken });
 });
 
