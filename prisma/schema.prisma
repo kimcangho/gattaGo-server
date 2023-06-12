@@ -19,7 +19,8 @@ model User {
 }
 
 model AuthRefreshToken {
-  id String @id
+  id    String @id
+  email String @unique @db.VarChar(255)
 
   @@map(name: "authRefreshToken")
 }

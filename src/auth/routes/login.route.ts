@@ -1,15 +1,15 @@
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import bcrypt, { compare } from "bcrypt";
+import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 const { user, authRefreshToken } = new PrismaClient();
 
 dotenv.config();
 
-const logoutRouter: Router = Router();
+const loginRouter: Router = Router();
 
-logoutRouter.route("/").post(async (req: Request, res: Response) => {
+loginRouter.route("/").post(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   //   Check for email against database records
@@ -30,7 +30,7 @@ logoutRouter.route("/").post(async (req: Request, res: Response) => {
     password,
     foundHashedPassword!.password
   );
-  console.log(comparedHash);
+  console.log(foundHashedPassword);
   if (!comparedHash) return res.status(404).send("No match!");
 
   const accessToken: string | jwt.JwtPayload = jwt.sign(
@@ -46,17 +46,22 @@ logoutRouter.route("/").post(async (req: Request, res: Response) => {
     process.env.REFRESH_TOKEN_SECRET!
   );
 
-  //    Hash Refresh Token String
+  await authRefreshToken.deleteMany({
+    where: {
+      email,
+    },
+  });
+
   const saltRounds = 10;
   const hashedRefreshToken = await bcrypt.hash(refreshToken, saltRounds);
 
-  //    To-do: add refresh token to DB
   await authRefreshToken.create({
     data: {
       id: hashedRefreshToken,
+      email,
     },
   });
   res.status(200).send({ accessToken, refreshToken });
 });
 
-export default logoutRouter;
+export default loginRouter;
