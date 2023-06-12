@@ -4,8 +4,8 @@ import teams from "./data/teams";
 import lineups from "./data/lineups";
 import athletes from "./data/athletes";
 import users from "./data/users";
+import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
-
 const prisma = new PrismaClient();
 
 //  Seed Database Tables
@@ -392,9 +392,12 @@ const seedAthletesInLineups = async () => {
 //  Seed Auth Tables
 
 const seedUsers = async () => {
+  const saltRounds = 10;
   for (let userUnit of users) {
+    const hashedPassword = await bcrypt.hash(userUnit.password, saltRounds);
+
     await prisma.user.create({
-      data: { ...userUnit },
+      data: { email: userUnit.email, password: hashedPassword },
     });
   }
 };

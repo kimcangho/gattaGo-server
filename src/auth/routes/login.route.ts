@@ -1,20 +1,38 @@
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import bcrypt, { compare } from "bcrypt";
+import { PrismaClient } from "@prisma/client";
+const { user } = new PrismaClient();
 
 dotenv.config();
 
 const logoutRouter: Router = Router();
 
 logoutRouter.route("/").post(async (req: Request, res: Response) => {
-  //  User sends credentials including email and password
   const { email, password } = req.body;
 
-  //  To-do: Check for email against database records
-  
-  //  To-do: Check for hashed password against database records
+  //   Check for email against database records
+  const foundEmail = await user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (foundEmail!.email !== email) return res.status(404).send("Error!");
 
-  //    Create access token
+  const foundHashedPassword = await user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  const comparedHash = await bcrypt.compare(
+    password,
+    foundHashedPassword!.password
+  );
+  console.log(comparedHash);
+  if (!comparedHash) return res.status(404).send("No match!");
+
   const accessToken: string | jwt.JwtPayload = jwt.sign(
     { email },
     process.env.ACCESS_TOKEN_SECRET!,
@@ -22,13 +40,17 @@ logoutRouter.route("/").post(async (req: Request, res: Response) => {
       expiresIn: "30s",
     }
   );
-  //    create refresh token
+
   const refreshToken: string | jwt.JwtPayload = jwt.sign(
     { email },
     process.env.REFRESH_TOKEN_SECRET!
   );
 
   //    To-do: add refresh token to DB
+
+  
+
+  //    Note: Ensure that token password is encrypted!
 
   res.status(200).send({ accessToken, refreshToken });
 });

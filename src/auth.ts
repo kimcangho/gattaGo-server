@@ -15,7 +15,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/register", registerRouter)    //  POST - creates new user from email
+app.use("/register", registerRouter); //  POST - creates new user from emails
 app.use("/login", loginRouter); //  POST - creates access and refresh tokens
 app.use("/logout", logoutRouter); //  DELETE - deletes access and refresh tokens
 app.use("/token", tokenRouter); //  POST - creates access token with existing refresh token
