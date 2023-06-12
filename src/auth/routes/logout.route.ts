@@ -6,7 +6,9 @@ const { authRefreshToken } = new PrismaClient();
 const logoutRouter: Router = Router();
 
 logoutRouter.route("/").delete(async (req: Request, res: Response) => {
-  const { email, refreshToken } = req.body;
+  const { refreshToken } = req.cookies;
+  const { email } = req?.body;
+  if (!email) return res.status(404).send("No email!");
 
   const foundHashedToken = await authRefreshToken.findUnique({
     where: {
@@ -27,6 +29,11 @@ logoutRouter.route("/").delete(async (req: Request, res: Response) => {
     where: {
       id: foundHashedToken.id,
     },
+  });
+
+  res.cookie("accessToken", {
+    maxAge: 0,
+    httpOnly: true,
   });
 
   res.status(200).send("Logged out!");

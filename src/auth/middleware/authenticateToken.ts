@@ -4,14 +4,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  //  Get token from HTTP request header
-  const authHeader = req.headers["authorization"];
-  const accessToken = authHeader?.split(" ")[1];
+  const { accessToken } = req.cookies;
   if (!accessToken) return res.sendStatus(401);
 
-  jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!, (error, user) => {
+  jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!, (error: any) => {
     if (error) return res.sendStatus(403);
-    // req.body.user = user;
     next();
   });
 };

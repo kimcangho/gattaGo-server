@@ -6,11 +6,12 @@ import { PrismaClient } from "@prisma/client";
 const { user, authRefreshToken } = new PrismaClient();
 
 dotenv.config();
-
 const loginRouter: Router = Router();
 
 loginRouter.route("/").post(async (req: Request, res: Response) => {
   const { email, password } = req.body;
+
+  if (!email || !password) return res.status(400).send("Invalid request!");
 
   const foundEmail = await user.findUnique({
     where: {
@@ -29,7 +30,7 @@ loginRouter.route("/").post(async (req: Request, res: Response) => {
     password,
     foundHashedPassword!.password
   );
-  if (!comparedHash) return res.status(404).send("No match!");
+  if (!comparedHash) return res.status(401).send("Password does not match!");
 
   const accessToken: string | jwt.JwtPayload = jwt.sign(
     { email },
@@ -59,7 +60,18 @@ loginRouter.route("/").post(async (req: Request, res: Response) => {
       email,
     },
   });
-  res.status(200).send({ accessToken, refreshToken });
+
+  res.cookie("accessToken", accessToken, {
+    maxAge: 600000,
+    httpOnly: true,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    maxAge: 6000000,
+    httpOnly: true,
+  });
+
+  res.status(200).send("Login successful!");
 });
 
 export default loginRouter;

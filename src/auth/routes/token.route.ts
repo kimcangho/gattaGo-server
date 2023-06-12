@@ -6,11 +6,11 @@ import { PrismaClient } from "@prisma/client";
 const { authRefreshToken } = new PrismaClient();
 
 dotenv.config();
-
 const tokenRouter: Router = Router();
 
 tokenRouter.route("/").post(async (req: Request, res: Response) => {
-  const { email, refreshToken } = req.body;
+  const { refreshToken } = req.cookies;
+  const { email } = req.body;
   if (!refreshToken) return res.status(404).send("No refresh token found!");
 
   const foundHashedToken = await authRefreshToken.findUnique({
@@ -35,7 +35,13 @@ tokenRouter.route("/").post(async (req: Request, res: Response) => {
         expiresIn: "30s",
       }
     );
-    res.status(200).send({ accessToken });
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 600000,
+      httpOnly: true,
+    });
+
+    res.status(200).send("Successful access token request!");
   });
 });
 

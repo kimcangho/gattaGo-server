@@ -11,12 +11,10 @@ dotenv.config();
 const app: Express = express();
 const PORT: number | string = process.env.AUTH_PORT || 7777;
 
-app.use(cors({ origin: "http://localhost:5173" }));
-// app.use(cors({ origin: "*" }));
-
+app.use(cookieParser()); 
 app.use(express.json());
-app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
@@ -24,7 +22,7 @@ app.use("/logout", logoutRouter);
 app.use("/token", tokenRouter);
 
 app.get("/", (_req: Request, res: Response) => {
-  res.send(`Paddles up! gattaGo is taking it away on PORT ${PORT}! 🚣🏼`);
+  res.send(`gattaGo auth server marshalling on PORT ${PORT}! 🪪`);
 });
 
 app.listen(PORT, (): void => {
