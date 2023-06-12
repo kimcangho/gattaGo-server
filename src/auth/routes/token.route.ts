@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 const { authRefreshToken } = new PrismaClient();
 
+dotenv.config();
+
 const tokenRouter: Router = Router();
 
 tokenRouter.route("/").post(async (req: Request, res: Response) => {

@@ -12,7 +12,6 @@ const loginRouter: Router = Router();
 loginRouter.route("/").post(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  //   Check for email against database records
   const foundEmail = await user.findUnique({
     where: {
       email,
@@ -30,7 +29,6 @@ loginRouter.route("/").post(async (req: Request, res: Response) => {
     password,
     foundHashedPassword!.password
   );
-  console.log(foundHashedPassword);
   if (!comparedHash) return res.status(404).send("No match!");
 
   const accessToken: string | jwt.JwtPayload = jwt.sign(
