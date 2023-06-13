@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { hashEntity} from "../utils/bcrypt.utils";
+import { hashEntity } from "../utils/bcrypt.utils";
 import { PrismaClient } from "@prisma/client";
 const { user } = new PrismaClient();
 

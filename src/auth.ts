@@ -11,7 +11,7 @@ dotenv.config();
 const app: Express = express();
 const PORT: number | string = process.env.AUTH_PORT || 7777;
 
-app.use(cookieParser()); 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({ credentials: true, origin: "http://localhost:5173" }));

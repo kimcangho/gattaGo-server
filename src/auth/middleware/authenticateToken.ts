@@ -10,7 +10,7 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   } catch {
     return res.sendStatus(403);
   }
- 
+
   next();
 };
 
