@@ -13,7 +13,7 @@ const loginUser = async (req: Request, res: Response) => {
   if (!email || !password) return res.status(400).send("Invalid request!");
 
   const foundEmail = await findUser(email);
-  if (foundEmail!.email !== email) return res.status(404).send("Error!");
+  if (foundEmail !== email) return res.status(404).send("Email not found!");
 
   const foundHashedPassword = await findPassword(email);
   if (!(await compareHash(password, foundHashedPassword)))
