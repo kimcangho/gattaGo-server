@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import { generateToken, verifyToken } from "../utils/jwt.utils";
 import { compareHash } from "../utils/bcrypt.utils";
 import { PrismaClient } from "@prisma/client";
 const { authRefreshToken } = new PrismaClient();
@@ -20,22 +20,24 @@ const issueToken = async (req: Request, res: Response) => {
   if (!(await compareHash(refreshToken, foundHashedToken!.id)))
     return res.status(401).send("Tokens do not match!");
 
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!, () => {
-    const accessToken: string | jwt.JwtPayload = jwt.sign(
-      { email },
-      process.env.ACCESS_TOKEN_SECRET!,
-      {
-        expiresIn: "30s",
-      }
-    );
+  try {
+    verifyToken(refreshToken);
+  } catch (err) {
+    return res.status(401).send("Catch error on JWT verify");
+  }
 
-    res.cookie("accessToken", accessToken, {
-      maxAge: 600000,
-      httpOnly: true,
-    });
+  const accessToken = await generateToken(
+    email,
+    process.env.ACCESS_TOKEN_SECRET!,
+    30
+  );
 
-    res.status(200).send("Successful access token request!");
+  res.cookie("accessToken", accessToken, {
+    maxAge: 600000,
+    httpOnly: true,
   });
+
+  res.status(200).send("Successful access token request!");
 };
 
 export { issueToken };

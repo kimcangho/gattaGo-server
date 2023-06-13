@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import { compareHash, hashEntity } from "../utils/bcrypt.utils";
+import { generateToken } from "../utils/jwt.utils";
 const { user, authRefreshToken } = new PrismaClient();
 
 const loginUser = async (req: Request, res: Response) => {
@@ -25,16 +25,14 @@ const loginUser = async (req: Request, res: Response) => {
   if (!(await compareHash(password, foundHashedPassword!.password)))
     return res.status(401).send("Password does not match!");
 
-  const accessToken: string | jwt.JwtPayload = jwt.sign(
-    { email },
+  const accessToken = await generateToken(
+    email,
     process.env.ACCESS_TOKEN_SECRET!,
-    {
-      expiresIn: "30s",
-    }
+    30
   );
 
-  const refreshToken: string | jwt.JwtPayload = jwt.sign(
-    { email },
+  const refreshToken = await generateToken(
+    email,
     process.env.REFRESH_TOKEN_SECRET!
   );
 
