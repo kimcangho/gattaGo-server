@@ -12,6 +12,8 @@ const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).send("Invalid request!");
 
+  //  To-do: Check if already logged in
+
   const foundEmail = await findUser(email);
   if (foundEmail !== email) return res.status(404).send("Email not found!");
 
