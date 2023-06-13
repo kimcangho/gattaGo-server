@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import { hashEntity} from "../utils/bcrypt.utils";
 import { PrismaClient } from "@prisma/client";
 const { user } = new PrismaClient();
 
@@ -11,12 +11,10 @@ const registerUser = async (req: Request, res: Response) => {
       email,
     },
   });
-
   if (foundEmail)
     return res.status(400).send("Email exists! Cannot register doe");
 
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  const hashedPassword = await hashEntity(password);
 
   await user.create({
     data: {

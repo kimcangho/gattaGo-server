@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import { compareHash } from "../utils/bcrypt.utils";
 const { authRefreshToken } = new PrismaClient();
 
 const logoutUser = async (req: Request, res: Response) => {
@@ -15,11 +15,7 @@ const logoutUser = async (req: Request, res: Response) => {
   });
   if (!foundHashedToken) return res.status(404).send("Not found doe");
 
-  const comparedTokens = await bcrypt.compare(
-    refreshToken,
-    foundHashedToken.id
-  );
-  if (!comparedTokens) {
+  if (!(await compareHash(refreshToken, foundHashedToken.id))) {
     return res.status(404).send("Not dis doe");
   }
 

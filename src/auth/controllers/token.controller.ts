@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import { compareHash } from "../utils/bcrypt.utils";
 import { PrismaClient } from "@prisma/client";
 const { authRefreshToken } = new PrismaClient();
 
@@ -17,11 +17,8 @@ const issueToken = async (req: Request, res: Response) => {
   if (!foundHashedToken)
     return res.status(404).send("No refresh token found in DB!");
 
-  const comparedTokens = await bcrypt.compare(
-    refreshToken,
-    foundHashedToken!.id
-  );
-  if (!comparedTokens) return res.status(404).send("Tokens do not match!");
+  if (!(await compareHash(refreshToken, foundHashedToken!.id)))
+    return res.status(401).send("Tokens do not match!");
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!, () => {
     const accessToken: string | jwt.JwtPayload = jwt.sign(
