@@ -1,27 +1,19 @@
 import { Request, Response } from "express";
 import { hashEntity } from "../utils/bcrypt.utils";
-import { PrismaClient } from "@prisma/client";
-const { user } = new PrismaClient();
+import { findUser, createUser } from "../services/register.services";
 
 const registerUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const foundEmail = await user.findUnique({
-    where: {
-      email,
-    },
-  });
-  if (foundEmail)
-    return res.status(400).send("Email exists! Cannot register doe");
+  try {
+    await findUser(email);
+  } catch {
+    return res.status(400).send("Email exists! Cannot register bro");
+  }
 
   const hashedPassword = await hashEntity(password);
 
-  await user.create({
-    data: {
-      email,
-      password: hashedPassword,
-    },
-  });
+  await createUser(email, hashedPassword);
 
   res.status(200).send(`Successfully registered user with email ${email}!`);
 };
