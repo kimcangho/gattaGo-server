@@ -21,7 +21,7 @@ const issueToken = async (req: Request, res: Response) => {
     return res.status(401).send("Tokens do not match!");
 
   try {
-    verifyToken(refreshToken);
+    verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
   } catch (err) {
     return res.status(401).send("Catch error on JWT verify");
   }

@@ -16,8 +16,8 @@ const generateToken = async (
   );
 };
 
-const verifyToken = (refreshToken: string) => {
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
+const verifyToken = (refreshToken: string, secretKey: string) => {
+  jwt.verify(refreshToken, secretKey!);
 };
 
 export { generateToken, verifyToken };
