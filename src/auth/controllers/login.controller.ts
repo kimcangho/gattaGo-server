@@ -7,12 +7,14 @@ import {
   addRefreshToken,
   findPassword,
 } from "../services/login.services";
+import { findRefreshToken } from "../services/login.services";
 
 const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).send("Invalid request!");
 
-  //  To-do: Check if already logged in
+  const isLoggedIn = await findRefreshToken(email);
+  if (isLoggedIn) return res.status(400).send("Already logged in!");
 
   const foundEmail = await findUser(email);
   if (foundEmail !== email) return res.status(404).send("Email not found!");
