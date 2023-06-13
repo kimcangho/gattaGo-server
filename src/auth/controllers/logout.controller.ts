@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { compareHash } from "../utils/bcrypt.utils";
+import { PrismaClient } from "@prisma/client";
 const { authRefreshToken } = new PrismaClient();
 
 const logoutUser = async (req: Request, res: Response) => {
