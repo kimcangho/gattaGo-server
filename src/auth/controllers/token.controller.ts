@@ -1,19 +1,15 @@
 import { Request, Response } from "express";
 import { generateToken, verifyToken } from "../utils/jwt.utils";
 import { compareHash } from "../utils/bcrypt.utils";
-import { PrismaClient } from "@prisma/client";
-const { authRefreshToken } = new PrismaClient();
+import { findRefreshToken } from "../services/token.services";
 
 const issueToken = async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
+
   const { email } = req.body;
   if (!refreshToken) return res.status(404).send("No refresh token found!");
 
-  const foundHashedToken = await authRefreshToken.findUnique({
-    where: {
-      email,
-    },
-  });
+  const foundHashedToken = await findRefreshToken(email);
   if (!foundHashedToken)
     return res.status(404).send("No refresh token found in DB!");
 
