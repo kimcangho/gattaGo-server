@@ -14,7 +14,7 @@ const issueToken = async (req: Request, res: Response) => {
     return res.status(404).send("No refresh token found in DB!");
 
   if (!(await compareHash(refreshToken, foundHashedToken!.id)))
-    return res.status(401).send("Tokens do not match!");
+    return res.status(401).send("Tokens do not match!"); 
 
   try {
     verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
