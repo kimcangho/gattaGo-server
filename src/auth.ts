@@ -6,6 +6,7 @@ import registerRouter from "./auth/routes/register.route";
 import loginRouter from "./auth/routes/login.route";
 import tokenRouter from "./auth/routes/token.route";
 import logoutRouter from "./auth/routes/logout.route";
+import resetRouter from "./auth/routes/reset.route";
 
 dotenv.config();
 const app: Express = express();
@@ -20,6 +21,7 @@ app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.use("/logout", logoutRouter);
 app.use("/token", tokenRouter);
+app.use("/reset", resetRouter);
 
 app.get("/", (_req: Request, res: Response) => {
   res.send(`gattaGo auth server marshalling on PORT ${PORT}! 🪪`);
