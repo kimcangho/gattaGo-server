@@ -1,17 +1,34 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt.utils";
+import jwt from "jsonwebtoken";
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  const { accessToken } = req.cookies;
-  if (!accessToken) return res.sendStatus(401);
+  //  To-do: refactor to verify access token through authorization header
 
-  try {
-    verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET!);
-  } catch {
-    return res.sendStatus(403);
-  }
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) return res.status(401).send("Not authorized!");
 
-  next();
+  const accessToken = authHeader.split(" ")[1];
+
+  //  To-do: refactor token verification
+  // try {
+  //   verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET!);
+  // } catch {
+  //   return res.status(403).send("Forbidden, invalid token!");
+  // }
+
+  jwt.verify(
+    accessToken,
+    process.env.ACCESS_TOKEN_SECRET!,
+    (
+      err: jwt.VerifyErrors | null,
+      decoded: string | jwt.JwtPayload | undefined
+    ) => {
+      if (err) return res.status(403).send("Forbidden, invalid token!");
+      // req.email = user.email;    //  To-do: look into setting user
+      next();
+    }
+  );
 };
 
 export default authenticateToken;

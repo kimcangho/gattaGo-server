@@ -17,7 +17,7 @@ const generateToken = async (
 };
 
 const verifyToken = (refreshToken: string, secretKey: string) => {
-  jwt.verify(refreshToken, secretKey!);
+  return jwt.verify(refreshToken, secretKey!);
 };
 
 export { generateToken, verifyToken };

@@ -38,17 +38,12 @@ const loginUser = async (req: Request, res: Response) => {
   const hashedRefreshToken = await hashEntity(refreshToken);
   await addRefreshToken(hashedRefreshToken, email);
 
-  res.cookie("accessToken", accessToken, {
-    maxAge: 600000,
-    httpOnly: true,
-  });
-
   res.cookie("refreshToken", refreshToken, {
-    maxAge: 6000000,
     httpOnly: true,
+    maxAge: 6000000,
   });
 
-  res.status(200).send("Login successful!");
+  res.status(200).send({ accessToken });
 };
 
 export { loginUser };
