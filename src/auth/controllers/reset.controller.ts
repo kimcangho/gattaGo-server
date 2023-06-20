@@ -48,6 +48,7 @@ const resetPassword = async (req: Request, res: Response) => {
 
 const updatePassword = async (req: Request, res: Response) => {
   const { email, password, resetCode } = req.body;
+  if (!email || !password || !resetCode) return res.status(400).send("Ensure all fields are inputted!")
 
   try {
     await findUser(email);
