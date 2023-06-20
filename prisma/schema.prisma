@@ -18,6 +18,12 @@ model User {
   @@map(name: "user")
 }
 
+model PasswordReset {
+  id String @id @default(uuid())
+  email String @unique @db.VarChar(255)
+  expiresAt DateTime
+}
+
 model AuthRefreshToken {
   id    String @id
   email String @unique @db.VarChar(255)
