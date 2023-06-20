@@ -1,6 +1,13 @@
 import { Request, Response } from "express";
-import { findUser } from "../services/reset.services";
+import {
+  findUser,
+  findResetCode,
+  createResetCode,
+  deleteResetCode,
+  changePassword,
+} from "../services/reset.services";
 import { sendEmail } from "../utils/nodemailer.utils";
+import { hashEntity } from "../utils/bcrypt.utils";
 
 interface MailOptions {
   from: String;
@@ -11,7 +18,9 @@ interface MailOptions {
 
 const resetPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
+  if (!email) return res.status(400).send("No email field!");
 
+  //    Check for email
   try {
     await findUser(email);
   } catch {
@@ -20,12 +29,19 @@ const resetPassword = async (req: Request, res: Response) => {
       .send("Email does not exist! Cannot reset password...");
   }
 
-  sendEmail(
-    email,
-    "Password reset for",
-    "Looks like you want to reset your password. Click on the link below! Your link will expire within 10 minutes!",
-    '<a href="http://localhost:5173/"><b>gattaGo Racing</b></a>'
-  );
+  //    Create new record in passwordReset schema containing resetCode and expiry date
+
+  try {
+    const resetCode = await createResetCode(email);
+    sendEmail(
+      email,
+      "Password reset for",
+      "Looks like you want to reset your password. Click on the link below! Your link will expire within 10 minutes!",
+      `<a href="http://localhost:5173/reset_password"><b>Reset Password Here: http://localhost:5173/reset_password/${resetCode}</b></a>`
+    );
+  } catch {
+    console.log("Can't send reset code!");
+  }
 
   res.status(200).send("Password reset code sent!");
 };
@@ -33,8 +49,6 @@ const resetPassword = async (req: Request, res: Response) => {
 const updatePassword = async (req: Request, res: Response) => {
   const { email, password, resetCode } = req.body;
 
-  //    Search for email in DB
-  //  if not found, send error code
   try {
     await findUser(email);
   } catch {
@@ -43,20 +57,23 @@ const updatePassword = async (req: Request, res: Response) => {
       .send("Email does not exist! Cannot reset password...");
   }
 
-  //    Search for resetCode in DB
-  //  if not found, send error code
-  //    if past expiration date, send error code and prompt client to request new code
+  try {
+    await findResetCode(resetCode);
 
-  //  if found, update password field with new encrypted password using bcrypt
-  //    then delete reset code
-  //    send confirmation email to user with newly update password
+    const hashedPassword: string = await hashEntity(password);
+    await changePassword(email, hashedPassword);
 
-  sendEmail(
-    email,
-    "Password successfully reset for",
-    "Your password has been successfully reset!",
-    '<p>Password successfully reset! <a href="http://localhost:5173/login"><b>Login Here</b></a></p>'
-  );
+    sendEmail(
+      email,
+      "Password successfully reset for",
+      "Your password has been successfully reset!",
+      '<p>Password successfully reset! <a href="http://localhost:5173/login"><b>Login Here</b></a></p>'
+    );
+  } catch {
+    return res.status(400).send("Could not reset password!");
+  } finally {
+    deleteResetCode(email);
+  }
 
   res.status(204).send("Password updated!");
 };
