@@ -37,7 +37,8 @@ const resetPassword = async (req: Request, res: Response) => {
       email,
       "Password reset for",
       "Looks like you want to reset your password. Click on the link below! Your link will expire within 10 minutes!",
-      `<a href="http://localhost:5173/reset_password"><b>Reset Password Here: http://localhost:5173/reset_password/${resetCode}</b></a>`
+      resetCode,
+      "resetEmail"
     );
   } catch {
     console.log("Can't send reset code!");
@@ -48,7 +49,8 @@ const resetPassword = async (req: Request, res: Response) => {
 
 const updatePassword = async (req: Request, res: Response) => {
   const { email, password, resetCode } = req.body;
-  if (!email || !password || !resetCode) return res.status(400).send("Ensure all fields are inputted!")
+  if (!email || !password || !resetCode)
+    return res.status(400).send("Ensure all fields are inputted!");
 
   try {
     await findUser(email);
@@ -68,7 +70,8 @@ const updatePassword = async (req: Request, res: Response) => {
       email,
       "Password successfully reset for",
       "Your password has been successfully reset!",
-      '<p>Password successfully reset! <a href="http://localhost:5173/login"><b>Login Here</b></a></p>'
+      resetCode,
+      "confirmEmail"
     );
   } catch {
     return res.status(400).send("Could not reset password!");

@@ -8,9 +8,15 @@ import tokenRouter from "./auth/routes/token.route";
 import logoutRouter from "./auth/routes/logout.route";
 import resetRouter from "./auth/routes/reset.route";
 
+import path from "path";
+
 dotenv.config();
 const app: Express = express();
 const PORT: number | string = process.env.AUTH_PORT || 7777;
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+app.use(express.static(__dirname + '/public'));
 
 app.use(cookieParser());
 app.use(express.json());
