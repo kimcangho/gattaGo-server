@@ -37,8 +37,8 @@ const resetPassword = async (req: Request, res: Response) => {
       email,
       "Password reset for",
       "Looks like you want to reset your password. Click on the link below! Your link will expire within 10 minutes!",
+      "resetEmail",
       resetCode,
-      "resetEmail"
     );
   } catch {
     console.log("Can't send reset code!");
@@ -70,8 +70,7 @@ const updatePassword = async (req: Request, res: Response) => {
       email,
       "Password successfully reset for",
       "Your password has been successfully reset!",
-      resetCode,
-      "confirmEmail"
+      "confirmEmail",
     );
   } catch {
     return res.status(400).send("Could not reset password!");

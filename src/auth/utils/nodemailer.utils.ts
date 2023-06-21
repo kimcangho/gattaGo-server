@@ -6,8 +6,8 @@ const sendEmail = (
   email: string,
   subject: string,
   text: string,
-  resetCode: string,
-  file: string
+  file: string,
+  resetCode?: string
 ) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -20,6 +20,7 @@ const sendEmail = (
 
   ejs.renderFile(
     path.join(__dirname + `/../../views/${file}.ejs`),
+    { email, resetCode },
     (err, data) => {
       if (err) console.log(err);
       else {
@@ -28,7 +29,13 @@ const sendEmail = (
           to: email,
           subject: `${subject} ${email}`,
           text,
-          html: data, email,
+          email,
+          html: data,
+          attachments: [{
+            filename: 'gattaGo.png',
+            path: path.join(__dirname + '/../../public/gattaGo-boat.png'),
+            cid: 'gattago-logo'
+          }]
         };
         transporter.sendMail(mailOptions, (err, _success) => {
           if (err) console.log(err);
