@@ -31,11 +31,13 @@ const sendEmail = (
           text,
           email,
           html: data,
-          attachments: [{
-            filename: 'gattaGo.png',
-            path: path.join(__dirname + '/../../public/gattaGo-boat.png'),
-            cid: 'gattago-logo'
-          }]
+          attachments: [
+            {
+              filename: "gattaGo.png",
+              path: path.join(__dirname + "/../../public/gattaGo-boat.png"),
+              cid: "gattago-logo",
+            },
+          ],
         };
         transporter.sendMail(mailOptions, (err, _success) => {
           if (err) console.log(err);

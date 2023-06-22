@@ -3,6 +3,6 @@ import { resetPassword, updatePassword } from "../controllers/reset.controller";
 
 const resetRouter: Router = Router();
 
-resetRouter.route("/").get(resetPassword).put(updatePassword);
+resetRouter.route("/").post(resetPassword).put(updatePassword);
 
 export default resetRouter;
