@@ -24,6 +24,7 @@ const logoutUser = async (req: Request, res: Response) => {
 
   //  Reminder: delete access token in memory on client side
   res.clearCookie("refreshToken", { httpOnly: true, secure: true });
+  res.clearCookie("email", { httpOnly: true, secure: true });
   res.status(204).send("Logged out!");
 };
 
