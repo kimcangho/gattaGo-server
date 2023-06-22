@@ -10,6 +10,16 @@ const findUser = async (email: string) => {
   if (!foundEmail) throw new Error();
 };
 
+const findMatchingUserWithResetCode = async (resetCode: string) => {
+  const foundUser = await passwordReset.findUnique({
+    where: {
+      id: resetCode,
+    },
+  });
+  if (!foundUser) throw new Error();
+  return foundUser.email;
+};
+
 const createResetCode = async (email: string) => {
   const expirationTimeInMS: number = 10 * 60 * 1000;
 
@@ -61,6 +71,7 @@ const deleteResetCode = async (email: string) => {
 
 export {
   findUser,
+  findMatchingUserWithResetCode,
   createResetCode,
   findResetCode,
   changePassword,

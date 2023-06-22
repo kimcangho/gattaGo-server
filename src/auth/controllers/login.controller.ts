@@ -43,6 +43,11 @@ const loginUser = async (req: Request, res: Response) => {
     maxAge: 6000000,
   });
 
+  res.cookie("email", email, {
+    httpOnly: true,
+    maxAge: 6000000,
+  });
+
   res.status(200).send({ accessToken });
 };
 

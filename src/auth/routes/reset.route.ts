@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { resetPassword, updatePassword } from "../controllers/reset.controller";
+import {
+  getUserEmail,
+  resetPassword,
+  updatePassword,
+} from "../controllers/reset.controller";
 
 const resetRouter: Router = Router();
 
 resetRouter.route("/").post(resetPassword).put(updatePassword);
+
+resetRouter.route("/:resetCodeId").get(getUserEmail);
 
 export default resetRouter;
