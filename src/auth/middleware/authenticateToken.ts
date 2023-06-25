@@ -4,12 +4,12 @@ import jwt from "jsonwebtoken";
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   //  To-do: refactor to verify access token through authorization header
-
+  console.log(req.headers);
   const authHeader = req.headers["authorization"];
   if (!authHeader) return res.status(401).send("Not authorized!");
 
   const accessToken = authHeader.split(" ")[1];
-
+  console.log(accessToken);
   //  To-do: refactor token verification
   // try {
   //   verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET!);
