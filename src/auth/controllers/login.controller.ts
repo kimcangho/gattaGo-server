@@ -26,7 +26,7 @@ const loginUser = async (req: Request, res: Response) => {
   const accessToken = await generateToken(
     email,
     process.env.ACCESS_TOKEN_SECRET!,
-    30
+    300
   );
 
   const refreshToken = await generateToken(
