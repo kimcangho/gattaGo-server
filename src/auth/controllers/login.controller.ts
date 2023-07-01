@@ -26,7 +26,7 @@ const loginUser = async (req: Request, res: Response) => {
   const accessToken = await generateToken(
     email,
     process.env.ACCESS_TOKEN_SECRET!,
-    300
+    10
   );
 
   const refreshToken = await generateToken(
@@ -34,6 +34,8 @@ const loginUser = async (req: Request, res: Response) => {
     process.env.REFRESH_TOKEN_SECRET!
   );
 
+  console.log(refreshToken)
+  
   await deleteRefreshToken(email);
   const hashedRefreshToken = await hashEntity(refreshToken);
   await addRefreshToken(hashedRefreshToken, email);
