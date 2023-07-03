@@ -2,11 +2,9 @@ const athletes = [
   {
     firstName: "Steers",
     lastName: "Coach",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "N/A",
     weight: 175,
-    birthDate: new Date("1980-01-03"),
-    phone: "123-456-7890",
     email: "steers.coach@gmail.com",
     notes: "Likes longer distances. Shoulder acts up in sprints.",
     isAvailable: true,
@@ -15,11 +13,9 @@ const athletes = [
   {
     firstName: "Drummer",
     lastName: "Mascot",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "N/A",
     weight: 100,
-    birthDate: new Date("1980-02-04"),
-    phone: "098-765-4321",
     email: "best.friend@gmail.com",
     notes: "Good at motivating others.",
     isAvailable: true,
@@ -28,11 +24,9 @@ const athletes = [
   {
     firstName: "Douglas",
     lastName: "Mendoza",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "B",
     weight: 168,
-    birthDate: new Date("1986-05-15"),
-    phone: "419-386-8500",
     email: "douglasdmendoza@armyspy.com",
     notes:
       "has the heart to catch and throw a football at the same time, but scouts say diet of only Uncrustables could be an issue.",
@@ -42,11 +36,9 @@ const athletes = [
   {
     firstName: "Na",
     lastName: "Kuo",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "B",
     weight: 125,
-    birthDate: new Date("2000-03-09"),
-    phone: "418-963-1873",
     email: "NaKuo@teleworm.us",
     notes:
       "has the length to suplex a Vespa, but scouts say addiction to Postmates could be an issue.",
@@ -56,11 +48,9 @@ const athletes = [
   {
     firstName: "Jakub",
     lastName: "Zahradnik",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "B",
     weight: 168,
-    birthDate: new Date("1993-05-10"),
-    phone: "250-698-5643",
     email: "JakubZahradnik@teleworm.us",
     notes:
       "has the unmeasurables to tie shoes without help, but scouts say too-strong of arms could be an issue.",
@@ -70,11 +60,9 @@ const athletes = [
   {
     firstName: "Holly",
     lastName: "Lépicier",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "B",
     weight: 220,
-    birthDate: new Date("2001-03-16"),
-    phone: "819-667-2102",
     email: "HollyLepicier@rhyta.com",
     notes:
       "has the unmeasurables to memorize the playbook, but scouts say browser history could be an issue",
@@ -84,11 +72,9 @@ const athletes = [
   {
     firstName: "Sabine",
     lastName: "Kortig",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "L",
     weight: 156,
-    birthDate: new Date("1974-08-24"),
-    phone: "403-373-6931",
     email: "SabineKortig@armyspy.com",
     notes:
       "has the self-awareness to block like security on Black Friday, but scouts say hot dog opinions could be an issue",
@@ -98,11 +84,9 @@ const athletes = [
   {
     firstName: "Sindri",
     lastName: "Daníelsson",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "L",
     weight: 181,
-    birthDate: new Date("1980-08-16"),
-    phone: "250-705-1463",
     email: "SindriDanielsson@dayrep.com",
     notes:
       "has the love of paddling to mow the whole field, but scouts say phone anxiety could be an issue",
@@ -112,11 +96,9 @@ const athletes = [
   {
     firstName: "Mgbafor",
     lastName: "Chieloka",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "L",
     weight: 113,
-    birthDate: new Date("1988-10-12"),
-    phone: "403-677-3159",
     email: "MgbaforChieloka@dayrep.com",
     notes:
       "has the quick hands to jump pretty high, but scouts say farmer’s tan could be an issue",
@@ -126,11 +108,8 @@ const athletes = [
   {
     firstName: "Abelardo",
     lastName: "Zetticci",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "L",
-    weight: 230,
-    birthDate: new Date("1996-06-06"),
-    phone: "819-570-7485",
     email: "VitoDavide@jourrapide.com",
     notes:
       "has the freak athleticism to wear those tight pants, but scouts say admiration of Billy McFarland could be an issue",
@@ -140,11 +119,9 @@ const athletes = [
   {
     firstName: "Etsuko",
     lastName: "Samurakami",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "L",
     weight: 134,
-    birthDate: new Date("2003-06-11"),
-    phone: "805-967-2573",
     email: "EtsukoSamurakami@rhyta.com",
     notes:
       "has the oily hands to give an on-field TED talk, but scouts say thousands of unread messages could be an issue",
@@ -154,11 +131,9 @@ const athletes = [
   {
     firstName: "Querían Aguirre",
     lastName: "Escalante",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "L",
     weight: 173,
-    birthDate: new Date("1988-07-31"),
-    phone: "905-609-2960",
     email: "QuerianAguirreEscalante@rhyta.com",
     notes:
       "has the manicured hands to wear those tight pants, but scouts say busted bracket could be an issue",
@@ -168,11 +143,9 @@ const athletes = [
   {
     firstName: "Lilli",
     lastName: "Bakkan",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "L",
     weight: 175,
-    birthDate: new Date("1995-06-15"),
-    phone: "254-227-0099",
     email: "LilliBakkan@dayrep.com",
     notes:
       "has the big ol’ butt to drive a parade float, but scouts say dry eyeballs could be an issue",
@@ -182,11 +155,9 @@ const athletes = [
   {
     firstName: "Timothy",
     lastName: "Nevzorov",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "L",
     weight: 154,
-    birthDate: new Date("1991-06-25"),
-    phone: "780-997-5560",
     email: "TimothyNevzorov@teleworm.us",
     notes:
       "has the unmeasurables to memorize the playbook, but scouts say netflix queue could be an issue",
@@ -196,11 +167,9 @@ const athletes = [
   {
     firstName: "Radomiła",
     lastName: "Gorska",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "L",
     weight: 183,
-    birthDate: new Date("1999-06-03"),
-    phone: "604-654-7206",
     email: "RadomilaGorska@teleworm.us",
     notes:
       "has the natural leadership to be the next legend, but scouts say pun addiction could be an issue",
@@ -210,11 +179,9 @@ const athletes = [
   {
     firstName: "Karin",
     lastName: "Bijuklič",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "L",
     weight: 134,
-    birthDate: new Date("1986-04-29"),
-    phone: "604-279-4818",
     email: "KarinBijuklic@jourrapide.com",
     notes:
       "has the meme library to pop a boat, but scouts say voting record could be an issue",
@@ -224,11 +191,9 @@ const athletes = [
   {
     firstName: "Aron",
     lastName: "Mackay",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "L",
     weight: 215,
-    birthDate: new Date("1984-12-30"),
-    phone: "807-957-5681",
     email: "AronMackay@dayrep.com",
     notes:
       "has the big ol’ butt to block a truck, but scouts say history of ham theft could be an issue",
@@ -238,11 +203,9 @@ const athletes = [
   {
     firstName: "Nils",
     lastName: "Palander",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "L",
     weight: 222,
-    birthDate: new Date("1994-01-13"),
-    phone: "519-761-0206",
     email: "NilsPalander@dayrep.com",
     notes:
       "has the deceptive speed to be a mensch to teammates, but scouts say brand activation could be an issue",
@@ -252,11 +215,9 @@ const athletes = [
   {
     firstName: "Mirjam",
     lastName: "Göransson",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "R",
     weight: 142,
-    birthDate: new Date("1999-11-24"),
-    phone: "519-866-9829",
     email: "MirjamGoransson@armyspy.com",
     notes:
       "has the franchise smile to climb a fire pole, but scouts say love of taxidermy could be an issue",
@@ -266,11 +227,9 @@ const athletes = [
   {
     firstName: "Emmi",
     lastName: "Ylönen",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "R",
     weight: 131,
-    birthDate: new Date("2002-11-14"),
-    phone: "819-569-6299",
     email: "EmmiYlonen@jourrapide.com",
     notes:
       "has the oily hands to behead a ref, but scouts say lawn mower splurges could be an issue",
@@ -280,11 +239,9 @@ const athletes = [
   {
     firstName: "Lac Ngoc",
     lastName: "Tuong",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "R",
     weight: 167,
-    birthDate: new Date("2000-01-22"),
-    phone: "416-423-1644",
     email: "LacNgocTuong@armyspy.com",
     notes:
       "has the math skills to wear those tight pants, but scouts say Twitter etiquette could be an issue",
@@ -294,11 +251,9 @@ const athletes = [
   {
     firstName: "Jonathan",
     lastName: "Blair",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "R",
     weight: 214,
-    birthDate: new Date("1988-06-27"),
-    phone: "250-743-9805",
     email: "JonathanDBlair@jourrapide.com",
     notes:
       "has the determination to give meaning to sport, but scouts say selfies could be an issue",
@@ -308,11 +263,9 @@ const athletes = [
   {
     firstName: "Isma'il",
     lastName: "Baz",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "R",
     weight: 209,
-    birthDate: new Date("1987-05-24"),
-    phone: "705-377-0997",
     email: "IsmailImranBaz@dayrep.com",
     notes:
       "has the meme library to sniff a pig a farm away, but scouts say ketchup intake could be an issue",
@@ -322,11 +275,9 @@ const athletes = [
   {
     firstName: "Tiblets",
     lastName: "Habte",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "R",
     weight: 175,
-    birthDate: new Date("2000-01-30"),
-    phone: "519-587-4571",
     email: "TibletsHabte@armyspy.com",
     notes:
       "has the burst to horse-collar a horse, but scouts say poor parking skills could be an issue",
@@ -336,11 +287,9 @@ const athletes = [
   {
     firstName: "Jai",
     lastName: "Tost",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "R",
     weight: 247,
-    birthDate: new Date("1977-09-26"),
-    phone: "250-752-3363",
     email: "JaiTost@armyspy.com",
     notes:
       "has the jazz hands to catch and throw a football at the same time, but scouts say too-strong of arms could be an issue",
@@ -350,11 +299,9 @@ const athletes = [
   {
     firstName: "Gülbahar",
     lastName: "Woudsma",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "R",
     weight: 109,
-    birthDate: new Date("1985-11-03"),
-    phone: "306-686-0173",
     email: "GulbaharWoudsma@rhyta.com",
     notes:
       "has the instincts to break a lineman in half, but scouts say manual retweeting could be an issue",
@@ -364,11 +311,9 @@ const athletes = [
   {
     firstName: "Douglas Rocha",
     lastName: "Melo",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "R",
     weight: 211,
-    birthDate: new Date("1991-10-10"),
-    phone: "613-636-9723",
     email: "DouglasRochaMelo@armyspy.com",
     notes:
       "has the pocket presence to break a lineman in half, but scouts say history of ham theft could be an issue",
@@ -378,11 +323,9 @@ const athletes = [
   {
     firstName: "Yunus",
     lastName: "Vizirov",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "R",
     weight: 168,
-    birthDate: new Date("1994-08-03"),
-    phone: "519-615-8219",
     email: "YunusVizirov@rhyta.com",
     notes:
       "has the oily hands to tackle a llama, but scouts say secret Gritty phobia could be an issue",
@@ -392,11 +335,9 @@ const athletes = [
   {
     firstName: "Cong",
     lastName: "Tao",
-    gender: "M",
+    eligibility: "M",
     paddleSide: "R",
     weight: 162,
-    birthDate: new Date("1995-05-19"),
-    phone: "403-877-1121",
     email: "CongTao@teleworm.us",
     notes:
       "has the length to sniff a pig a farm away, but scouts say anxiety over things that will never actually happen could be an issue",
@@ -406,11 +347,9 @@ const athletes = [
   {
     firstName: "Laerke",
     lastName: "Schou",
-    gender: "F",
+    eligibility: "F",
     paddleSide: "R",
     weight: 223,
-    birthDate: new Date("1985-07-07"),
-    phone: "250-290-8366",
     email: "LaerkeMSchou@dayrep.com",
     notes:
       "has the weight room dedication to line up anywhere, but scouts say Twitter etiquette could be an issue",
@@ -420,18 +359,3 @@ const athletes = [
 ];
 
 export default athletes;
-
-// model Athlete {
-//     id          String              @id @default(uuid())
-//     firstName   String              @db.VarChar(255)
-//     lastName    String              @db.VarChar(255)
-//     paddleSide  String              @db.VarChar(255)
-//     weight      String              @db.VarChar(255)
-//     phone       String              @db.VarChar(255)
-//     email       String              @unique @db.VarChar(255)
-//     notes     String              @db.MediumText
-//     isAvailable Boolean
-//     isManager   Boolean
-//     Teams       AthletesInTeams[]
-//     Lineups     AthletesInLineups[]
-//   }

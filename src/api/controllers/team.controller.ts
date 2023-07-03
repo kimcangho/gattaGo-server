@@ -27,14 +27,14 @@ const getAllTeams = async (_req: Request, res: Response) => {
 };
 
 const createTeam = async (req: Request, res: Response) => {
-  const { name, division, level, gender } = req.body;
+  const { name, division, level, eligibility } = req.body;
 
   await team.create({
     data: {
       name,
       division,
       level,
-      gender,
+      eligibility,
     },
   });
 
@@ -55,11 +55,11 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
 
 const updateSingleTeamByID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  const { name, division, level, gender } = req.body;
+  const { name, division, level, eligibility } = req.body;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
-  if (!name || !division || !level || !gender)
+  if (!name || !division || !level || !eligibility)
     return res.status(404).send({
-      msg: `Please include name, division, level and gender!`,
+      msg: `Please include name, division, level and eligibility!`,
     });
 
   const checkedTeam = await checkForTeam(teamId);
@@ -73,7 +73,7 @@ const updateSingleTeamByID = async (req: Request, res: Response) => {
       name,
       division,
       level,
-      gender,
+      eligibility,
     },
   });
 

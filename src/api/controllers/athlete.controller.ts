@@ -7,19 +7,22 @@ const { athlete, athletesInLineups, athletesInTeams } = new PrismaClient();
 
 //  No Athlete ID
 
+//  To-do: refactor posting New Athlete
 const postNewAthlete = async (req: Request, res: Response) => {
   const {
+    email,
     firstName,
     lastName,
-    gender,
+    eligibility,
     paddleSide,
     weight,
-    birthDate,
-    phone,
-    email,
     notes,
-  } = req.body;
+    paddlerStatsObj,
+  }: any = req.body;
 
+  console.log(paddlerStatsObj);
+
+  console.log("checking for duplicate email...");
   const checkedEmail = await athlete.findUnique({
     where: {
       email,
@@ -30,23 +33,24 @@ const postNewAthlete = async (req: Request, res: Response) => {
       .status(404)
       .send({ msg: `Athlete with email ${email} already exists!` });
 
-  const postedAthlete = await athlete.create({
+  await athlete.create({
     data: {
+      email,
       firstName,
       lastName,
-      gender,
+      eligibility,
       paddleSide,
       weight,
-      birthDate: new Date(birthDate),
-      phone,
-      email,
       notes,
-      isAvailable: false,
+      isAvailable: true,
       isManager: false,
+      paddlerStats: paddlerStatsObj
     },
   });
 
-  res.status(201).send(`New athlete ${postedAthlete.id} created!`);
+  return res.status(200).send("Ok for now...");
+
+  // res.status(201).send(`New athlete ${postedAthlete.id} created!`);
 };
 
 //  Athlete ID
@@ -67,17 +71,8 @@ const getAthleteByID = async (req: Request, res: Response) => {
 
 const updateAthleteByID = async (req: Request, res: Response) => {
   const { athleteId } = req.params;
-  const {
-    firstName,
-    lastName,
-    gender,
-    paddleSide,
-    weight,
-    birthDate,
-    phone,
-    email,
-    notes,
-  } = req.body;
+  const { email, firstName, lastName, eligibility, paddleSide, weight, notes } =
+    req.body;
   if (!athleteId)
     return res.status(404).send({ msg: `Please include athleteId!` });
 
@@ -92,14 +87,12 @@ const updateAthleteByID = async (req: Request, res: Response) => {
       id: athleteId,
     },
     data: {
+      email,
       firstName,
       lastName,
-      gender,
+      eligibility,
       paddleSide,
       weight,
-      birthDate: new Date(birthDate),
-      phone,
-      email,
       notes,
     },
   });

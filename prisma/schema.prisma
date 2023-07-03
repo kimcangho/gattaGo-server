@@ -19,8 +19,8 @@ model User {
 }
 
 model PasswordReset {
-  id String @id @default(uuid())
-  email String @unique @db.VarChar(255)
+  id        String   @id @default(uuid())
+  email     String   @unique @db.VarChar(255)
   expiresAt DateTime
 }
 
@@ -50,7 +50,7 @@ model Event {
   distance        String          @db.VarChar(255)
   division        String          @db.VarChar(255)
   level           String          @db.VarChar(255)
-  gender          String          @db.VarChar(255)
+  eligibility     String          @db.VarChar(255)
   boatSize        String          @db.VarChar(255)
   progressionType String          @db.VarChar(255)
   startTime       DateTime
@@ -66,15 +66,15 @@ model Event {
 }
 
 model Team {
-  id       String            @id @default(uuid())
-  name     String            @db.VarChar(255)
-  division String            @db.VarChar(255)
-  level    String            @db.VarChar(255)
-  gender   String            @db.VarChar(255)
-  lineups  Lineup[]
-  athletes AthletesInTeams[]
-  events   TeamsInEvents[]
-  regattas TeamsInRegattas[]
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(255)
+  division    String            @db.VarChar(255)
+  level       String            @db.VarChar(255)
+  eligibility String            @db.VarChar(255)
+  lineups     Lineup[]
+  athletes    AthletesInTeams[]
+  events      TeamsInEvents[]
+  regattas    TeamsInRegattas[]
 
   @@map(name: "team")
 }
@@ -93,16 +93,14 @@ model Athlete {
   id           String              @id @default(uuid())
   firstName    String              @db.VarChar(255)
   lastName     String              @db.VarChar(255)
-  gender       String              @db.VarChar(255)
+  eligibility  String              @db.VarChar(255)
   paddleSide   String              @db.VarChar(255)
-  weight       Int
-  birthDate    DateTime
-  phone        String              @db.VarChar(255)
+  weight       Int?
   email        String              @unique @db.VarChar(255)
   notes        String              @db.MediumText
   isAvailable  Boolean
   isManager    Boolean
-  paddlerStats PaddlerStats?
+  paddlerStats PaddlerStats[]
   teams        AthletesInTeams[]
   lineups      AthletesInLineups[]
 
@@ -110,16 +108,32 @@ model Athlete {
 }
 
 model PaddlerStats {
-  id           String   @id @default(uuid())
-  athlete      Athlete  @relation(fields: [athleteId], references: [id])
-  athleteId    String   @unique
-  paddledSince DateTime
-  isDrummer    Boolean
-  isSteers     Boolean
-  isSprinter   Boolean
-  isMarathoner Boolean
-  isLeader     Boolean
-  isStroker    Boolean
+  id                      String  @id @default(uuid())
+  athlete                 Athlete @relation(fields: [athleteId], references: [id])
+  athleteId               String  @unique
+  isSteers                Boolean
+  isDrummer               Boolean
+  isStroker               Boolean
+  isCaller                Boolean
+  isBailer                Boolean
+  is200m                  Boolean
+  is500m                  Boolean
+  is1000m                 Boolean
+  is2000m                 Boolean
+  isVeteran               Boolean
+  isSteadyTempo           Boolean
+  isVocal                 Boolean
+  isTechnicallyProficient Boolean
+  isLeader                Boolean
+  isNewbie                Boolean
+  isRushing               Boolean
+  isLagging               Boolean
+  isTechnicallyPoor       Boolean
+  isInjuryProne           Boolean
+  isLoadManaged           Boolean
+  isPacer                 Boolean
+  isEngine                Boolean
+  isRocket                Boolean
 
   @@map(name: "paddlerStats")
 }

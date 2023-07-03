@@ -17,7 +17,7 @@ CREATE TABLE `Event` (
     `distance` VARCHAR(255) NOT NULL,
     `division` VARCHAR(255) NOT NULL,
     `level` VARCHAR(255) NOT NULL,
-    `gender` VARCHAR(255) NOT NULL,
+    `eligibility` VARCHAR(255) NOT NULL,
     `boatSize` VARCHAR(255) NOT NULL,
     `progressionType` VARCHAR(255) NOT NULL,
     `startTime` DATETIME(3) NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE `Team` (
     `name` VARCHAR(255) NOT NULL,
     `division` VARCHAR(255) NOT NULL,
     `level` VARCHAR(255) NOT NULL,
-    `gender` VARCHAR(255) NOT NULL,
+    `eligibility` VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
