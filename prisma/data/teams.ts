@@ -74,15 +74,3 @@ const teams = [
 ];
 
 export default teams;
-
-// model Team {
-//     id       String            @id @default(uuid())
-//     name     String            @db.VarChar(255)
-//     division String            @db.VarChar(255)
-//     level    String            @db.VarChar(255)
-//     eligibility   String            @db.VarChar(255)
-//     Lineups  Lineup[]
-//     Athletes AthletesInTeams[]
-//     Events   TeamsInEvents[]
-//     Regattas TeamsInRegattas[]
-//   }

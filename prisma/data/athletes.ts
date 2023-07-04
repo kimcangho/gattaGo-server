@@ -2,7 +2,7 @@ const athletes = [
   {
     firstName: "Steers",
     lastName: "Coach",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "N/A",
     weight: 175,
     email: "steers.coach@gmail.com",
@@ -13,7 +13,7 @@ const athletes = [
   {
     firstName: "Drummer",
     lastName: "Mascot",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "N/A",
     weight: 100,
     email: "best.friend@gmail.com",
@@ -24,7 +24,7 @@ const athletes = [
   {
     firstName: "Douglas",
     lastName: "Mendoza",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "B",
     weight: 168,
     email: "douglasdmendoza@armyspy.com",
@@ -36,7 +36,7 @@ const athletes = [
   {
     firstName: "Na",
     lastName: "Kuo",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "B",
     weight: 125,
     email: "NaKuo@teleworm.us",
@@ -48,7 +48,7 @@ const athletes = [
   {
     firstName: "Jakub",
     lastName: "Zahradnik",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "B",
     weight: 168,
     email: "JakubZahradnik@teleworm.us",
@@ -60,7 +60,7 @@ const athletes = [
   {
     firstName: "Holly",
     lastName: "Lépicier",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "B",
     weight: 220,
     email: "HollyLepicier@rhyta.com",
@@ -72,7 +72,7 @@ const athletes = [
   {
     firstName: "Sabine",
     lastName: "Kortig",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "L",
     weight: 156,
     email: "SabineKortig@armyspy.com",
@@ -84,7 +84,7 @@ const athletes = [
   {
     firstName: "Sindri",
     lastName: "Daníelsson",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "L",
     weight: 181,
     email: "SindriDanielsson@dayrep.com",
@@ -96,7 +96,7 @@ const athletes = [
   {
     firstName: "Mgbafor",
     lastName: "Chieloka",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "L",
     weight: 113,
     email: "MgbaforChieloka@dayrep.com",
@@ -108,7 +108,7 @@ const athletes = [
   {
     firstName: "Abelardo",
     lastName: "Zetticci",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "L",
     email: "VitoDavide@jourrapide.com",
     notes:
@@ -119,7 +119,7 @@ const athletes = [
   {
     firstName: "Etsuko",
     lastName: "Samurakami",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "L",
     weight: 134,
     email: "EtsukoSamurakami@rhyta.com",
@@ -131,7 +131,7 @@ const athletes = [
   {
     firstName: "Querían Aguirre",
     lastName: "Escalante",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "L",
     weight: 173,
     email: "QuerianAguirreEscalante@rhyta.com",
@@ -143,7 +143,7 @@ const athletes = [
   {
     firstName: "Lilli",
     lastName: "Bakkan",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "L",
     weight: 175,
     email: "LilliBakkan@dayrep.com",
@@ -155,7 +155,7 @@ const athletes = [
   {
     firstName: "Timothy",
     lastName: "Nevzorov",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "L",
     weight: 154,
     email: "TimothyNevzorov@teleworm.us",
@@ -167,7 +167,7 @@ const athletes = [
   {
     firstName: "Radomiła",
     lastName: "Gorska",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "L",
     weight: 183,
     email: "RadomilaGorska@teleworm.us",
@@ -179,7 +179,7 @@ const athletes = [
   {
     firstName: "Karin",
     lastName: "Bijuklič",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "L",
     weight: 134,
     email: "KarinBijuklic@jourrapide.com",
@@ -191,7 +191,7 @@ const athletes = [
   {
     firstName: "Aron",
     lastName: "Mackay",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "L",
     weight: 215,
     email: "AronMackay@dayrep.com",
@@ -203,7 +203,7 @@ const athletes = [
   {
     firstName: "Nils",
     lastName: "Palander",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "L",
     weight: 222,
     email: "NilsPalander@dayrep.com",
@@ -215,7 +215,7 @@ const athletes = [
   {
     firstName: "Mirjam",
     lastName: "Göransson",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "R",
     weight: 142,
     email: "MirjamGoransson@armyspy.com",
@@ -227,7 +227,7 @@ const athletes = [
   {
     firstName: "Emmi",
     lastName: "Ylönen",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "R",
     weight: 131,
     email: "EmmiYlonen@jourrapide.com",
@@ -239,7 +239,7 @@ const athletes = [
   {
     firstName: "Lac Ngoc",
     lastName: "Tuong",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "R",
     weight: 167,
     email: "LacNgocTuong@armyspy.com",
@@ -251,7 +251,7 @@ const athletes = [
   {
     firstName: "Jonathan",
     lastName: "Blair",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "R",
     weight: 214,
     email: "JonathanDBlair@jourrapide.com",
@@ -263,7 +263,7 @@ const athletes = [
   {
     firstName: "Isma'il",
     lastName: "Baz",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "R",
     weight: 209,
     email: "IsmailImranBaz@dayrep.com",
@@ -275,7 +275,7 @@ const athletes = [
   {
     firstName: "Tiblets",
     lastName: "Habte",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "R",
     weight: 175,
     email: "TibletsHabte@armyspy.com",
@@ -287,7 +287,7 @@ const athletes = [
   {
     firstName: "Jai",
     lastName: "Tost",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "R",
     weight: 247,
     email: "JaiTost@armyspy.com",
@@ -299,7 +299,7 @@ const athletes = [
   {
     firstName: "Gülbahar",
     lastName: "Woudsma",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "R",
     weight: 109,
     email: "GulbaharWoudsma@rhyta.com",
@@ -311,7 +311,7 @@ const athletes = [
   {
     firstName: "Douglas Rocha",
     lastName: "Melo",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "R",
     weight: 211,
     email: "DouglasRochaMelo@armyspy.com",
@@ -323,7 +323,7 @@ const athletes = [
   {
     firstName: "Yunus",
     lastName: "Vizirov",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "R",
     weight: 168,
     email: "YunusVizirov@rhyta.com",
@@ -335,7 +335,7 @@ const athletes = [
   {
     firstName: "Cong",
     lastName: "Tao",
-    eligibility: "M",
+    eligibility: "O",
     paddleSide: "R",
     weight: 162,
     email: "CongTao@teleworm.us",
@@ -347,7 +347,7 @@ const athletes = [
   {
     firstName: "Laerke",
     lastName: "Schou",
-    eligibility: "F",
+    eligibility: "W",
     paddleSide: "R",
     weight: 223,
     email: "LaerkeMSchou@dayrep.com",
