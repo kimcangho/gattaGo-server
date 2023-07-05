@@ -90,24 +90,24 @@ model Lineup {
 }
 
 model Athlete {
-  id           String              @id @default(uuid())
-  firstName    String              @db.VarChar(255)
-  lastName     String              @db.VarChar(255)
-  eligibility  String              @db.VarChar(255)
-  paddleSide   String              @db.VarChar(255)
-  weight       Int?
-  email        String              @unique @db.VarChar(255)
-  notes        String              @db.MediumText
-  isAvailable  Boolean
-  isManager    Boolean
-  paddlerStats PaddlerStats[]
-  teams        AthletesInTeams[]
-  lineups      AthletesInLineups[]
+  id            String              @id @default(uuid())
+  firstName     String              @db.VarChar(255)
+  lastName      String              @db.VarChar(255)
+  eligibility   String              @db.VarChar(255)
+  paddleSide    String              @db.VarChar(255)
+  weight        Int?
+  email         String              @unique @db.VarChar(255)
+  notes         String              @db.MediumText
+  isAvailable   Boolean
+  isManager     Boolean
+  paddlerSkills PaddlerSkills[]
+  teams         AthletesInTeams[]
+  lineups       AthletesInLineups[]
 
   @@map(name: "athlete")
 }
 
-model PaddlerStats {
+model PaddlerSkills {
   id                      String  @id @default(uuid())
   athlete                 Athlete @relation(fields: [athleteId], references: [id])
   athleteId               String  @unique
@@ -135,7 +135,7 @@ model PaddlerStats {
   isEngine                Boolean
   isRocket                Boolean
 
-  @@map(name: "paddlerStats")
+  @@map(name: "paddlerSkills")
 }
 
 model TeamsInRegattas {

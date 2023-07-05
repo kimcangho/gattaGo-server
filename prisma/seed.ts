@@ -3,6 +3,7 @@ import events from "./data/events";
 import teams from "./data/teams";
 import lineups from "./data/lineups";
 import athletes from "./data/athletes";
+import skills from "./data/skills";
 import users from "./data/users";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
@@ -136,8 +137,14 @@ const seedTeamsInEvents = async () => {
 
 const seedAthletes = async () => {
   for (let athleteUnit of athletes) {
-    await prisma.athlete.create({
+    const { id } = await prisma.athlete.create({
       data: athleteUnit,
+    });
+
+    const athleteSkills = { ...skills, athleteId: id };
+
+    await prisma.paddlerSkills.create({
+      data: athleteSkills,
     });
   }
 };

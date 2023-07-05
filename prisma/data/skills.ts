@@ -1,0 +1,27 @@
+const skills = {
+    isSteers: false,
+    isDrummer: false,
+    isStroker: false,
+    isCaller: false,
+    isBailer: false,
+    isPacer: false,
+    isEngine: false,
+    isRocket: false,
+    is200m: false,
+    is500m: false,
+    is1000m: false,
+    is2000m: false,
+    isVeteran: false,
+    isSteadyTempo: false,
+    isVocal: false,
+    isTechnicallyProficient: false,
+    isLeader: false,
+    isNewbie: false,
+    isRushing: false,
+    isLagging: false,
+    isTechnicallyPoor: false,
+    isInjuryProne: false,
+    isLoadManaged: false,
+  };
+
+  export default skills;

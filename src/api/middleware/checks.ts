@@ -48,6 +48,9 @@ const checkForAthlete = async (id: string) => {
     where: {
       id,
     },
+    include: {
+      paddlerSkills: true,
+    },
   });
   return foundAthlete;
 };

@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { checkForAthlete } from "../middleware/checks";
-const { athlete, athletesInLineups, athletesInTeams } = new PrismaClient();
+const { athlete, athletesInLineups, athletesInTeams, paddlerSkills } =
+  new PrismaClient();
 
 //  *** Athlete Requests ***
 
@@ -10,6 +11,7 @@ const { athlete, athletesInLineups, athletesInTeams } = new PrismaClient();
 //  To-do: refactor posting New Athlete
 const postNewAthlete = async (req: Request, res: Response) => {
   const {
+    teamId,
     email,
     firstName,
     lastName,
@@ -17,12 +19,9 @@ const postNewAthlete = async (req: Request, res: Response) => {
     paddleSide,
     weight,
     notes,
-    paddlerStatsObj,
-  }: any = req.body;
+    paddlerSkillsObj,
+  } = req.body;
 
-  console.log(paddlerStatsObj);
-
-  console.log("checking for duplicate email...");
   const checkedEmail = await athlete.findUnique({
     where: {
       email,
@@ -33,7 +32,7 @@ const postNewAthlete = async (req: Request, res: Response) => {
       .status(404)
       .send({ msg: `Athlete with email ${email} already exists!` });
 
-  await athlete.create({
+  const { id } = await athlete.create({
     data: {
       email,
       firstName,
@@ -44,13 +43,20 @@ const postNewAthlete = async (req: Request, res: Response) => {
       notes,
       isAvailable: true,
       isManager: false,
-      paddlerStats: paddlerStatsObj
+      paddlerSkills: {
+        create: paddlerSkillsObj,
+      },
     },
   });
 
-  return res.status(200).send("Ok for now...");
+  await athletesInTeams.create({
+    data: {
+      teamId: teamId,
+      athleteId: id,
+    },
+  });
 
-  // res.status(201).send(`New athlete ${postedAthlete.id} created!`);
+  res.status(201).send(`New athlete ${id} created!`);
 };
 
 //  Athlete ID
@@ -102,6 +108,7 @@ const updateAthleteByID = async (req: Request, res: Response) => {
 
 const deleteAthleteByID = async (req: Request, res: Response) => {
   const { athleteId } = req.params;
+  console.log(athleteId);
   if (!athleteId)
     return res.status(404).send({ msg: `Please include athleteId!` });
 
@@ -123,10 +130,19 @@ const deleteAthleteByID = async (req: Request, res: Response) => {
     },
   });
 
+  // if (checkedAthlete.paddlerSkills) {
+    await paddlerSkills.delete({
+      where: {
+        athleteId,
+      },
+    });
+  // }
+
   await athlete.delete({
     where: {
       id: athleteId,
     },
+    include: { paddlerSkills: true },
   });
 
   res.status(204).send({ msg: `Athlete ${athleteId} successfully deleted!` });
