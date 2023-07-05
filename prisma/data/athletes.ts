@@ -111,6 +111,7 @@ const athletes = [
     eligibility: "O",
     paddleSide: "L",
     email: "VitoDavide@jourrapide.com",
+    weight: 190,
     notes:
       "has the freak athleticism to wear those tight pants, but scouts say admiration of Billy McFarland could be an issue",
     isAvailable: true,
