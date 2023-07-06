@@ -77,8 +77,16 @@ const getAthleteByID = async (req: Request, res: Response) => {
 
 const updateAthleteByID = async (req: Request, res: Response) => {
   const { athleteId } = req.params;
-  const { email, firstName, lastName, eligibility, paddleSide, weight, notes } =
-    req.body;
+  const {
+    email,
+    firstName,
+    lastName,
+    eligibility,
+    paddleSide,
+    weight,
+    notes,
+    paddlerSkillsObj,
+  } = req.body;
   if (!athleteId)
     return res.status(404).send({ msg: `Please include athleteId!` });
 
@@ -88,20 +96,34 @@ const updateAthleteByID = async (req: Request, res: Response) => {
       .status(404)
       .send({ msg: `Athlete with email ${athleteId} not found!` });
 
-  await athlete.update({
-    where: {
-      id: athleteId,
-    },
-    data: {
-      email,
-      firstName,
-      lastName,
-      eligibility,
-      paddleSide,
-      weight,
-      notes,
-    },
-  });
+  try {
+    await athlete.update({
+      where: {
+        id: athleteId,
+      },
+      data: {
+        email,
+        firstName,
+        lastName,
+        eligibility,
+        paddleSide,
+        weight,
+        notes,
+        isAvailable: true,
+        isManager: false,
+        paddlerSkills: {
+          update: {
+            where: {
+              athleteId,
+            },
+            data: paddlerSkillsObj,
+          },
+        },
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
 
   res.status(200).send({ msg: `Athlete ${athleteId} successfully updated!` });
 };
@@ -131,11 +153,11 @@ const deleteAthleteByID = async (req: Request, res: Response) => {
   });
 
   // if (checkedAthlete.paddlerSkills) {
-    await paddlerSkills.delete({
-      where: {
-        athleteId,
-      },
-    });
+  await paddlerSkills.delete({
+    where: {
+      athleteId,
+    },
+  });
   // }
 
   await athlete.delete({
