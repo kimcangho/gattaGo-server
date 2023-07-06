@@ -152,13 +152,11 @@ const deleteAthleteByID = async (req: Request, res: Response) => {
     },
   });
 
-  // if (checkedAthlete.paddlerSkills) {
   await paddlerSkills.delete({
     where: {
       athleteId,
     },
   });
-  // }
 
   await athlete.delete({
     where: {
