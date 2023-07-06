@@ -20,7 +20,11 @@ const {
 //  No team ID
 
 const getAllTeams = async (_req: Request, res: Response) => {
-  const foundTeams = await team.findMany();
+  const foundTeams = await team.findMany({
+    orderBy: {
+      createdAt: 'asc'
+    }
+  });
 
   if (foundTeams) return res.status(200).send(foundTeams);
   res.status(404).send({ msg: "No teams found" });
@@ -49,6 +53,8 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
+
+  console.log(checkedTeam);
 
   res.status(200).send(checkedTeam);
 };
@@ -209,6 +215,9 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
   const foundTeamAthletes = await athletesInTeams.findMany({
     where: {
       teamId,
+    },
+    orderBy: {
+      updatedAt: "asc",
     },
   });
   if (foundTeamAthletes.length === 0)

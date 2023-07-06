@@ -71,6 +71,7 @@ model Team {
   division    String            @db.VarChar(255)
   level       String            @db.VarChar(255)
   eligibility String            @db.VarChar(255)
+  createdAt   DateTime          @default(now())
   lineups     Lineup[]
   athletes    AthletesInTeams[]
   events      TeamsInEvents[]
@@ -100,6 +101,7 @@ model Athlete {
   notes         String              @db.MediumText
   isAvailable   Boolean
   isManager     Boolean
+  createdAt     DateTime            @default(now())
   paddlerSkills PaddlerSkills[]
   teams         AthletesInTeams[]
   lineups       AthletesInLineups[]
