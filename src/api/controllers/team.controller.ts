@@ -22,8 +22,8 @@ const {
 const getAllTeams = async (_req: Request, res: Response) => {
   const foundTeams = await team.findMany({
     orderBy: {
-      createdAt: 'asc'
-    }
+      createdAt: "asc",
+    },
   });
 
   if (foundTeams) return res.status(200).send(foundTeams);
@@ -216,6 +216,7 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
     where: {
       teamId,
     },
+    include: { athlete: { include: { paddlerSkills: true } } },
     orderBy: {
       updatedAt: "asc",
     },
