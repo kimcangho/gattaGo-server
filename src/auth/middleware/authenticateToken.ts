@@ -6,7 +6,7 @@ interface tokenRequest extends Request {
 }
 
 const authenticateToken = (
-  req: tokenRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -22,7 +22,7 @@ const authenticateToken = (
   console.log('Refresh Token: ', refreshToken);
 
   try {
-    req.user = emailHeader; //  adds user to request object
+    // req.user = emailHeader; //  adds user to request object
     verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET!);
     next();
   } catch (err) {
