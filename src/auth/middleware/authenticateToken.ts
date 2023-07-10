@@ -1,42 +1,33 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "../utils/jwt.utils";
 
+interface tokenRequest extends Request {
+  user: string | string[] | undefined;
+}
 
-const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+const authenticateToken = (
+  req: tokenRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const authHeader = req.headers["authorization"];
   if (!authHeader) return res.status(401).send("Not authorized!");
-  const accessToken = authHeader.split(" ")[1];
+  const accessToken: string = authHeader.split(" ")[1];
+  if (!accessToken) return res.status(401).send("Token not found!");
 
-  console.log(req.headers["user"]);
-
-  const emailHeader: any = req.headers["email"];
-  console.log(emailHeader);
+  const emailHeader: string | string[] | undefined = req.headers["email"];
+  console.log('Email Header: ', emailHeader);
 
   const { refreshToken } = req.cookies;
-  console.log(refreshToken);
+  console.log('Refresh Token: ', refreshToken);
 
-  // const {accessToken} = req.body   //  Testing for reissuing refresh token
-
-  //  To-do: refactor token verification
-  // try {
-  //   verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET!);
-  // } catch {
-  //   return res.status(403).send("Forbidden, invalid token!");
-  // }
-
-  jwt.verify(
-    accessToken,
-    process.env.ACCESS_TOKEN_SECRET!,
-    async (
-      err: jwt.VerifyErrors | null,
-      decoded: string | jwt.JwtPayload | undefined
-    ) => {
-      if (err) {
-        return res.status(403).send("Forbidden, invalid token!");
-      }
-      next();
-    }
-  );
+  try {
+    req.user = emailHeader; //  adds user to request object
+    verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET!);
+    next();
+  } catch (err) {
+    res.status(403).send("Invalid/expired access token")
+  }
 };
 
 export default authenticateToken;

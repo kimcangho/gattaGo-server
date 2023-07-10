@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { generateToken, verifyToken } from "../utils/jwt.utils";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import { compareHash } from "../utils/bcrypt.utils";
 import { findRefreshToken } from "../services/token.services";
 
@@ -18,27 +18,27 @@ const issueToken = async (req: Request, res: Response) => {
 
   //  To-do: refactor jwt verification functions
 
-  // try {
-  //   verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
-  // } catch (err) {
-  //   return res.status(401).send("Catch error on JWT verify");
-  // }
+  try {
+    verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
+  } catch (err) {
+    return res.status(401).send("Catch error on JWT verify");
+  }
 
-  jwt.verify(
-    refreshToken,
-    process.env.REFRESH_TOKEN_SECRET!,
-    (
-      err: jwt.VerifyErrors | null,
-      decoded: string | jwt.JwtPayload | undefined
-    ) => {
-      if (err) return res.status(403).send("Cannot verify token!");
-      // const accessToekn = jwt.sign(
-      //   { email: decoded!.email },
-      //   process.env.ACCESS_TOKEN_SECRET!,
-      //   { expiresIn: "30s" }
-      // );
-    }
-  );
+  // jwt.verify(
+  //   refreshToken,
+  //   process.env.REFRESH_TOKEN_SECRET!,
+  //   (
+  //     err: jwt.VerifyErrors | null,
+  //     decoded: string | jwt.JwtPayload | undefined
+  //   ) => {
+  //     if (err) return res.status(403).send("Cannot verify token!");
+  //     // const accessToken = jwt.sign(
+  //     //   { email: decoded!.email },
+  //     //   process.env.ACCESS_TOKEN_SECRET!,
+  //     //   { expiresIn: "30s" }
+  //     // );
+  //   }
+  // );
 
   const accessToken = await generateToken(
     email,
