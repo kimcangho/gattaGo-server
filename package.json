@@ -10,7 +10,8 @@
     "authDev": "nodemon dist/auth.js & tsc -w",
     "migrate": "npx prisma migrate dev --name init",
     "seed": "npx prisma db seed",
-    "reseed": "npx prisma migrate reset"
+    "reseed": "npx prisma migrate reset",
+    "studio": "npx prisma studio"
   },
   "keywords": [],
   "prisma": {
