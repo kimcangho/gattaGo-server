@@ -9,6 +9,7 @@ import loginRouter from "./auth/routes/login.route";
 import tokenRouter from "./auth/routes/token.route";
 import logoutRouter from "./auth/routes/logout.route";
 import resetRouter from "./auth/routes/reset.route";
+import refreshRouter from "./auth/routes/refresh.route";
 import reissueRouter from "./auth/routes/reissue.route";
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/login", loginRouter);       //  login user
 app.use("/reset", resetRouter);       //  reset password
 app.use("/logout", logoutRouter);     //  logout user
 app.use("/token", tokenRouter);       //  issue tokens
+app.use("/refresh", refreshRouter);   //  reissue access token
 app.use("/reissue", reissueRouter);   //  reissue access token
 
 app.get("/", (_req: Request, res: Response) => {
