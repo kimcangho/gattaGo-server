@@ -11,7 +11,6 @@ const { regatta, teamsInRegattas, teamsInEvents, event } = new PrismaClient();
 //  *** Regatta Requests ***
 
 const getRegattas = async (_req: Request, res: Response) => {
-  console.log(Date.now())
   const regattas = await regatta.findMany();
   return res.status(200).send(regattas);
 };

@@ -51,7 +51,6 @@ const resetPassword = async (req: Request, res: Response) => {
       resetCode
     );
   } catch {
-    console.log("Can't send reset code!");
     return res.status(400).send("Cannot send reset code!");
   }
 

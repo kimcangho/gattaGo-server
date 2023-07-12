@@ -130,7 +130,6 @@ const updateAthleteByID = async (req: Request, res: Response) => {
 
 const deleteAthleteByID = async (req: Request, res: Response) => {
   const { athleteId } = req.params;
-  console.log(athleteId);
   if (!athleteId)
     return res.status(404).send({ msg: `Please include athleteId!` });
 

@@ -54,8 +54,6 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  console.log(checkedTeam);
-
   res.status(200).send(checkedTeam);
 };
 
@@ -346,8 +344,6 @@ const postNewTeamLineup = async (req: Request, res: Response) => {
   });
 
   for (let athleteUnit of athletes) {
-    console.log(athleteUnit);
-
     await athletesInLineups.create({
       data: {
         lineupId: newLineup.id,
