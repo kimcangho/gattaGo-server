@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { compareHash, hashEntity } from "../utils/bcrypt.utils";
-import { generateToken } from "../utils/jwt.utils";
+import { compareHash } from "../utils/bcrypt.utils";
 import {
   findUser,
   deleteRefreshToken,
   addRefreshToken,
   findPassword,
 } from "../services/login.services";
+import jwt from "jsonwebtoken";
 import { findRefreshToken } from "../services/login.services";
 
 const loginUser = async (req: Request, res: Response) => {
@@ -23,30 +23,18 @@ const loginUser = async (req: Request, res: Response) => {
   if (!(await compareHash(password, foundHashedPassword)))
     return res.status(401).send("Password does not match!");
 
-  const accessToken = await generateToken(
-    email,
-    process.env.ACCESS_TOKEN_SECRET!,
-    10
-  );
-
-  const refreshToken = await generateToken(
-    email,
-    process.env.REFRESH_TOKEN_SECRET!,
-    30
-  );
-
-  console.log(refreshToken)
-  
-  await deleteRefreshToken(email);
-  const hashedRefreshToken = await hashEntity(refreshToken);
-  await addRefreshToken(hashedRefreshToken, email);
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    maxAge: 6000000,
+  const refreshToken = jwt.sign({ email }, process.env.REFRESH_TOKEN_SECRET!, {
+    expiresIn: `1d`,
   });
 
-  res.cookie("email", email, {
+  const accessToken = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET!, {
+    expiresIn: `5s`,
+  });
+
+  await deleteRefreshToken(email);
+  await addRefreshToken(refreshToken, email);
+
+  res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     maxAge: 6000000,
   });

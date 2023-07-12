@@ -208,10 +208,6 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
-  const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam)
-    return res.status(404).send({ msg: `Team ${teamId} not found!` });
-
   const foundTeamAthletes = await athletesInTeams.findMany({
     where: {
       teamId,
@@ -221,8 +217,6 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
       updatedAt: "asc",
     },
   });
-  if (foundTeamAthletes.length === 0)
-    return res.status(404).send({ msg: `No athletes in team ${teamId}!` });
 
   res.status(200).send(foundTeamAthletes);
 };
@@ -230,10 +224,6 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
 const deleteAllAthletesByTeamID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
-
-  const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam)
-    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   await athletesInTeams.deleteMany({
     where: {
@@ -319,10 +309,6 @@ const getAllTeamLineups = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
 
-  const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam)
-    return res.status(404).send({ msg: `Team ${teamId} not found!` });
-
   const foundTeamLineups = await team.findUnique({
     where: {
       id: teamId,
@@ -377,10 +363,6 @@ const postNewTeamLineup = async (req: Request, res: Response) => {
 const deleteAllTeamLineups = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
-
-  const checkedTeam = await checkForTeam(teamId);
-  if (!checkedTeam)
-    return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const foundLineupIDs = await lineup.findMany({
     where: {

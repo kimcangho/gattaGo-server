@@ -21,7 +21,6 @@ const getUserEmail = async (req: Request, res: Response) => {
   const { resetCodeId } = req.params;
   if (!resetCodeId) return res.status(400).send("No reset code sent!");
 
-  //  Find corresponding email in user schema
   try {
     const foundEmail = await findMatchingUserWithResetCode(resetCodeId);
     return res.status(200).send({ foundEmail });

@@ -12,9 +12,7 @@ const registerUser = async (req: Request, res: Response) => {
   }
 
   const hashedPassword = await hashEntity(password);
-
   await createUser(email, hashedPassword);
-
   res.status(200).send(`Successfully registered user with email ${email}!`);
 };
 
