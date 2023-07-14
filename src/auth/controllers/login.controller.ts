@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { compareHash } from "../utils/bcrypt.utils";
 import {
   findUser,
-  deleteRefreshToken,
   addRefreshToken,
   findPassword,
 } from "../services/login.services";
@@ -31,11 +30,11 @@ const loginUser = async (req: Request, res: Response) => {
     expiresIn: `5s`,
   });
 
-  await deleteRefreshToken(email);
   await addRefreshToken(refreshToken, email);
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
+    secure: true,
     maxAge: 6000000,
   });
 

@@ -2,11 +2,13 @@ import { PrismaClient } from "@prisma/client";
 const { user, authRefreshToken } = new PrismaClient();
 
 const findRefreshToken = async (email: string) => {
-  return await authRefreshToken.findUnique({
+  const foundToken = await authRefreshToken.findUnique({
     where: {
       email,
     },
   });
+  console.log(foundToken);
+  return foundToken;
 };
 
 const findUser = async (email: string) => {
@@ -15,6 +17,7 @@ const findUser = async (email: string) => {
       email,
     },
   });
+  console.log("foundUser:", foundUser);
   return foundUser?.email;
 };
 
