@@ -17,7 +17,6 @@ const findUser = async (email: string) => {
       email,
     },
   });
-  console.log("foundUser:", foundUser);
   return foundUser?.email;
 };
 
