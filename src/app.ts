@@ -20,7 +20,7 @@ app.get("/", (_req: Request, res: Response) => {
   res.send(`Paddles up! gattaGo is taking it away on PORT ${PORT}! 🚣🏼`);
 });
 
-app.use(authenticateToken);
+// app.use(authenticateToken);
 app.use("/regattas", regatta);
 app.use("/teams", team);
 app.use("/athletes", athlete);

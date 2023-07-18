@@ -312,15 +312,19 @@ const getAllTeamLineups = async (req: Request, res: Response) => {
       id: teamId,
     },
     include: {
-      lineups: {
-        include: {
-          athletes: {
-            orderBy: {
-              position: "asc",
+      lineups:
+        {
+          include: {
+            athletes: {
+              include: {
+                athlete: true,
+              },
+              orderBy: {
+                position: "asc",
+              },
             },
           },
         },
-      },
     },
   });
 
