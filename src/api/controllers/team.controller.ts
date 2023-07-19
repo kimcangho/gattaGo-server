@@ -312,19 +312,7 @@ const getAllTeamLineups = async (req: Request, res: Response) => {
       id: teamId,
     },
     include: {
-      lineups:
-        {
-          include: {
-            athletes: {
-              include: {
-                athlete: true,
-              },
-              orderBy: {
-                position: "asc",
-              },
-            },
-          },
-        },
+      lineups: true,
     },
   });
 
@@ -418,6 +406,9 @@ const getSingleTeamLineup = async (req: Request, res: Response) => {
         },
         include: {
           athletes: {
+            include: {
+              athlete: true,
+            },
             orderBy: {
               position: "asc",
             },
