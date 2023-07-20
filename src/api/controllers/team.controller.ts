@@ -464,10 +464,11 @@ const updateSingleLineup = async (req: Request, res: Response) => {
 };
 
 const deleteSingleLineup = async (req: Request, res: Response) => {
-  const { teamId, lineupId } = req.body;
+  const { teamId, lineupId } = req.params;
+  
   if (!teamId || !lineupId)
-    return res.status(404).send({ msg: `Please include teamid!` });
-
+  return res.status(404).send({ msg: `Please include teamid!` });
+  
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
