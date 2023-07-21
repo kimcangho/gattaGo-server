@@ -83,6 +83,7 @@ const updateAthleteByID = async (req: Request, res: Response) => {
     firstName,
     lastName,
     eligibility,
+    isAvailable,
     paddleSide,
     weight,
     notes,
@@ -110,7 +111,7 @@ const updateAthleteByID = async (req: Request, res: Response) => {
         paddleSide,
         weight,
         notes,
-        isAvailable: true,
+        isAvailable,
         isManager: false,
         paddlerSkills: {
           update: {
