@@ -316,6 +316,7 @@ const getAllTeamLineups = async (req: Request, res: Response) => {
     },
   });
 
+  console.log(foundTeamLineups)
   res.status(200).send(foundTeamLineups);
 };
 
@@ -334,18 +335,20 @@ const postNewTeamLineup = async (req: Request, res: Response) => {
       teamId,
     },
   });
-
+  
   for (let athleteUnit of athletes) {
-    await athletesInLineups.create({
-      data: {
-        lineupId: newLineup.id,
-        athleteId: athleteUnit.id,
-        position: athleteUnit.position,
-      },
-    });
+    if (athleteUnit.id) {
+      await athletesInLineups.create({
+        data: {
+          lineupId: newLineup.id,
+          athleteId: athleteUnit?.id,
+          position: athleteUnit?.position,
+        },
+      });
+    }
   }
 
-  res.status(201).send({ msg: `New lineup ${lineup} created and populated!` });
+  res.status(201).send(newLineup);
 };
 
 const deleteAllTeamLineups = async (req: Request, res: Response) => {
@@ -465,10 +468,10 @@ const updateSingleLineup = async (req: Request, res: Response) => {
 
 const deleteSingleLineup = async (req: Request, res: Response) => {
   const { teamId, lineupId } = req.params;
-  
+
   if (!teamId || !lineupId)
-  return res.status(404).send({ msg: `Please include teamid!` });
-  
+    return res.status(404).send({ msg: `Please include teamid!` });
+
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
