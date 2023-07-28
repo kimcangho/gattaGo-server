@@ -11,6 +11,10 @@ const users = [
     email: "name@email.com",
     password: "password",
   },
+  {
+    email: "ho.kimcang@gmail.com",
+    password: "123",
+  },
 ];
 
 export default users;

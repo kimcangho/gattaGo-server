@@ -62,10 +62,98 @@ const seedTeamsInRegattas = async () => {
 
 const seedTeams = async () => {
   for (let teamUnit of teams) {
-    if (teamUnit.name === "The Dodgefathers") {
+    console.log(teamUnit)
+    if (
+      teamUnit.name === "The Dodgefathers" ||
+      teamUnit.name === "Aero Planets" ||
+      teamUnit.name === "Quicksilver Busters"
+    ) {
+      const foundUserId = await prisma.user.findFirst({
+        where: {
+          email: "ho.kimcang@gmail.com",
+        },
+        select: {
+          id: true,
+        },
+      });
+      const { id } = foundUserId!;
+
       await prisma.team.create({
         data: {
           ...teamUnit,
+          userId: id,
+          lineups: {
+            create: lineups,
+          },
+        },
+      });
+    } else if (
+      teamUnit.name === "Samurai Sonics" ||
+      teamUnit.name === "Silent Ghosts" ||
+      teamUnit.name === "The Slammers"
+    ) {
+      const foundUserId = await prisma.user.findFirst({
+        where: {
+          email: "name@email.com",
+        },
+        select: {
+          id: true,
+        },
+      });
+      const { id } = foundUserId!;
+
+      await prisma.team.create({
+        data: {
+          ...teamUnit,
+          userId: id,
+          lineups: {
+            create: lineups,
+          },
+        },
+      });
+    } else if (
+      teamUnit.name === "Lightning Chuckers" ||
+      teamUnit.name === "The True Llamas" ||
+      teamUnit.name === "Silent Stingers"
+    ) {
+      const foundUserId = await prisma.user.findFirst({
+        where: {
+          email: "test.email@gmail.com",
+        },
+        select: {
+          id: true,
+        },
+      });
+      const { id } = foundUserId!;
+
+      await prisma.team.create({
+        data: {
+          ...teamUnit,
+          userId: id,
+          lineups: {
+            create: lineups,
+          },
+        },
+      });
+    } else if (
+      teamUnit.name === "Golden Gladiators" ||
+      teamUnit.name === "The Seagulls" ||
+      teamUnit.name === "The Steel"
+    ) {
+      const foundUserId = await prisma.user.findFirst({
+        where: {
+          email: "123.fakestreet@live.com",
+        },
+        select: {
+          id: true,
+        },
+      });
+      const { id } = foundUserId!;
+
+      await prisma.team.create({
+        data: {
+          ...teamUnit,
+          userId: id,
           lineups: {
             create: lineups,
           },
@@ -398,19 +486,24 @@ const seedAthletesInLineups = async () => {
 
 //  Seed Auth Tables
 
+//  Will have to seed teams array for users as well
 const seedUsers = async () => {
   const saltRounds = 10;
   for (let userUnit of users) {
     const hashedPassword = await bcrypt.hash(userUnit.password, saltRounds);
 
     await prisma.user.create({
-      data: { email: userUnit.email, password: hashedPassword },
+      data: {
+        email: userUnit.email,
+        password: hashedPassword,
+      },
     });
   }
 };
 
 const seedDatabase = async () => {
   try {
+    await seedUsers();
     await seedRegattas();
     await seedTeams();
     await seedTeamsInRegattas();
@@ -418,7 +511,7 @@ const seedDatabase = async () => {
     await seedAthletes();
     await seedAthletesInTeams();
     await seedAthletesInLineups();
-    await seedUsers();
+    //  seed users with teams
     prisma.$disconnect;
   } catch (err) {
     console.error(err);

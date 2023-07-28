@@ -11,9 +11,10 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String @id @unique @default(uuid())
   email    String @unique @db.VarChar(255)
   password String @db.VarChar(255)
+  teams    Team[]
 
   @@map(name: "user")
 }
@@ -76,6 +77,8 @@ model Team {
   athletes    AthletesInTeams[]
   events      TeamsInEvents[]
   regattas    TeamsInRegattas[]
+  user        User?             @relation(fields: [userId], references: [id])
+  userId      String?
 
   @@map(name: "team")
 }

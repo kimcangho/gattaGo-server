@@ -30,7 +30,7 @@
     "nodemailer": "^6.9.3"
   },
   "devDependencies": {
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
@@ -40,7 +40,7 @@
     "@types/node": "^20.2.3",
     "@types/nodemailer": "^6.4.8",
     "nodemon": "^2.0.22",
-    "prisma": "^4.16.2",
+    "prisma": "^5.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   }
