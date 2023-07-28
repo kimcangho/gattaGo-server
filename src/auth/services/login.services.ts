@@ -46,10 +46,22 @@ const addRefreshToken = async (id: string, email: string) => {
   });
 };
 
+const updateRefreshToken = async (id: string, email: string) => {
+  await authRefreshToken.update({
+    where: {
+      email,
+    },
+    data: {
+      id,
+    },
+  });
+};
+
 export {
   findRefreshToken,
   findUser,
   findPassword,
   deleteRefreshToken,
   addRefreshToken,
+  updateRefreshToken
 };

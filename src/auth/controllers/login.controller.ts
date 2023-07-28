@@ -4,6 +4,7 @@ import {
   findUser,
   addRefreshToken,
   findPassword,
+  updateRefreshToken,
 } from "../services/login.services";
 import jwt from "jsonwebtoken";
 import { findRefreshToken } from "../services/login.services";
@@ -12,8 +13,8 @@ const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).send("Invalid request!");
 
+  //  Check for existing user refreshToken
   const isLoggedIn = await findRefreshToken(email);
-  if (isLoggedIn) return res.status(400).send("Already logged in!");
 
   const foundUser = await findUser(email);
   if (!foundUser) return res.status(404).send("User not found!");
@@ -33,7 +34,8 @@ const loginUser = async (req: Request, res: Response) => {
     expiresIn: `5s`,
   });
 
-  await addRefreshToken(refreshToken, email);
+  if (isLoggedIn) await updateRefreshToken(refreshToken, email);
+  else await addRefreshToken(refreshToken, email);
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
