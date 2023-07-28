@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
-  getAllTeams,
-  createTeam,
+  getAllUserTeams,
+  createUserTeam,
   getSingleTeamByID,
   updateSingleTeamByID,
   deleteSingleTeamByID,
@@ -22,11 +22,11 @@ import {
 
 const router: Router = Router();
 
-//  No Team ID
+//  User ID
 router
-  .route("/")
-  .get(getAllTeams) //  get all teams from database
-  .post(createTeam); //  create single team
+  .route("/:userId")
+  .get(getAllUserTeams) //  get all teams from database by userID
+  .post(createUserTeam); //  create single team for user with userID
 
 //  Team ID
 router

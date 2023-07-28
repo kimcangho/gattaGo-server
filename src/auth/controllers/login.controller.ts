@@ -15,9 +15,12 @@ const loginUser = async (req: Request, res: Response) => {
   const isLoggedIn = await findRefreshToken(email);
   if (isLoggedIn) return res.status(400).send("Already logged in!");
 
-  const foundEmail = await findUser(email);
-  if (foundEmail !== email) return res.status(404).send("Email not found!");
+  const foundUser = await findUser(email);
+  if (!foundUser) return res.status(404).send("User not found!");
+  if (foundUser?.email !== email)
+    return res.status(404).send("Email not found!");
 
+  const { id } = foundUser;
   const foundHashedPassword = await findPassword(email);
   if (!(await compareHash(password, foundHashedPassword)))
     return res.status(401).send("Password does not match!");
@@ -38,7 +41,7 @@ const loginUser = async (req: Request, res: Response) => {
     maxAge: 6000000,
   });
 
-  res.status(200).send({ accessToken });
+  res.status(200).send({ accessToken, id });
 };
 
 export { loginUser };

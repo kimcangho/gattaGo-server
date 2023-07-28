@@ -17,10 +17,15 @@ const {
 
 //  *** Team Requests ***
 
-//  No team ID
+//  User ID
 
-const getAllTeams = async (_req: Request, res: Response) => {
+const getAllUserTeams = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
   const foundTeams = await team.findMany({
+    where: {
+      userId,
+    },
     orderBy: {
       createdAt: "asc",
     },
@@ -30,7 +35,8 @@ const getAllTeams = async (_req: Request, res: Response) => {
   res.status(404).send({ msg: "No teams found" });
 };
 
-const createTeam = async (req: Request, res: Response) => {
+const createUserTeam = async (req: Request, res: Response) => {
+  const { userId } = req.params;
   const { name, division, level, eligibility } = req.body;
 
   await team.create({
@@ -39,6 +45,7 @@ const createTeam = async (req: Request, res: Response) => {
       division,
       level,
       eligibility,
+      userId,
     },
   });
 
@@ -316,7 +323,6 @@ const getAllTeamLineups = async (req: Request, res: Response) => {
     },
   });
 
-  console.log(foundTeamLineups)
   res.status(200).send(foundTeamLineups);
 };
 
@@ -335,7 +341,7 @@ const postNewTeamLineup = async (req: Request, res: Response) => {
       teamId,
     },
   });
-  
+
   for (let athleteUnit of athletes) {
     if (athleteUnit.id) {
       await athletesInLineups.create({
@@ -498,8 +504,10 @@ const deleteSingleLineup = async (req: Request, res: Response) => {
 };
 
 export {
-  getAllTeams,
-  createTeam,
+  // getAllTeams,
+  // createTeam,
+  getAllUserTeams,
+  createUserTeam,
   getSingleTeamByID,
   updateSingleTeamByID,
   deleteSingleTeamByID,

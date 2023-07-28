@@ -17,7 +17,7 @@ const findUser = async (email: string) => {
       email,
     },
   });
-  return foundUser?.email;
+  return foundUser;
 };
 
 const findPassword = async (email: string) => {
