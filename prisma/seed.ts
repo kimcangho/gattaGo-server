@@ -62,7 +62,6 @@ const seedTeamsInRegattas = async () => {
 
 const seedTeams = async () => {
   for (let teamUnit of teams) {
-    console.log(teamUnit)
     if (
       teamUnit.name === "The Dodgefathers" ||
       teamUnit.name === "Aero Planets" ||
@@ -78,15 +77,24 @@ const seedTeams = async () => {
       });
       const { id } = foundUserId!;
 
-      await prisma.team.create({
-        data: {
-          ...teamUnit,
-          userId: id,
-          lineups: {
-            create: lineups,
+      if (teamUnit.name === "The Dodgefathers") {
+        await prisma.team.create({
+          data: {
+            ...teamUnit,
+            userId: id,
+            lineups: {
+              create: lineups,
+            },
           },
-        },
-      });
+        });
+      } else {
+        await prisma.team.create({
+          data: {
+            ...teamUnit,
+            userId: id,
+          },
+        });
+      }
     } else if (
       teamUnit.name === "Samurai Sonics" ||
       teamUnit.name === "Silent Ghosts" ||
@@ -106,9 +114,6 @@ const seedTeams = async () => {
         data: {
           ...teamUnit,
           userId: id,
-          lineups: {
-            create: lineups,
-          },
         },
       });
     } else if (
@@ -130,9 +135,6 @@ const seedTeams = async () => {
         data: {
           ...teamUnit,
           userId: id,
-          lineups: {
-            create: lineups,
-          },
         },
       });
     } else if (
@@ -154,9 +156,6 @@ const seedTeams = async () => {
         data: {
           ...teamUnit,
           userId: id,
-          lineups: {
-            create: lineups,
-          },
         },
       });
     } else {

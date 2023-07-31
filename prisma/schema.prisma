@@ -87,7 +87,7 @@ model Lineup {
   id       String              @id @default(uuid())
   name     String              @db.VarChar(255)
   athletes AthletesInLineups[]
-  team     Team                @relation(fields: [teamId], references: [id])
+  team     Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId   String
 
   @@map(name: "lineup")
@@ -177,9 +177,9 @@ model AthletesInTeams {
 }
 
 model AthletesInLineups {
-  lineup    Lineup   @relation(fields: [lineupId], references: [id])
+  lineup    Lineup   @relation(fields: [lineupId], references: [id], onDelete: Cascade)
   lineupId  String
-  athlete   Athlete  @relation(fields: [athleteId], references: [id])
+  athlete   Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
   athleteId String
   position  Int
   updatedAt DateTime @default(now())
