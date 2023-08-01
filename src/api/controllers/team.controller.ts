@@ -343,7 +343,7 @@ const postNewTeamLineup = async (req: Request, res: Response) => {
   });
 
   for (let athleteUnit of athletes) {
-    if (athleteUnit.id) {
+    if (!athleteUnit.athlete.isEmpty) {
       await athletesInLineups.create({
         data: {
           lineupId: newLineup.id,

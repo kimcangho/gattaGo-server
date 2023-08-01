@@ -7,7 +7,6 @@ const findRefreshToken = async (email: string) => {
       email,
     },
   });
-  console.log(foundToken);
   return foundToken;
 };
 
