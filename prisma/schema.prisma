@@ -177,9 +177,9 @@ model AthletesInTeams {
 }
 
 model AthletesInLineups {
-  lineup    Lineup   @relation(fields: [lineupId], references: [id], onDelete: Cascade)
+  lineup    Lineup   @relation(fields: [lineupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lineupId  String
-  athlete   Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  athlete   Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   athleteId String
   position  Int
   updatedAt DateTime @default(now())

@@ -434,24 +434,17 @@ const updateSingleLineup = async (req: Request, res: Response) => {
   const { teamId, lineupId } = req.params;
   const { athletes, name } = req.body;
 
-  console.log(teamId)
-  console.log(lineupId)
-  console.log(name)
-  console.log(athletes)
-
-  
   if (!teamId || !lineupId)
-  return res.status(404).send({ msg: `Please include teamId and lineupId!` });
-  
+    return res.status(404).send({ msg: `Please include teamId and lineupId!` });
+
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
-  return res.status(404).send({ msg: `Team ${teamId} not found!` });
-  
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
+
   const checkedLineup = await checkForLineup(lineupId);
   if (!checkedLineup)
-  return res.status(404).send({ msg: `Lineup ${lineupId} not found!` });
+    return res.status(404).send({ msg: `Lineup ${lineupId} not found!` });
 
-  
   await lineup.update({
     where: {
       id: lineupId,
@@ -461,13 +454,6 @@ const updateSingleLineup = async (req: Request, res: Response) => {
     },
   });
 
-  return res.status(200).send(name)
-
-  //  Update athletes in lineups by lineupId
-    //  use lineupId and athleteId
-    //  data: { position }
-    //  need to also handle removed paddlers
-  
   await athletesInLineups.deleteMany({
     where: {
       lineupId,
@@ -479,12 +465,12 @@ const updateSingleLineup = async (req: Request, res: Response) => {
       data: {
         position: athleteUnit.position,
         lineupId,
-        athleteId: athleteUnit.id,
+        athleteId: athleteUnit.athleteId,
       },
     });
   }
 
-  res.status(200).send({ msg: `New lineup ${lineupId} updated!` });
+  return res.status(200).send({ name, lineupId });
 };
 
 const deleteSingleLineup = async (req: Request, res: Response) => {
