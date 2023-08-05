@@ -347,7 +347,7 @@ const postNewTeamLineup = async (req: Request, res: Response) => {
       await athletesInLineups.create({
         data: {
           lineupId: newLineup.id,
-          athleteId: athleteUnit?.id,
+          athleteId: athleteUnit?.athleteId,
           position: athleteUnit?.position,
         },
       });
