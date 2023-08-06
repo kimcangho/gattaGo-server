@@ -56,6 +56,7 @@ const createUserTeam = async (req: Request, res: Response) => {
 
 const getSingleTeamByID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
+  console.log(teamId);
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
@@ -505,8 +506,6 @@ const deleteSingleLineup = async (req: Request, res: Response) => {
 };
 
 export {
-  // getAllTeams,
-  // createTeam,
   getAllUserTeams,
   createUserTeam,
   getSingleTeamByID,
