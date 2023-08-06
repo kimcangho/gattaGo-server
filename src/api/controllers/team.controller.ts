@@ -55,6 +55,7 @@ const createUserTeam = async (req: Request, res: Response) => {
 //  Team ID
 
 const getSingleTeamByID = async (req: Request, res: Response) => {
+  console.log('here!')
   const { teamId } = req.params;
   console.log(teamId);
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });

@@ -24,7 +24,7 @@ const router: Router = Router();
 
 //  User ID
 router
-  .route("/:userId")
+  .route("/user/:userId")
   .get(getAllUserTeams) //  get all teams from database by userID
   .post(createUserTeam); //  create single team for user with userID
 
