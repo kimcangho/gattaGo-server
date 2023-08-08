@@ -32,7 +32,7 @@ router
 router
   .route("/:teamId")
   .get(getSingleTeamByID) //  get single team
-  .put(updateSingleTeamByID) //  update single team
+  .put(updateSingleTeamByID) //  update single team name
   .delete(deleteSingleTeamByID); //  delete single team
 
 //  No Regatta ID

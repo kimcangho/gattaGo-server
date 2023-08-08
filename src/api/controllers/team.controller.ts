@@ -7,8 +7,10 @@ import {
   checkForTeam,
 } from "../middleware/checks";
 const {
+  user,
   team,
   lineup,
+  // athlete,
   athletesInTeams,
   teamsInRegattas,
   teamsInEvents,
@@ -30,8 +32,8 @@ const getAllUserTeams = async (req: Request, res: Response) => {
       createdAt: "asc",
     },
   });
-
   if (foundTeams) return res.status(200).send(foundTeams);
+
   res.status(404).send({ msg: "No teams found" });
 };
 
@@ -55,7 +57,6 @@ const createUserTeam = async (req: Request, res: Response) => {
 //  Team ID
 
 const getSingleTeamByID = async (req: Request, res: Response) => {
-  console.log('here!')
   const { teamId } = req.params;
   console.log(teamId);
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
@@ -63,7 +64,34 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  res.status(200).send(checkedTeam);
+  const foundTeam = await team.findUnique({
+    where: {
+      id: teamId,
+    },
+    include: {
+      lineups: true,
+      athletes: true,
+    },
+  });
+
+  const foundLineups = await lineup.findMany({
+    where: {
+      teamId,
+    },
+  });
+
+  const foundAthletes = await athletesInTeams.findMany({
+    where: { teamId },
+    include: { athlete: true },
+  });
+
+  console.log(foundLineups, foundLineups.length, foundAthletes.length);
+
+  res.status(200).send({
+    team: checkedTeam,
+    lineups: foundLineups,
+    athletes: foundAthletes,
+  });
 };
 
 const updateSingleTeamByID = async (req: Request, res: Response) => {
