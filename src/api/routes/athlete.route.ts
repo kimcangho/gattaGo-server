@@ -12,7 +12,6 @@ const router: Router = Router();
 
 //  No Athlete ID
 router.route("/").post(postNewAthlete); //  create new athlete
-//  delete all athletes
 
 //  Athlete ID
 router
