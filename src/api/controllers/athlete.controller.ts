@@ -99,7 +99,7 @@ const updateAthleteByID = async (req: Request, res: Response) => {
       .send({ msg: `Athlete with email ${athleteId} not found!` });
 
   try {
-    const updatedAthlete = await athlete.update({
+    await athlete.update({
       where: {
         id: athleteId,
       },
