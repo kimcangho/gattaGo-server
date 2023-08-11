@@ -73,7 +73,12 @@ const getAthleteByID = async (req: Request, res: Response) => {
       .status(404)
       .send({ msg: `Unable to find athlete ${athleteId}!` });
 
-  res.status(200).send(checkedAthlete);
+  const reformattedAthlete = {
+    ...checkedAthlete,
+    paddlerSkills: checkedAthlete.paddlerSkills[0],
+  };
+
+  res.status(200).send(reformattedAthlete);
 };
 
 const updateAthleteByID = async (req: Request, res: Response) => {

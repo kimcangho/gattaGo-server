@@ -18,6 +18,7 @@ import {
   deleteSingleLineup,
   postNewTeamLineup,
   updateSingleLineup,
+  getTeamDashboardDetails,
 } from "../controllers/team.controller";
 
 const router: Router = Router();
@@ -69,5 +70,8 @@ router
   .get(getSingleTeamLineup) //  get single lineup
   .put(updateSingleLineup) //  update single lineup
   .delete(deleteSingleLineup); //  delete single lineup
+
+//  Dashboard Specifics
+router.route("/:teamId/dashboard").get(getTeamDashboardDetails);  //  get dashboard specs for team
 
 export default router;

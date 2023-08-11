@@ -7,10 +7,9 @@ import {
   checkForTeam,
 } from "../middleware/checks";
 const {
-  user,
   team,
+  athlete,
   lineup,
-  // athlete,
   athletesInTeams,
   teamsInRegattas,
   teamsInEvents,
@@ -58,7 +57,6 @@ const createUserTeam = async (req: Request, res: Response) => {
 
 const getSingleTeamByID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  console.log(teamId);
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
@@ -84,8 +82,6 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
     where: { teamId },
     include: { athlete: true },
   });
-
-  console.log(foundLineups, foundLineups.length, foundAthletes.length);
 
   res.status(200).send({
     team: checkedTeam,
@@ -252,6 +248,9 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
       updatedAt: "asc",
     },
   });
+
+  //  reformat team athletes array --> map foundTeamAthletes array to reformattedTeamAthletes array
+  //  change paddlerSkills from single-object array to single object
 
   res.status(200).send(foundTeamAthletes);
 };
@@ -534,6 +533,83 @@ const deleteSingleLineup = async (req: Request, res: Response) => {
   });
 };
 
+const getTeamDashboardDetails = async (req: Request, res: Response) => {
+  const { teamId } = req.params;
+  if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
+
+  const checkedTeam = await checkForTeam(teamId);
+  if (!checkedTeam)
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
+
+  //  Doughnut charts for mandatory stats
+  //  total athlete paddle sides
+  const paddleSideArr = ["L", "R", "B", "N"];
+  const countPaddleSides = async (side: string) => {
+    return await athletesInTeams.count({
+      where: {
+        teamId,
+        athlete: {
+          paddleSide: side,
+        },
+      },
+    });
+  };
+  const countAllPaddleSides = async () => {
+    return Promise.all(paddleSideArr.map((side) => countPaddleSides(side)));
+  };
+  const paddleSideCountArr = await countAllPaddleSides();
+
+  //  total athlete availabilities
+  const availabilityArr = [true, false];
+  const countAvailabilities = async (flag: boolean) => {
+    return await athletesInTeams.count({
+      where: {
+        teamId,
+        athlete: {
+          isAvailable: flag,
+        },
+      },
+    });
+  };
+  const countAllAvailabilities = async () => {
+    return Promise.all(
+      availabilityArr.map((availabilityFlag) =>
+        countAvailabilities(availabilityFlag)
+      )
+    );
+  };
+  const availabilityCountArr = await countAllAvailabilities();
+
+  //  total athlete eligibilities
+  const eligibilityArr = ["O", "W"];
+  const countEligibilities = async (flag: string) => {
+    return await athletesInTeams.count({
+      where: {
+        teamId,
+        athlete: {
+          eligibility: flag,
+        },
+      },
+    });
+  };
+  const countAllEligibilities = async () => {
+    return Promise.all(
+      eligibilityArr.map((eligibilityFlag) =>
+        countEligibilities(eligibilityFlag)
+      )
+    );
+  };
+  const eligibilityCountArr = await countAllEligibilities();
+
+  //  Mixed chart for athlete weight - bar for weight classes, median/average weight highlight for total/open/women
+  //  athlete weights - median/
+  //  Radar chart for paddler skills - 2 layers for strengths/weaknesses
+
+  res
+    .status(200)
+    .send({ paddleSideCountArr, availabilityCountArr, eligibilityCountArr });
+};
+
 export {
   getAllUserTeams,
   createUserTeam,
@@ -553,4 +629,5 @@ export {
   getSingleTeamLineup,
   updateSingleLineup,
   deleteSingleLineup,
+  getTeamDashboardDetails,
 };
