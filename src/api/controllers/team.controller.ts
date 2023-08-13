@@ -541,8 +541,6 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   if (!checkedTeam)
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
-  //  Doughnut charts for mandatory stats
-  //  total athlete paddle sides
   const paddleSideArr = ["L", "R", "B", "N"];
   const countPaddleSides = async (side: string) => {
     return await athletesInTeams.count({
@@ -559,7 +557,6 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   };
   const paddleSideCountArr = await countAllPaddleSides();
 
-  //  total athlete availabilities
   const availabilityArr = [true, false];
   const countAvailabilities = async (flag: boolean) => {
     return await athletesInTeams.count({
@@ -580,7 +577,6 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   };
   const availabilityCountArr = await countAllAvailabilities();
 
-  //  total athlete eligibilities
   const eligibilityArr = ["O", "W"];
   const countEligibilities = async (flag: string) => {
     return await athletesInTeams.count({
@@ -601,13 +597,57 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   };
   const eligibilityCountArr = await countAllEligibilities();
 
-  //  Mixed chart for athlete weight - bar for weight classes, median/average weight highlight for total/open/women
-  //  athlete weights - median/
+  const weightArr: any = [
+    { weightFloor: 0, weightCeiling: 100 },
+    { weightFloor: 100, weightCeiling: 120 },
+    { weightFloor: 120, weightCeiling: 140 },
+    { weightFloor: 140, weightCeiling: 160 },
+    { weightFloor: 160, weightCeiling: 180 },
+    { weightFloor: 180, weightCeiling: 200 },
+    { weightFloor: 200, weightCeiling: 220 },
+    { weightFloor: 220, weightCeiling: 9999999999 },
+  ];
+  const countWeights = async (
+    weightFloor: number,
+    weightCeiling: number,
+    eligibility: string
+  ) => {
+    return await athletesInTeams.count({
+      where: {
+        teamId,
+        athlete: {
+          eligibility,
+          weight: {
+            gte: weightFloor,
+            lt: weightCeiling,
+          },
+        },
+      },
+    });
+  };
+  const countAllWeights = async (eligibility: string) => {
+    return Promise.all(
+      weightArr.map((weightFlag: any) =>
+        countWeights(
+          weightFlag.weightFloor,
+          weightFlag.weightCeiling,
+          eligibility
+        )
+      )
+    );
+  };
+  const weightCountArrOpen = await countAllWeights("O");
+  const weightCountArrWomen = await countAllWeights("W");
+
   //  Radar chart for paddler skills - 2 layers for strengths/weaknesses
 
-  res
-    .status(200)
-    .send({ paddleSideCountArr, availabilityCountArr, eligibilityCountArr });
+  res.status(200).send({
+    paddleSideCountArr,
+    availabilityCountArr,
+    eligibilityCountArr,
+    weightCountArrOpen,
+    weightCountArrWomen,
+  });
 };
 
 export {
