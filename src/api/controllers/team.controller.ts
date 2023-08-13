@@ -541,7 +541,7 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   if (!checkedTeam)
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
-  const paddleSideArr = ["L", "R", "B", "N"];
+  const paddleSideArr = ["L", "B", "R", "N"];
   const countPaddleSides = async (side: string) => {
     return await athletesInTeams.count({
       where: {
@@ -639,6 +639,52 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   const weightCountArrOpen = await countAllWeights("O");
   const weightCountArrWomen = await countAllWeights("W");
 
+  //  get all athlete weights
+
+  const getWeights = await athletesInTeams.findMany({
+    where: {
+      teamId,
+    },
+    include: {
+      athlete: {
+        select: {
+          weight: true,
+          eligibility: true,
+        },
+      },
+    },
+  });
+
+  const sumWeights: number = getWeights.reduce(
+    (accumulator: number, currrentValue: any) => {
+      return accumulator + currrentValue.athlete.weight;
+    },
+    0
+  );
+
+  const numOpenAthletes: any[] = getWeights.filter((athlete) => {
+    if (athlete.athlete.eligibility === "O") return athlete;
+  });
+  const sumOpenWeights: number = numOpenAthletes.reduce((acc, currVal) => {
+    return acc + currVal.athlete.weight!;
+  }, 0);
+  const numWomenAthletes: any[] = getWeights.filter((athlete) => {
+    if (athlete.athlete.eligibility === "W") return athlete;
+  });
+  const sumWomenWeights: number = numWomenAthletes.reduce((acc, currVal) => {
+    return acc + currVal.athlete.weight!;
+  }, 0);
+
+  const avgWeight: number = sumWeights / getWeights.length;
+  const avgOpenWeight: number = sumOpenWeights / numOpenAthletes.length;
+  const avgWomenWeight: number = sumWomenWeights / numWomenAthletes.length;
+
+  const avgWeights = {
+    avgWeight,
+    avgOpenWeight,
+    avgWomenWeight,
+  };
+
   //  Radar chart for paddler skills - 2 layers for strengths/weaknesses
 
   res.status(200).send({
@@ -647,6 +693,7 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
     eligibilityCountArr,
     weightCountArrOpen,
     weightCountArrWomen,
+    avgWeights,
   });
 };
 
