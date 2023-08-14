@@ -8,7 +8,6 @@ import {
 } from "../middleware/checks";
 const {
   team,
-  athlete,
   lineup,
   athletesInTeams,
   teamsInRegattas,
@@ -537,6 +536,22 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
 
+  const athleteCount = await athletesInTeams.count({
+    where: {
+      teamId
+    }
+  })
+  console.log(athleteCount)
+  if (!athleteCount) return res.status(200).send(
+    {athleteCount: false, 
+    paddleSideCountArr: null,
+    availabilityCountArr: null,
+    eligibilityCountArr: null,
+    weightCountArrOpen: null,
+    weightCountArrWomen: null,
+    avgWeights: null,
+  })
+
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
@@ -688,6 +703,7 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   //  Radar chart for paddler skills - 2 layers for strengths/weaknesses
 
   res.status(200).send({
+    athleteCount: true,
     paddleSideCountArr,
     availabilityCountArr,
     eligibilityCountArr,
