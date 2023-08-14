@@ -248,9 +248,6 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
     },
   });
 
-  //  reformat team athletes array --> map foundTeamAthletes array to reformattedTeamAthletes array
-  //  change paddlerSkills from single-object array to single object
-
   res.status(200).send(foundTeamAthletes);
 };
 
@@ -538,19 +535,22 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
 
   const athleteCount = await athletesInTeams.count({
     where: {
-      teamId
-    }
-  })
-  console.log(athleteCount)
-  if (!athleteCount) return res.status(200).send(
-    {athleteCount: false, 
-    paddleSideCountArr: null,
-    availabilityCountArr: null,
-    eligibilityCountArr: null,
-    weightCountArrOpen: null,
-    weightCountArrWomen: null,
-    avgWeights: null,
-  })
+      teamId,
+    },
+  });
+  console.log(athleteCount);
+  if (!athleteCount)
+    return res
+      .status(200)
+      .send({
+        athleteCount: false,
+        paddleSideCountArr: null,
+        availabilityCountArr: null,
+        eligibilityCountArr: null,
+        weightCountArrOpen: null,
+        weightCountArrWomen: null,
+        avgWeights: null,
+      });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
@@ -654,8 +654,6 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   const weightCountArrOpen = await countAllWeights("O");
   const weightCountArrWomen = await countAllWeights("W");
 
-  //  get all athlete weights
-
   const getWeights = await athletesInTeams.findMany({
     where: {
       teamId,
@@ -699,8 +697,6 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
     avgOpenWeight,
     avgWomenWeight,
   };
-
-  //  Radar chart for paddler skills - 2 layers for strengths/weaknesses
 
   res.status(200).send({
     athleteCount: true,
