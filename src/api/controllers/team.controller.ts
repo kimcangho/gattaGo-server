@@ -538,19 +538,16 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
       teamId,
     },
   });
-  console.log(athleteCount);
   if (!athleteCount)
-    return res
-      .status(200)
-      .send({
-        athleteCount: false,
-        paddleSideCountArr: null,
-        availabilityCountArr: null,
-        eligibilityCountArr: null,
-        weightCountArrOpen: null,
-        weightCountArrWomen: null,
-        avgWeights: null,
-      });
+    return res.status(200).send({
+      athleteCount: false,
+      paddleSideCountArr: null,
+      availabilityCountArr: null,
+      eligibilityCountArr: null,
+      weightCountArrOpen: null,
+      weightCountArrWomen: null,
+      avgWeights: null,
+    });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam)
