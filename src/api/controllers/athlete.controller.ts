@@ -28,10 +28,9 @@ const postNewAthlete = async (req: Request, res: Response) => {
       email,
     },
   });
-  if (checkedEmail)
-    return res
-      .status(404)
-      .send({ msg: `Athlete with email ${email} already exists!` });
+  if (checkedEmail) {
+    return res.status(404).send({ duplicateEmail: checkedEmail.email });
+  }
 
   const { id } = await athlete.create({
     data: {
