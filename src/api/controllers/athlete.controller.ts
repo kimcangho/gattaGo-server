@@ -7,8 +7,6 @@ const { athlete, athletesInLineups, athletesInTeams, paddlerSkills } =
 //  *** Athlete Requests ***
 
 //  No Athlete ID
-
-//  To-do: refactor posting New Athlete
 const postNewAthlete = async (req: Request, res: Response) => {
   const {
     teamId,
@@ -29,7 +27,7 @@ const postNewAthlete = async (req: Request, res: Response) => {
     },
   });
   if (checkedEmail) {
-    return res.status(404).send({ duplicateEmail: checkedEmail.email });
+    return res.status(400).send({ duplicateEmail: checkedEmail.email });
   }
 
   const { id } = await athlete.create({
@@ -101,6 +99,15 @@ const updateAthleteByID = async (req: Request, res: Response) => {
     return res
       .status(404)
       .send({ msg: `Athlete with email ${athleteId} not found!` });
+
+  const checkedEmail = await athlete.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (checkedEmail) {
+    return res.status(400).send({ duplicateEmail: checkedEmail.email });
+  }
 
   try {
     await athlete.update({
