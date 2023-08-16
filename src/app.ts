@@ -21,7 +21,7 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.use(authenticateToken);
-app.use("/regattas", regatta);
+// app.use("/regattas", regatta);
 app.use("/teams", team);
 app.use("/athletes", athlete);
 

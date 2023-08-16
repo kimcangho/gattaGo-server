@@ -5,9 +5,9 @@ import {
   getSingleTeamByID,
   updateSingleTeamByID,
   deleteSingleTeamByID,
-  getAllRegattasRegisteredTo,
-  deleteTeamFromRegattas,
-  getAllTeamEventsByRegattaID,
+  // getAllRegattasRegisteredTo,
+  // deleteTeamFromRegattas,
+  // getAllTeamEventsByRegattaID,
   getAllAthletesByTeamID,
   deleteAllAthletesByTeamID,
   addAthleteToTeamByID,
@@ -37,13 +37,13 @@ router
   .delete(deleteSingleTeamByID); //  delete single team
 
 //  No Regatta ID
-router
-  .route("/:teamId/regattas")
-  .get(getAllRegattasRegisteredTo) //  get all regattas team is registered to
-  .delete(deleteTeamFromRegattas); // withdraw team from all regattas
+// router
+//   .route("/:teamId/regattas")
+//   .get(getAllRegattasRegisteredTo) //  get all regattas team is registered to
+//   .delete(deleteTeamFromRegattas); // withdraw team from all regattas
 
-//  Regatta ID
-router.route("/:teamId/events/:regattaId").get(getAllTeamEventsByRegattaID); //  get all events team registered to
+// //  Regatta ID
+// router.route("/:teamId/events/:regattaId").get(getAllTeamEventsByRegattaID); //  get all events team registered to
 
 //  No Athlete ID
 router
