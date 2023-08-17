@@ -1,6 +1,19 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client"; //  to remove
-import { checkForTeam } from "../middleware/checks"; //  to refactor
+import {
+  checkForTeam,
+  checkForTeamName,
+  countTeams,
+  createTeam,
+  createTeamWithLineup,
+  deleteTeam,
+  findTeamAthletes,
+  findTeamAthletesWithAthletes,
+  findTeamLineup,
+  findTeamLineups,
+  findTeams,
+  updateTeam,
+} from "../services/team.services";
 import {
   checkForAthlete,
   checkForEmail,
@@ -19,7 +32,7 @@ import {
   populateLineup,
   updateLineup,
 } from "../services/lineup.services";
-const { team, athletesInTeams } = new PrismaClient(); //  to remove
+const { athletesInTeams } = new PrismaClient(); //  to remove
 import { faker } from "@faker-js/faker";
 
 //  *** Team Requests ***
@@ -28,17 +41,8 @@ import { faker } from "@faker-js/faker";
 
 const getAllUserTeams = async (req: Request, res: Response) => {
   const { userId } = req.params;
-
-  const foundTeams = await team.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-  });
+  const foundTeams = await findTeams(userId);
   if (foundTeams) return res.status(200).send(foundTeams);
-
   res.status(404).send({ msg: "No teams found" });
 };
 
@@ -46,16 +50,7 @@ const createUserTeam = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const { name, division, level, eligibility } = req.body;
 
-  await team.create({
-    data: {
-      name,
-      division,
-      level,
-      eligibility,
-      userId,
-    },
-  });
-
+  await createTeam(name, division, level, eligibility, userId);
   res.status(201).send({ msg: "Successfully created new team!" });
 };
 
@@ -66,11 +61,7 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
     return word.charAt(0).toUpperCase() + word.slice(1);
   };
 
-  const teamCount = await team.count({
-    where: {
-      userId,
-    },
-  });
+  const teamCount = await countTeams(userId);
   if (teamCount)
     return res
       .status(404)
@@ -82,44 +73,27 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
       faker.word.adjective()
     )} ${capitalizeFirstLetter(faker.word.noun())}s`;
 
-    const checkedTeam = await team.findFirst({
-      where: {
-        name: teamName,
-      },
-    });
-    if (!checkedTeam) break;
+    const checkedDuplicateTeamName = await checkForTeamName(teamName);
+    if (!checkedDuplicateTeamName) break;
   }
 
-  await team.create({
-    data: {
-      name: teamName,
-      division: faker.helpers.arrayElement([
-        "u18",
-        "u24",
-        "premier",
-        "seniora",
-        "seniorb",
-        "seniorc",
-        "para",
-      ]),
-      level: faker.helpers.arrayElement(["sport", "community"]),
-      eligibility: faker.helpers.arrayElement(["O", "W", "M"]),
-      userId,
-      lineups: {
-        create: [
-          {
-            name: `${teamName} - Sample Lineup`,
-          },
-        ],
-      },
-    },
-  });
+  await createTeamWithLineup(
+    teamName,
+    faker.helpers.arrayElement([
+      "u18",
+      "u24",
+      "premier",
+      "seniora",
+      "seniorb",
+      "seniorc",
+      "para",
+    ]),
+    faker.helpers.arrayElement(["sport", "community"]),
+    faker.helpers.arrayElement(["O", "W", "M"]),
+    userId
+  );
 
-  const foundTeam = await team.findFirst({
-    where: {
-      name: teamName,
-    },
-  });
+  const foundDuplicateTeam = await checkForTeamName(teamName);
 
   for (let i = 0; i < 30; i++) {
     let fakeEmail = "";
@@ -169,76 +143,22 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
       }
     );
 
-    // await athlete.create({
-    //   data: {
-    //     email: fakeEmail,
-    //     firstName: faker.person.firstName(),
-    //     lastName: faker.person.lastName(),
-    //     eligibility: faker.helpers.arrayElement(["O", "W"]),
-    //     paddleSide: faker.helpers.arrayElement(["L", "R", "B", "N"]),
-    //     weight: faker.number.int({ min: 90, max: 240 }),
-    //     notes: faker.lorem.lines({ min: 1, max: 2 }),
-    //     isAvailable: faker.datatype.boolean(),
-    //     isManager: false,
-    //     paddlerSkills: {
-    //       create: {
-    //         isSteers: false,
-    //         isDrummer: false,
-    //         isStroker: false,
-    //         isCaller: false,
-    //         isBailer: false,
-    //         //  Section
-    //         isPacer: false,
-    //         isEngine: false,
-    //         isRocket: false,
-    //         //  Race Distances
-    //         is200m: false,
-    //         is500m: false,
-    //         is1000m: false,
-    //         is2000m: false,
-    //         //  Strengths
-    //         isVeteran: false,
-    //         isSteadyTempo: false,
-    //         isVocal: false,
-    //         isTechnicallyProficient: false,
-    //         isLeader: false,
-    //         //  Weaknesses
-    //         isNewbie: false,
-    //         isRushing: false,
-    //         isLagging: false,
-    //         isTechnicallyPoor: false,
-    //         isInjuryProne: false,
-    //         isLoadManaged: false,
-    //       },
-    //     },
-    //   },
-    // });
-
     const foundAthlete = await checkForEmail(fakeEmail);
 
     await athletesInTeams.create({
       data: {
-        teamId: foundTeam!.id,
+        teamId: foundDuplicateTeam!.id,
         athleteId: foundAthlete!.id,
       },
     });
   }
 
-  const foundTeams = await team.findMany({
-    where: {
-      userId,
-    },
-  });
+  const foundTeams = await findTeams(userId);
 
   //  get athletes by teamId
 
-  const foundRoster = await athletesInTeams.findMany({
-    where: {
-      teamId: foundTeam!.id,
-    },
-  });
-
-  const foundLineups = await findLineups(foundTeam!.id);
+  const foundRoster = await findTeamAthletes(foundDuplicateTeam!.id);
+  const foundLineups = await findLineups(foundDuplicateTeam!.id);
 
   const populateRoster = async (shuffledRoster: any, foundLineup: any) => {
     for (let i = 0; i < 22; i++) {
@@ -263,22 +183,8 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  // const foundTeam = await team.findUnique({
-  //   where: {
-  //     id: teamId,
-  //   },
-  //   include: {
-  //     lineups: true,
-  //     athletes: true,
-  //   },
-  // });
-
   const foundLineups = await findLineups(teamId);
-
-  const foundAthletes = await athletesInTeams.findMany({
-    where: { teamId },
-    include: { athlete: true },
-  });
+  const foundAthletes = await findTeamAthletesWithAthletes(teamId);
 
   res.status(200).send({
     team: checkedTeam,
@@ -299,18 +205,7 @@ const updateSingleTeamByID = async (req: Request, res: Response) => {
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  await team.update({
-    where: {
-      id: teamId,
-    },
-    data: {
-      name,
-      division,
-      level,
-      eligibility,
-    },
-  });
-
+  await updateTeam(teamId, name, division, level, eligibility);
   res.status(200).send({ msg: `Successfully updated team ${teamId}` });
 };
 
@@ -336,12 +231,7 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
   });
 
   await deleteLineups(teamId);
-
-  await team.delete({
-    where: {
-      id: teamId,
-    },
-  });
+  await deleteTeam(teamId);
 
   res.status(204).send({ msg: `Successfully deleted team ${teamId}!` });
 };
@@ -449,15 +339,7 @@ const getAllTeamLineups = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
 
-  const foundTeamLineups = await team.findUnique({
-    where: {
-      id: teamId,
-    },
-    include: {
-      lineups: true,
-    },
-  });
-
+  const foundTeamLineups = await findTeamLineups(teamId);
   res.status(200).send(foundTeamLineups);
 };
 
@@ -517,29 +399,7 @@ const getSingleTeamLineup = async (req: Request, res: Response) => {
   if (!checkedLineup)
     return res.status(404).send({ msg: `Lineup ${teamId} not found!` });
 
-  const foundTeamLineup = await team.findUnique({
-    where: {
-      id: teamId,
-    },
-    include: {
-      lineups: {
-        where: {
-          id: lineupId,
-        },
-        include: {
-          athletes: {
-            include: {
-              athlete: true,
-            },
-            orderBy: {
-              position: "asc",
-            },
-          },
-        },
-      },
-    },
-  });
-
+  const foundTeamLineup = findTeamLineup(teamId, lineupId);
   res.status(200).send(foundTeamLineup);
 };
 
