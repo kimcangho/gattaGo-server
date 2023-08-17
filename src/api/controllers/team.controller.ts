@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import {
   checkForAthlete,
   checkForLineup,
-  // checkForRegatta,
   checkForTeam,
 } from "../middleware/checks";
 const {
@@ -11,8 +10,6 @@ const {
   athlete,
   lineup,
   athletesInTeams,
-  // teamsInRegattas,
-  // teamsInEvents,
   athletesInLineups,
 } = new PrismaClient();
 import { faker } from "@faker-js/faker";
@@ -324,18 +321,6 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
     },
   });
 
-  // await teamsInRegattas.deleteMany({
-  //   where: {
-  //     teamId,
-  //   },
-  // });
-
-  // await teamsInEvents.deleteMany({
-  //   where: {
-  //     teamId,
-  //   },
-  // });
-
   await lineup.deleteMany({
     where: {
       teamId,
@@ -350,70 +335,6 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
 
   res.status(204).send({ msg: `Successfully deleted team ${teamId}!` });
 };
-
-//  No regatta ID
-
-// const getAllRegattasRegisteredTo = async (req: Request, res: Response) => {
-//   const { teamId } = req.params;
-//   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
-
-//   const checkedTeam = await checkForTeam(teamId);
-//   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
-
-//   const registeredRegattas = await teamsInRegattas.findMany({
-//     where: {
-//       teamId,
-//     },
-//   });
-//   res.status(200).send(registeredRegattas);
-// };
-
-// const deleteTeamFromRegattas = async (req: Request, res: Response) => {
-//   const { teamId } = req.params;
-//   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
-
-//   const checkedTeam = await checkForTeam(teamId);
-//   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
-
-//   await teamsInRegattas.deleteMany({
-//     where: {
-//       teamId,
-//     },
-//   });
-
-//   res.status(204).send({ msg: `Team ${teamId} deleted from all regattas!` });
-// };
-
-//  Regatta ID
-
-// const getAllTeamEventsByRegattaID = async (req: Request, res: Response) => {
-//   const { regattaId, teamId } = req.params;
-//   if (!regattaId || !teamId)
-//     return res
-//       .status(404)
-//       .send({ msg: `Please include regattaId and teamId!` });
-
-//   const checkedRegatta = await checkForRegatta(regattaId);
-//   if (!checkedRegatta)
-//     return res.status(404).send({ msg: "No regatta found!" });
-
-//   const checkedTeam = await checkForTeam(teamId);
-//   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
-
-//   //    Get all events in regatta containing team
-
-//   const foundTeamEvents = await teamsInEvents.findMany({
-//     where: {
-//       teamId,
-//     },
-//   });
-//   if (foundTeamEvents.length === 0)
-//     return res.send({
-//       msg: `Team ${teamId} not in any events within regatta ${regattaId}`,
-//     });
-
-//   res.status(200).send(foundTeamEvents);
-// };
 
 //  No Athlete ID
 
@@ -896,9 +817,6 @@ export {
   getSingleTeamByID,
   updateSingleTeamByID,
   deleteSingleTeamByID,
-  // getAllRegattasRegisteredTo,
-  // deleteTeamFromRegattas,
-  // getAllTeamEventsByRegattaID,
   getAllAthletesByTeamID,
   deleteAllAthletesByTeamID,
   addAthleteToTeamByID,

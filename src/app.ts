@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authenticateToken from "./auth/middleware/authenticateToken";
-// import regatta from "./api/routes/regatta.route";
 import team from "./api/routes/team.route";
 import athlete from "./api/routes/athlete.route";
 
@@ -21,7 +20,6 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.use(authenticateToken);
-// app.use("/regattas", regatta);
 app.use("/teams", team);
 app.use("/athletes", athlete);
 
