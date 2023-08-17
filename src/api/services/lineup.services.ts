@@ -2,12 +2,11 @@ import { PrismaClient } from "@prisma/client";
 const { lineup, athletesInLineups } = new PrismaClient();
 
 const checkForLineup = async (id: string) => {
-  const foundLineup = await lineup.findUnique({
+  return await lineup.findUnique({
     where: {
       id,
     },
   });
-  return foundLineup;
 };
 
 const findLineups = async (teamId: string) => {

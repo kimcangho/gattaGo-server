@@ -358,6 +358,7 @@ const deleteAllTeamLineups = async (req: Request, res: Response) => {
 
 const getSingleTeamLineup = async (req: Request, res: Response) => {
   const { teamId, lineupId } = req.params;
+  console.log(teamId, lineupId);
   if (!teamId || !lineupId)
     return res.status(404).send({ msg: `Please include teamId and lineupId!` });
 

@@ -2,12 +2,11 @@ import { PrismaClient } from "@prisma/client";
 const { team, athletesInTeams } = new PrismaClient();
 
 const checkForTeam = async (id: string) => {
-  const foundTeam = team.findUnique({
+  return await team.findUnique({
     where: {
       id,
     },
   });
-  return foundTeam;
 };
 
 const checkForTeamName = async (name: string) => {
@@ -81,7 +80,7 @@ const createTeamWithLineup = async (
   eligibility: string,
   userId: string
 ) => {
-  team.create({
+  await team.create({
     data: {
       name,
       division,
