@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import { checkForAthlete } from "../middleware/checks";
-const { athlete, athletesInLineups, athletesInTeams, paddlerSkills } =
-  new PrismaClient();
+import {
+  checkForAthlete,
+  checkForEmail,
+  createAthleteInTeam,
+  createAthlete,
+  checkDuplicateEmail,
+  updateAthlete,
+  deleteAthlete,
+} from "../services/athlete.services";
 
 //  *** Athlete Requests ***
 
@@ -21,38 +26,24 @@ const postNewAthlete = async (req: Request, res: Response) => {
     paddlerSkillsObj,
   } = req.body;
 
-  const checkedEmail = await athlete.findUnique({
-    where: {
-      email,
-    },
-  });
+  const checkedEmail = await checkForEmail(email);
   if (checkedEmail) {
     return res.status(400).send({ duplicateEmail: checkedEmail.email });
   }
 
-  const { id } = await athlete.create({
-    data: {
-      email,
-      firstName,
-      lastName,
-      eligibility,
-      paddleSide,
-      weight,
-      notes,
-      isAvailable,
-      isManager: false,
-      paddlerSkills: {
-        create: paddlerSkillsObj,
-      },
-    },
-  });
+  const { id } = await createAthlete(
+    email,
+    firstName,
+    lastName,
+    eligibility,
+    paddleSide,
+    weight,
+    notes,
+    isAvailable,
+    paddlerSkillsObj
+  );
 
-  await athletesInTeams.create({
-    data: {
-      teamId: teamId,
-      athleteId: id,
-    },
-  });
+  await createAthleteInTeam(teamId, id);
 
   res.status(201).send(`New athlete ${id} created!`);
 };
@@ -100,43 +91,26 @@ const updateAthleteByID = async (req: Request, res: Response) => {
       .status(404)
       .send({ msg: `Athlete with email ${athleteId} not found!` });
 
-  const checkedEmail = await athlete.findUnique({
-    where: {
-      email,
-      NOT: {
-        id: athleteId,
-      },
-    },
-  });
-  if (checkedEmail) {
-    return res.status(400).send({ duplicateEmail: checkedEmail.email });
+  const checkedDuplicateEmail = await checkDuplicateEmail(email, athleteId);
+  if (checkedDuplicateEmail) {
+    return res
+      .status(400)
+      .send({ duplicateEmail: checkedDuplicateEmail.email });
   }
 
   try {
-    await athlete.update({
-      where: {
-        id: athleteId,
-      },
-      data: {
-        email,
-        firstName,
-        lastName,
-        eligibility,
-        paddleSide,
-        weight,
-        notes,
-        isAvailable,
-        isManager: false,
-        paddlerSkills: {
-          update: {
-            where: {
-              athleteId,
-            },
-            data: paddlerSkillsObj,
-          },
-        },
-      },
-    });
+    await updateAthlete(
+      athleteId,
+      email,
+      firstName,
+      lastName,
+      eligibility,
+      paddleSide,
+      weight,
+      notes,
+      isAvailable,
+      paddlerSkillsObj
+    );
   } catch (err) {
     console.log(err);
   }
@@ -155,30 +129,7 @@ const deleteAthleteByID = async (req: Request, res: Response) => {
       .status(404)
       .send({ msg: `Unable to find athlete ${athleteId}!` });
 
-  await athletesInLineups.deleteMany({
-    where: {
-      athleteId,
-    },
-  });
-
-  await athletesInTeams.deleteMany({
-    where: {
-      athleteId,
-    },
-  });
-
-  await paddlerSkills.delete({
-    where: {
-      athleteId,
-    },
-  });
-
-  await athlete.delete({
-    where: {
-      id: athleteId,
-    },
-    include: { paddlerSkills: true },
-  });
+  await deleteAthlete(athleteId);
 
   res.status(204).send({ msg: `Athlete ${athleteId} successfully deleted!` });
 };

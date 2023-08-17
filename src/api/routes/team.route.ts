@@ -5,9 +5,6 @@ import {
   getSingleTeamByID,
   updateSingleTeamByID,
   deleteSingleTeamByID,
-  // getAllRegattasRegisteredTo,
-  // deleteTeamFromRegattas,
-  // getAllTeamEventsByRegattaID,
   getAllAthletesByTeamID,
   deleteAllAthletesByTeamID,
   addAthleteToTeamByID,
@@ -30,7 +27,9 @@ router
   .get(getAllUserTeams) //  get all teams from database by userID
   .post(createUserTeam); //  create single team for user with userID
 
-router.route("/user/:userId/generateFullTeam").post(generateUserTeamAthletesLineups); //  create single team for user with userID
+router
+  .route("/user/:userId/generateFullTeam")
+  .post(generateUserTeamAthletesLineups); //  create single team for user with userID
 
 //  Team ID
 router
@@ -38,15 +37,6 @@ router
   .get(getSingleTeamByID) //  get single team
   .put(updateSingleTeamByID) //  update single team name
   .delete(deleteSingleTeamByID); //  delete single team
-
-//  No Regatta ID
-// router
-//   .route("/:teamId/regattas")
-//   .get(getAllRegattasRegisteredTo) //  get all regattas team is registered to
-//   .delete(deleteTeamFromRegattas); // withdraw team from all regattas
-
-// //  Regatta ID
-// router.route("/:teamId/events/:regattaId").get(getAllTeamEventsByRegattaID); //  get all events team registered to
 
 //  No Athlete ID
 router

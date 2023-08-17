@@ -13,7 +13,6 @@ const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).send("Invalid request!");
 
-  //  Check for existing user refreshToken
   const isLoggedIn = await findRefreshToken(email);
 
   const foundUser = await findUser(email);

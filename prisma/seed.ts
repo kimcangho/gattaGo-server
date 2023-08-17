@@ -1,5 +1,3 @@
-// import regattas from "./data/regattas";
-// import events from "./data/events";
 import teams from "./data/teams";
 import lineups from "./data/lineups";
 import athletes from "./data/athletes";
@@ -9,56 +7,7 @@ import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-//  Seed Database Tables
-
 //  Seed API Tables
-// const seedRegattas = async () => {
-//   for (let regattaUnit of regattas) {
-//     if (regattaUnit.name === "Pickering Dragon Boat Festival") {
-//       await prisma.regatta.create({
-//         data: {
-//           ...regattaUnit,
-//           events: {
-//             create: events,
-//           },
-//         },
-//       });
-//     } else {
-//       await prisma.regatta.create({
-//         data: regattaUnit,
-//       });
-//     }
-//   }
-// };
-
-// const seedTeamsInRegattas = async () => {
-//   const pickeringRegattaId = await prisma.regatta.findFirst({
-//     where: {
-//       name: "Pickering Dragon Boat Festival",
-//     },
-//     select: {
-//       id: true,
-//     },
-//   });
-
-//   const { id: regattaId } = pickeringRegattaId!;
-
-//   const allTeamIds = await prisma.team.findMany({
-//     select: {
-//       id: true,
-//     },
-//   });
-
-//   for (let teamUnit of allTeamIds) {
-//     const { id: teamId } = teamUnit;
-//     await prisma.teamsInRegattas.create({
-//       data: {
-//         regattaId,
-//         teamId,
-//       },
-//     });
-//   }
-// };
 
 const seedTeams = async () => {
   for (let teamUnit of teams) {
@@ -165,62 +114,6 @@ const seedTeams = async () => {
     }
   }
 };
-
-// const seedTeamsInEvents = async () => {
-//   //  500m Heat
-//   const foundFiveHundoHeats = await prisma.event.findMany({
-//     where: {
-//       distance: "500m",
-//       progressionType: "heat",
-//     },
-//     select: {
-//       id: true,
-//       entries: true,
-//     },
-//   });
-
-//   const foundTeamIds = await prisma.team.findMany({
-//     select: {
-//       id: true,
-//     },
-//   });
-
-//   //  add teams to events (4 teams per 500m heat)
-//   for (let i = 0; i < foundTeamIds.length; i++) {
-//     let j = Math.floor(i / 4);
-//     await prisma.teamsInEvents.create({
-//       data: {
-//         eventId: foundFiveHundoHeats[j].id,
-//         teamId: foundTeamIds[i].id,
-//       },
-//     });
-//   }
-
-//   const foundTwoKiloFinalEventId = await prisma.event.findFirst({
-//     where: {
-//       distance: "2000m",
-//     },
-//     select: {
-//       id: true,
-//     },
-//   });
-//   const { id: eventId } = foundTwoKiloFinalEventId!;
-
-//   const allTeamIds = await prisma.team.findMany({
-//     select: {
-//       id: true,
-//     },
-//   });
-//   for (let teamUnit of allTeamIds) {
-//     const { id: teamId } = teamUnit;
-//     await prisma.teamsInEvents.create({
-//       data: {
-//         teamId,
-//         eventId,
-//       },
-//     });
-//   }
-// };
 
 const seedAthletes = async () => {
   for (let athleteUnit of athletes) {
@@ -503,14 +396,10 @@ const seedUsers = async () => {
 const seedDatabase = async () => {
   try {
     await seedUsers();
-    // await seedRegattas();
     await seedTeams();
-    // await seedTeamsInRegattas();
-    // await seedTeamsInEvents();
     await seedAthletes();
     await seedAthletesInTeams();
     await seedAthletesInLineups();
-    //  seed users with teams
     prisma.$disconnect;
   } catch (err) {
     console.error(err);
