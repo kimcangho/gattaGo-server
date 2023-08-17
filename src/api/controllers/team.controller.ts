@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client"; //  to remove
 import { checkForTeam } from "../middleware/checks"; //  to refactor
-import { checkForAthlete } from "../services/athlete.services";
+import {
+  checkForAthlete,
+  checkForEmail,
+  createAthlete,
+} from "../services/athlete.services";
 import {
   checkForLineup,
   createAthleteInLineup,
@@ -15,7 +19,7 @@ import {
   populateLineup,
   updateLineup,
 } from "../services/lineup.services";
-const { team, athlete, athletesInTeams } = new PrismaClient(); //  to remove
+const { team, athletesInTeams } = new PrismaClient(); //  to remove
 import { faker } from "@faker-js/faker";
 
 //  *** Team Requests ***
@@ -121,65 +125,96 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
     let fakeEmail = "";
     while (true) {
       fakeEmail = `${faker.word.noun()}@${faker.company.name()}.com`;
-
-      const checkedEmail = await athlete.findUnique({
-        where: {
-          email: fakeEmail,
-        },
-      });
+      const checkedEmail = await checkForEmail(fakeEmail);
       if (!checkedEmail) break;
     }
 
-    await athlete.create({
-      data: {
-        email: fakeEmail,
-        firstName: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-        eligibility: faker.helpers.arrayElement(["O", "W"]),
-        paddleSide: faker.helpers.arrayElement(["L", "R", "B", "N"]),
-        weight: faker.number.int({ min: 90, max: 240 }),
-        notes: faker.lorem.lines({ min: 1, max: 2 }),
-        isAvailable: faker.datatype.boolean(),
-        isManager: false,
-        paddlerSkills: {
-          create: {
-            isSteers: false,
-            isDrummer: false,
-            isStroker: false,
-            isCaller: false,
-            isBailer: false,
-            //  Section
-            isPacer: false,
-            isEngine: false,
-            isRocket: false,
-            //  Race Distances
-            is200m: false,
-            is500m: false,
-            is1000m: false,
-            is2000m: false,
-            //  Strengths
-            isVeteran: false,
-            isSteadyTempo: false,
-            isVocal: false,
-            isTechnicallyProficient: false,
-            isLeader: false,
-            //  Weaknesses
-            isNewbie: false,
-            isRushing: false,
-            isLagging: false,
-            isTechnicallyPoor: false,
-            isInjuryProne: false,
-            isLoadManaged: false,
-          },
-        },
-      },
-    });
+    await createAthlete(
+      fakeEmail,
+      faker.person.firstName(),
+      faker.person.lastName(),
+      faker.helpers.arrayElement(["O", "W"]),
+      faker.helpers.arrayElement(["L", "R", "B", "N"]),
+      faker.number.int({ min: 90, max: 240 }),
+      faker.lorem.lines({ min: 1, max: 2 }),
+      faker.datatype.boolean(),
+      {
+        isSteers: false,
+        isDrummer: false,
+        isStroker: false,
+        isCaller: false,
+        isBailer: false,
+        //  Section
+        isPacer: false,
+        isEngine: false,
+        isRocket: false,
+        //  Race Distances
+        is200m: false,
+        is500m: false,
+        is1000m: false,
+        is2000m: false,
+        //  Strengths
+        isVeteran: false,
+        isSteadyTempo: false,
+        isVocal: false,
+        isTechnicallyProficient: false,
+        isLeader: false,
+        //  Weaknesses
+        isNewbie: false,
+        isRushing: false,
+        isLagging: false,
+        isTechnicallyPoor: false,
+        isInjuryProne: false,
+        isLoadManaged: false,
+      }
+    );
 
-    const foundAthlete = await athlete.findUnique({
-      where: {
-        email: fakeEmail,
-      },
-    });
+    // await athlete.create({
+    //   data: {
+    //     email: fakeEmail,
+    //     firstName: faker.person.firstName(),
+    //     lastName: faker.person.lastName(),
+    //     eligibility: faker.helpers.arrayElement(["O", "W"]),
+    //     paddleSide: faker.helpers.arrayElement(["L", "R", "B", "N"]),
+    //     weight: faker.number.int({ min: 90, max: 240 }),
+    //     notes: faker.lorem.lines({ min: 1, max: 2 }),
+    //     isAvailable: faker.datatype.boolean(),
+    //     isManager: false,
+    //     paddlerSkills: {
+    //       create: {
+    //         isSteers: false,
+    //         isDrummer: false,
+    //         isStroker: false,
+    //         isCaller: false,
+    //         isBailer: false,
+    //         //  Section
+    //         isPacer: false,
+    //         isEngine: false,
+    //         isRocket: false,
+    //         //  Race Distances
+    //         is200m: false,
+    //         is500m: false,
+    //         is1000m: false,
+    //         is2000m: false,
+    //         //  Strengths
+    //         isVeteran: false,
+    //         isSteadyTempo: false,
+    //         isVocal: false,
+    //         isTechnicallyProficient: false,
+    //         isLeader: false,
+    //         //  Weaknesses
+    //         isNewbie: false,
+    //         isRushing: false,
+    //         isLagging: false,
+    //         isTechnicallyPoor: false,
+    //         isInjuryProne: false,
+    //         isLoadManaged: false,
+    //       },
+    //     },
+    //   },
+    // });
+
+    const foundAthlete = await checkForEmail(fakeEmail);
 
     await athletesInTeams.create({
       data: {
@@ -228,15 +263,15 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  const foundTeam = await team.findUnique({
-    where: {
-      id: teamId,
-    },
-    include: {
-      lineups: true,
-      athletes: true,
-    },
-  });
+  // const foundTeam = await team.findUnique({
+  //   where: {
+  //     id: teamId,
+  //   },
+  //   include: {
+  //     lineups: true,
+  //     athletes: true,
+  //   },
+  // });
 
   const foundLineups = await findLineups(teamId);
 
