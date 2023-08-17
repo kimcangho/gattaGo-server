@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 const { athlete, athletesInTeams, athletesInLineups, paddlerSkills } =
   new PrismaClient();
 
-//  Check for athlete by ID
 const checkForAthlete = async (id: string) => {
   return await athlete.findUnique({
     where: {
@@ -14,7 +13,6 @@ const checkForAthlete = async (id: string) => {
   });
 };
 
-//  Check for athlete by email
 const checkForEmail = async (email: string) => {
   return await athlete.findUnique({
     where: {
@@ -23,7 +21,6 @@ const checkForEmail = async (email: string) => {
   });
 };
 
-//  Create athlete in team
 const createAthleteInTeam = async (teamId: string, athleteId: string) => {
   await athletesInTeams.create({
     data: {
@@ -33,7 +30,6 @@ const createAthleteInTeam = async (teamId: string, athleteId: string) => {
   });
 };
 
-//  Create Athlete
 const createAthlete = async (
   email: string,
   firstName: string,
