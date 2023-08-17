@@ -44,6 +44,18 @@ const findTeamAthletesWithAthletes = async (teamId: string) => {
   });
 };
 
+const findTeamAthletesWithPaddlerSkills = async (teamId: string) => {
+  return await athletesInTeams.findMany({
+    where: {
+      teamId,
+    },
+    include: { athlete: { include: { paddlerSkills: true } } },
+    orderBy: {
+      updatedAt: "asc",
+    },
+  });
+};
+
 const createTeam = async (
   name: string,
   division: string,
@@ -155,6 +167,109 @@ const findTeamLineup = async (teamId: string, lineupId: string) => {
   });
 };
 
+const deleteTeamAthletes = async (teamId: string) => {
+  await athletesInTeams.deleteMany({
+    where: {
+      teamId,
+    },
+  });
+};
+
+const deleteTeamAthlete = async (teamId: string, athleteId: string) => {
+  await athletesInTeams.deleteMany({
+    where: {
+      athleteId,
+      teamId,
+    },
+  });
+};
+
+const findExistingTeamAthlete = async (teamId: string, athleteId: string) => {
+  return await athletesInTeams.findFirst({
+    where: {
+      teamId,
+      athleteId,
+    },
+  });
+};
+
+const countTeamAthletes = async (teamId: string) => {
+  return await athletesInTeams.count({
+    where: {
+      teamId,
+    },
+  });
+};
+
+const countPaddleSides = async (teamId: string, paddleSide: string) => {
+  return await athletesInTeams.count({
+    where: {
+      teamId,
+      athlete: {
+        paddleSide,
+      },
+    },
+  });
+};
+
+const countAvailabilities = async (teamId: string, flag: boolean) => {
+  return await athletesInTeams.count({
+    where: {
+      teamId,
+      athlete: {
+        isAvailable: flag,
+      },
+    },
+  });
+};
+
+const countEligibilities = async (teamId: string, flag: string) => {
+  return await athletesInTeams.count({
+    where: {
+      teamId,
+      athlete: {
+        eligibility: flag,
+      },
+    },
+  });
+};
+
+const countAthleteWeights = async (
+  teamId: string,
+  eligibility: string,
+  weightFloor: number,
+  weightCeiling: number
+) => {
+  return await athletesInTeams.count({
+    where: {
+      teamId,
+      athlete: {
+        eligibility,
+        weight: {
+          gte: weightFloor,
+          lt: weightCeiling,
+        },
+      },
+    },
+  });
+};
+
+const getAthleteWeights = async (teamId: string) => {
+  return await athletesInTeams.findMany({
+    where: {
+      teamId,
+    },
+    include: {
+      athlete: {
+        select: {
+          weight: true,
+          eligibility: true,
+        },
+      },
+    },
+  });
+};
+
 export {
   checkForTeam,
   checkForTeamName,
@@ -164,8 +279,18 @@ export {
   countTeams,
   findTeamAthletes,
   findTeamAthletesWithAthletes,
+  findTeamAthletesWithPaddlerSkills,
   updateTeam,
   deleteTeam,
+  deleteTeamAthlete,
+  deleteTeamAthletes,
   findTeamLineups,
   findTeamLineup,
+  findExistingTeamAthlete,
+  countTeamAthletes,
+  countPaddleSides,
+  countAvailabilities,
+  countEligibilities,
+  countAthleteWeights,
+  getAthleteWeights,
 };

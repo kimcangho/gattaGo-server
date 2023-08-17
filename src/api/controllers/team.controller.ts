@@ -1,23 +1,33 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client"; //  to remove
 import {
   checkForTeam,
   checkForTeamName,
+  countAthleteWeights,
+  countAvailabilities,
+  countEligibilities,
+  countPaddleSides,
+  countTeamAthletes,
   countTeams,
   createTeam,
   createTeamWithLineup,
   deleteTeam,
+  deleteTeamAthlete,
+  deleteTeamAthletes,
+  findExistingTeamAthlete,
   findTeamAthletes,
   findTeamAthletesWithAthletes,
+  findTeamAthletesWithPaddlerSkills,
   findTeamLineup,
   findTeamLineups,
   findTeams,
+  getAthleteWeights,
   updateTeam,
 } from "../services/team.services";
 import {
   checkForAthlete,
   checkForEmail,
   createAthlete,
+  createAthleteInTeam,
 } from "../services/athlete.services";
 import {
   checkForLineup,
@@ -32,7 +42,6 @@ import {
   populateLineup,
   updateLineup,
 } from "../services/lineup.services";
-const { athletesInTeams } = new PrismaClient(); //  to remove
 import { faker } from "@faker-js/faker";
 
 //  *** Team Requests ***
@@ -144,13 +153,7 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
     );
 
     const foundAthlete = await checkForEmail(fakeEmail);
-
-    await athletesInTeams.create({
-      data: {
-        teamId: foundDuplicateTeam!.id,
-        athleteId: foundAthlete!.id,
-      },
-    });
+    await createAthleteInTeam(foundDuplicateTeam!.id, foundAthlete!.id);
   }
 
   const foundTeams = await findTeams(userId);
@@ -216,20 +219,13 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  const athletesInTeam = await athletesInTeams.findMany({
-    where: { teamId },
-  });
+  const foundTeamAthletes = await findTeamAthletes(teamId);
 
-  for (let athleteUnit of athletesInTeam) {
+  for (let athleteUnit of foundTeamAthletes) {
     await deleteAthletesInLineups(athleteUnit.athleteId);
   }
 
-  await athletesInTeams.deleteMany({
-    where: {
-      teamId,
-    },
-  });
-
+  await deleteTeamAthletes(teamId);
   await deleteLineups(teamId);
   await deleteTeam(teamId);
 
@@ -242,16 +238,7 @@ const getAllAthletesByTeamID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
-  const foundTeamAthletes = await athletesInTeams.findMany({
-    where: {
-      teamId,
-    },
-    include: { athlete: { include: { paddlerSkills: true } } },
-    orderBy: {
-      updatedAt: "asc",
-    },
-  });
-
+  const foundTeamAthletes = await findTeamAthletesWithPaddlerSkills(teamId);
   res.status(200).send(foundTeamAthletes);
 };
 
@@ -259,12 +246,7 @@ const deleteAllAthletesByTeamID = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
-  await athletesInTeams.deleteMany({
-    where: {
-      teamId,
-    },
-  });
-
+  await deleteTeamAthletes(teamId);
   res.status(204).send({ msg: `Athletes removed from team ${teamId}!` });
 };
 
@@ -285,23 +267,17 @@ const addAthleteToTeamByID = async (req: Request, res: Response) => {
   if (!checkedAthlete)
     return res.send({ msg: `Athlete ${athleteId} does not exist!` });
 
-  const checkExistingAthleteInTeam = await athletesInTeams.findFirst({
-    where: {
-      teamId,
-      athleteId,
-    },
-  });
-  if (checkExistingAthleteInTeam)
+  const foundExistingTeamAthlete = await findExistingTeamAthlete(
+    teamId,
+    athleteId
+  );
+
+  if (foundExistingTeamAthlete)
     return res
       .status(404)
       .send(`Athlete ${athleteId} already exists in team ${teamId}!`);
 
-  await athletesInTeams.create({
-    data: {
-      athleteId,
-      teamId,
-    },
-  });
+  await createAthleteInTeam(athleteId, teamId);
 
   res.status(201).send({
     msg: `Athlete ${athleteId} successfully added to team ${teamId}!`,
@@ -320,13 +296,7 @@ const deleteAthleteFromTeamByID = async (req: Request, res: Response) => {
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   await deleteAthletesInLineups(athleteId);
-
-  await athletesInTeams.deleteMany({
-    where: {
-      athleteId,
-      teamId,
-    },
-  });
+  await deleteTeamAthlete(teamId, athleteId);
 
   res
     .status(204)
@@ -458,11 +428,7 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
 
-  const athleteCount = await athletesInTeams.count({
-    where: {
-      teamId,
-    },
-  });
+  const athleteCount = await countTeamAthletes(teamId);
   if (!athleteCount)
     return res.status(200).send({
       athleteCount: false,
@@ -479,56 +445,28 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
   const paddleSideArr = ["L", "B", "R", "N"];
-  const countPaddleSides = async (side: string) => {
-    return await athletesInTeams.count({
-      where: {
-        teamId,
-        athlete: {
-          paddleSide: side,
-        },
-      },
-    });
-  };
   const countAllPaddleSides = async () => {
-    return Promise.all(paddleSideArr.map((side) => countPaddleSides(side)));
+    return Promise.all(
+      paddleSideArr.map((paddleSide) => countPaddleSides(teamId, paddleSide))
+    );
   };
   const paddleSideCountArr = await countAllPaddleSides();
 
   const availabilityArr = [true, false];
-  const countAvailabilities = async (flag: boolean) => {
-    return await athletesInTeams.count({
-      where: {
-        teamId,
-        athlete: {
-          isAvailable: flag,
-        },
-      },
-    });
-  };
   const countAllAvailabilities = async () => {
     return Promise.all(
       availabilityArr.map((availabilityFlag) =>
-        countAvailabilities(availabilityFlag)
+        countAvailabilities(teamId, availabilityFlag)
       )
     );
   };
   const availabilityCountArr = await countAllAvailabilities();
 
   const eligibilityArr = ["O", "W"];
-  const countEligibilities = async (flag: string) => {
-    return await athletesInTeams.count({
-      where: {
-        teamId,
-        athlete: {
-          eligibility: flag,
-        },
-      },
-    });
-  };
   const countAllEligibilities = async () => {
     return Promise.all(
       eligibilityArr.map((eligibilityFlag) =>
-        countEligibilities(eligibilityFlag)
+        countEligibilities(teamId, eligibilityFlag)
       )
     );
   };
@@ -544,31 +482,15 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
     { weightFloor: 200, weightCeiling: 220 },
     { weightFloor: 220, weightCeiling: 9999999999 },
   ];
-  const countWeights = async (
-    weightFloor: number,
-    weightCeiling: number,
-    eligibility: string
-  ) => {
-    return await athletesInTeams.count({
-      where: {
-        teamId,
-        athlete: {
-          eligibility,
-          weight: {
-            gte: weightFloor,
-            lt: weightCeiling,
-          },
-        },
-      },
-    });
-  };
+
   const countAllWeights = async (eligibility: string) => {
     return Promise.all(
       weightArr.map((weightFlag: any) =>
-        countWeights(
+        countAthleteWeights(
+          teamId,
+          eligibility,
           weightFlag.weightFloor,
-          weightFlag.weightCeiling,
-          eligibility
+          weightFlag.weightCeiling
         )
       )
     );
@@ -576,20 +498,7 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   const weightCountArrOpen = await countAllWeights("O");
   const weightCountArrWomen = await countAllWeights("W");
 
-  const getWeights = await athletesInTeams.findMany({
-    where: {
-      teamId,
-    },
-    include: {
-      athlete: {
-        select: {
-          weight: true,
-          eligibility: true,
-        },
-      },
-    },
-  });
-
+  const getWeights = await getAthleteWeights(teamId);
   const sumWeights: number = getWeights.reduce(
     (accumulator: number, currrentValue: any) => {
       return accumulator + currrentValue.athlete.weight;

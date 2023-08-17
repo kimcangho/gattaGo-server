@@ -24,11 +24,11 @@ const checkForEmail = async (email: string) => {
 };
 
 //  Create athlete in team
-const createAthleteInTeam = async (teamId: string, id: string) => {
-  return await athletesInTeams.create({
+const createAthleteInTeam = async (teamId: string, athleteId: string) => {
+  await athletesInTeams.create({
     data: {
-      teamId: teamId,
-      athleteId: id,
+      teamId,
+      athleteId,
     },
   });
 };
