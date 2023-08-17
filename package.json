@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon dist/index.js & tsc -w",
+    "dev": "tsc && node dist/index.js",
     "serve": "nodemon dist/index.js",
     "authDev": "nodemon dist/auth.js & tsc -w",
     "migrate": "npx prisma migrate dev --name init",
