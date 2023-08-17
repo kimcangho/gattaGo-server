@@ -1,12 +1,21 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client"; //  to remove
+import { checkForTeam } from "../middleware/checks"; //  to refactor
+import { checkForAthlete } from "../services/athlete.services";
 import {
-  checkForAthlete,
   checkForLineup,
-  checkForTeam,
-} from "../middleware/checks";
-const { team, athlete, lineup, athletesInTeams, athletesInLineups } =
-  new PrismaClient();
+  createAthleteInLineup,
+  createLineup,
+  deleteAthletesInLineups,
+  deleteLineup,
+  deleteLineups,
+  deleteTeamLineups,
+  findLineupIDs,
+  findLineups,
+  populateLineup,
+  updateLineup,
+} from "../services/lineup.services";
+const { team, athlete, athletesInTeams } = new PrismaClient(); //  to remove
 import { faker } from "@faker-js/faker";
 
 //  *** Team Requests ***
@@ -194,31 +203,16 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
     },
   });
 
-  const foundLineups = await lineup.findMany({
-    where: {
-      teamId: foundTeam!.id,
-    },
-  });
-
-  const shuffleRoster = async (foundRoster: any, index: number) => {
-    return foundRoster;
-  };
+  const foundLineups = await findLineups(foundTeam!.id);
 
   const populateRoster = async (shuffledRoster: any, foundLineup: any) => {
     for (let i = 0; i < 22; i++) {
-      await athletesInLineups.create({
-        data: {
-          position: i,
-          athleteId: shuffledRoster[i].athleteId,
-          lineupId: foundLineup.id,
-        },
-      });
+      await populateLineup(i, shuffledRoster[i].athleteId, foundLineup.id);
     }
   };
 
-  foundLineups.forEach(async (foundLineup, index) => {
-    const shuffledRoster = await shuffleRoster(foundRoster, index);
-    await populateRoster(shuffledRoster, foundLineup);
+  foundLineups.forEach(async (foundLineup) => {
+    await populateRoster(foundRoster, foundLineup);
   });
 
   if (foundTeams) return res.status(200).send(foundTeams);
@@ -244,11 +238,7 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
     },
   });
 
-  const foundLineups = await lineup.findMany({
-    where: {
-      teamId,
-    },
-  });
+  const foundLineups = await findLineups(teamId);
 
   const foundAthletes = await athletesInTeams.findMany({
     where: { teamId },
@@ -301,11 +291,7 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
   });
 
   for (let athleteUnit of athletesInTeam) {
-    await athletesInLineups.deleteMany({
-      where: {
-        athleteId: athleteUnit.athleteId,
-      },
-    });
+    await deleteAthletesInLineups(athleteUnit.athleteId);
   }
 
   await athletesInTeams.deleteMany({
@@ -314,11 +300,7 @@ const deleteSingleTeamByID = async (req: Request, res: Response) => {
     },
   });
 
-  await lineup.deleteMany({
-    where: {
-      teamId,
-    },
-  });
+  await deleteLineups(teamId);
 
   await team.delete({
     where: {
@@ -412,11 +394,7 @@ const deleteAthleteFromTeamByID = async (req: Request, res: Response) => {
   if (!checkedTeam)
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
-  await athletesInLineups.deleteMany({
-    where: {
-      athleteId,
-    },
-  });
+  await deleteAthletesInLineups(athleteId);
 
   await athletesInTeams.deleteMany({
     where: {
@@ -457,22 +435,15 @@ const postNewTeamLineup = async (req: Request, res: Response) => {
   if (!checkedTeam)
     return res.status(404).send({ msg: `Team ${teamId} not found!` });
 
-  const newLineup = await lineup.create({
-    data: {
-      name,
-      teamId,
-    },
-  });
+  const newLineup = await createLineup(name, teamId);
 
   for (let athleteUnit of athletes) {
     if (!athleteUnit.athlete.isEmpty) {
-      await athletesInLineups.create({
-        data: {
-          lineupId: newLineup.id,
-          athleteId: athleteUnit?.athleteId,
-          position: athleteUnit?.position,
-        },
-      });
+      await createAthleteInLineup(
+        newLineup.id,
+        athleteUnit?.athleteId,
+        athleteUnit?.position
+      );
     }
   }
 
@@ -483,28 +454,13 @@ const deleteAllTeamLineups = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamid!` });
 
-  const foundLineupIDs = await lineup.findMany({
-    where: {
-      teamId,
-    },
-    select: {
-      id: true,
-    },
-  });
+  const foundLineupIDs = await findLineupIDs(teamId);
 
   for (let lineupUnit of foundLineupIDs) {
-    await athletesInLineups.deleteMany({
-      where: {
-        lineupId: lineupUnit.id,
-      },
-    });
+    await deleteTeamLineups(lineupUnit.id);
   }
 
-  await lineup.deleteMany({
-    where: {
-      teamId,
-    },
-  });
+  await deleteLineups(teamId);
 
   res
     .status(204)
@@ -567,29 +523,15 @@ const updateSingleLineup = async (req: Request, res: Response) => {
   if (!checkedLineup)
     return res.status(404).send({ msg: `Lineup ${lineupId} not found!` });
 
-  await lineup.update({
-    where: {
-      id: lineupId,
-    },
-    data: {
-      name,
-    },
-  });
-
-  await athletesInLineups.deleteMany({
-    where: {
-      lineupId,
-    },
-  });
+  await updateLineup(lineupId, name);
+  await deleteLineups(lineupId);
 
   for (let athleteUnit of athletes) {
-    await athletesInLineups.create({
-      data: {
-        position: athleteUnit.position,
-        lineupId,
-        athleteId: athleteUnit.athleteId,
-      },
-    });
+    await createAthleteInLineup(
+      lineupId,
+      athleteUnit.athleteId,
+      athleteUnit.position
+    );
   }
 
   return res.status(200).send({ name, lineupId });
@@ -609,17 +551,8 @@ const deleteSingleLineup = async (req: Request, res: Response) => {
   if (!checkedLineup)
     return res.status(404).send({ msg: `Lineup ${lineupId} not found!` });
 
-  await athletesInLineups.deleteMany({
-    where: {
-      lineupId,
-    },
-  });
-
-  await lineup.delete({
-    where: {
-      id: lineupId,
-    },
-  });
+  await deleteTeamLineups(lineupId);
+  await deleteLineup(lineupId);
 
   res.status(204).send({
     msg: `Successfully deleted lineup ${lineupId} from team ${teamId}!`,
