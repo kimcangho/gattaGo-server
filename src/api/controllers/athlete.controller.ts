@@ -103,6 +103,9 @@ const updateAthleteByID = async (req: Request, res: Response) => {
   const checkedEmail = await athlete.findUnique({
     where: {
       email,
+      NOT: {
+        id: athleteId,
+      },
     },
   });
   if (checkedEmail) {

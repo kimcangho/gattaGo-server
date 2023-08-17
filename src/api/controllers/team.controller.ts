@@ -8,12 +8,14 @@ import {
 } from "../middleware/checks";
 const {
   team,
+  athlete,
   lineup,
   athletesInTeams,
   // teamsInRegattas,
   // teamsInEvents,
   athletesInLineups,
 } = new PrismaClient();
+import { faker } from "@faker-js/faker";
 
 //  *** Team Requests ***
 
@@ -50,6 +52,187 @@ const createUserTeam = async (req: Request, res: Response) => {
   });
 
   res.status(201).send({ msg: "Successfully created new team!" });
+};
+
+const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  const capitalizeFirstLetter = (word: string) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  };
+
+  const teamCount = await team.count({
+    where: {
+      userId,
+    },
+  });
+  if (teamCount)
+    return res
+      .status(404)
+      .send({ msg: "Already have teams, abort auto-generate." });
+
+  let teamName = "";
+  while (true) {
+    teamName = `The ${capitalizeFirstLetter(
+      faker.word.adjective()
+    )} ${capitalizeFirstLetter(faker.word.noun())}s`;
+
+    const checkedTeam = await team.findFirst({
+      where: {
+        name: teamName,
+      },
+    });
+    if (!checkedTeam) break;
+  }
+
+  await team.create({
+    data: {
+      name: teamName,
+      division: faker.helpers.arrayElement([
+        "u18",
+        "u24",
+        "premier",
+        "seniora",
+        "seniorb",
+        "seniorc",
+        "para",
+      ]),
+      level: faker.helpers.arrayElement(["sport", "community"]),
+      eligibility: faker.helpers.arrayElement(["open", "women", "mixed"]),
+      userId,
+      lineups: {
+        create: [
+          {
+            name: `${teamName} - Sample Lineup`,
+          },
+        ],
+      },
+    },
+  });
+
+  const foundTeam = await team.findFirst({
+    where: {
+      name: teamName,
+    },
+  });
+
+  for (let i = 0; i < 30; i++) {
+    let fakeEmail = "";
+    while (true) {
+      fakeEmail = `${faker.word.noun()}@${faker.company.name()}.com`;
+
+      const checkedEmail = await athlete.findUnique({
+        where: {
+          email: fakeEmail,
+        },
+      });
+      if (!checkedEmail) break;
+    }
+
+    await athlete.create({
+      data: {
+        email: fakeEmail,
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        eligibility: faker.helpers.arrayElement(["O", "W"]),
+        paddleSide: faker.helpers.arrayElement(["L", "R", "B", "N"]),
+        weight: faker.number.int({ min: 90, max: 240 }),
+        notes: faker.lorem.lines({ min: 1, max: 2 }),
+        isAvailable: faker.datatype.boolean(),
+        isManager: false,
+        paddlerSkills: {
+          create: {
+            isSteers: false,
+            isDrummer: false,
+            isStroker: false,
+            isCaller: false,
+            isBailer: false,
+            //  Section
+            isPacer: false,
+            isEngine: false,
+            isRocket: false,
+            //  Race Distances
+            is200m: false,
+            is500m: false,
+            is1000m: false,
+            is2000m: false,
+            //  Strengths
+            isVeteran: false,
+            isSteadyTempo: false,
+            isVocal: false,
+            isTechnicallyProficient: false,
+            isLeader: false,
+            //  Weaknesses
+            isNewbie: false,
+            isRushing: false,
+            isLagging: false,
+            isTechnicallyPoor: false,
+            isInjuryProne: false,
+            isLoadManaged: false,
+          },
+        },
+      },
+    });
+
+    const foundAthlete = await athlete.findUnique({
+      where: {
+        email: fakeEmail,
+      },
+    });
+
+    await athletesInTeams.create({
+      data: {
+        teamId: foundTeam!.id,
+        athleteId: foundAthlete!.id,
+      },
+    });
+  }
+
+  const foundTeams = await team.findMany({
+    where: {
+      userId,
+    },
+  });
+
+  //  get athletes by teamId
+
+  const foundRoster = await athletesInTeams.findMany({
+    where: {
+      teamId: foundTeam!.id,
+    },
+  });
+
+  const foundLineups = await lineup.findMany({
+    where: {
+      teamId: foundTeam!.id,
+    },
+  });
+  console.log(foundLineups);
+
+  const shuffleRoster = async (foundRoster: any, index: number) => {
+    return foundRoster;
+  };
+
+  const populateRoster = async (shuffledRoster: any, foundLineup: any) => {
+    for (let i = 0; i < 22; i++) {
+      await athletesInLineups.create({
+        data: {
+          position: i,
+          athleteId: shuffledRoster[i].athleteId,
+          lineupId: foundLineup.id,
+        },
+      });
+    }
+  };
+
+  foundLineups.forEach(async (foundLineup, index) => {
+    console.log(typeof index);
+    const shuffledRoster = await shuffleRoster(foundRoster, index);
+    await populateRoster(shuffledRoster, foundLineup);
+  });
+
+  if (foundTeams) return res.status(200).send(foundTeams);
+  res.status(404).send({ msg: "No teams found" });
 };
 
 //  Team ID
@@ -709,6 +892,7 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
 export {
   getAllUserTeams,
   createUserTeam,
+  generateUserTeamAthletesLineups,
   getSingleTeamByID,
   updateSingleTeamByID,
   deleteSingleTeamByID,

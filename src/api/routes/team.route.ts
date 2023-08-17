@@ -19,6 +19,7 @@ import {
   postNewTeamLineup,
   updateSingleLineup,
   getTeamDashboardDetails,
+  generateUserTeamAthletesLineups,
 } from "../controllers/team.controller";
 
 const router: Router = Router();
@@ -28,6 +29,8 @@ router
   .route("/user/:userId")
   .get(getAllUserTeams) //  get all teams from database by userID
   .post(createUserTeam); //  create single team for user with userID
+
+router.route("/user/:userId/generateFullTeam").post(generateUserTeamAthletesLineups); //  create single team for user with userID
 
 //  Team ID
 router
@@ -72,6 +75,6 @@ router
   .delete(deleteSingleLineup); //  delete single lineup
 
 //  Dashboard Specifics
-router.route("/:teamId/dashboard").get(getTeamDashboardDetails);  //  get dashboard specs for team
+router.route("/:teamId/dashboard").get(getTeamDashboardDetails); //  get dashboard specs for team
 
 export default router;

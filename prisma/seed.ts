@@ -1,5 +1,5 @@
-import regattas from "./data/regattas";
-import events from "./data/events";
+// import regattas from "./data/regattas";
+// import events from "./data/events";
 import teams from "./data/teams";
 import lineups from "./data/lineups";
 import athletes from "./data/athletes";

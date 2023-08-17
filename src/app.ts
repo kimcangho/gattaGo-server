@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authenticateToken from "./auth/middleware/authenticateToken";
-import regatta from "./api/routes/regatta.route";
+// import regatta from "./api/routes/regatta.route";
 import team from "./api/routes/team.route";
 import athlete from "./api/routes/athlete.route";
 
