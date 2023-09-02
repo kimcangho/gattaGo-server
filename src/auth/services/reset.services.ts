@@ -7,7 +7,7 @@ const findUser = async (email: string) => {
       email,
     },
   });
-  if (!foundEmail) throw new Error();
+  return foundEmail;
 };
 
 const findMatchingUserWithResetCode = async (resetCode: string) => {
@@ -23,19 +23,18 @@ const findMatchingUserWithResetCode = async (resetCode: string) => {
 const createResetCode = async (email: string) => {
   const expirationTimeInMS: number = 10 * 60 * 1000;
 
-  await passwordReset.create({
-    data: {
-      email,
-      expiresAt: new Date(Date.now() + expirationTimeInMS),
-    },
-  });
-
-  const resetCode = await passwordReset.findUnique({
+  await passwordReset.deleteMany({
     where: {
       email,
     },
   });
 
+  const resetCode = await passwordReset.create({
+    data: {
+      email,
+      expiresAt: new Date(Date.now() + expirationTimeInMS),
+    },
+  });
   return resetCode!.id;
 };
 
