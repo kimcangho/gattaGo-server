@@ -311,67 +311,71 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 #### Login user
 
 ```http
-  GET /resource/
+  POST /login/
 ```
 
-| Parameter | Type     | Description |
-| :-------- | :------- | :---------- |
-| `id`      | `string` |             |
+| Request Body | Type     | Description   |
+| :----------- | :------- | :------------ |
+| `email`      | `string` | User email    |
+| `password`   | `string` | User password |
 
 #### Logout user
 
 ```http
-  GET /resource/
+  DELETE /logout/
 ```
 
-| Parameter | Type     | Description |
-| :-------- | :------- | :---------- |
-| `id`      | `string` |             |
+| Cookie         | Type     | Description   |
+| :------------- | :------- | :------------ |
+| `refreshToken` | `string` | Refresh token |
 
-#### Refresh token
+#### Issue new refresh token
 
 ```http
-  GET /resource/
+  GET /refresh/
 ```
 
-| Parameter | Type     | Description |
-| :-------- | :------- | :---------- |
-| `id`      | `string` |             |
+| Cookie         | Type     | Description   |
+| :------------- | :------- | :------------ |
+| `refreshToken` | `string` | Refresh token |
 
 #### Register user
 
 ```http
-  GET /resource/
+  POST /register/
 ```
 
-| Parameter | Type     | Description |
-| :-------- | :------- | :---------- |
-| `id`      | `string` |             |
+| Request Body | Type     | Description   |
+| :----------- | :------- | :------------ |
+| `email`      | `string` | User email    |
+| `password`   | `string` | User password |
 
-#### Reset Password
+#### Send reset password email
 
 ```http
-  GET /resource/
+  POST /reset/
 ```
 
-| Parameter | Type     | Description |
-| :-------- | :------- | :---------- |
-| `id`      | `string` |             |
+| Request Body | Type     | Description |
+| :----------- | :------- | :---------- |
+| `email`      | `string` | User email  |
 
-#### Update Password
+#### Update password
 
 ```http
-  GET /resource/
+  PUT /reset/
 ```
 
-| Parameter | Type     | Description |
-| :-------- | :------- | :---------- |
-| `id`      | `string` |             |
+| Request Body | Type     | Description         |
+| :----------- | :------- | :------------------ |
+| `email`      | `string` | User email          |
+| `password`   | `string` | User password       |
+| `resetCode`  | `string` | Password reset code |
 
-#### Get user email
+#### Get user email for password reset
 
 ```http
-  GET /resource/
+  GET /reset/:resetCodeId
 ```
 
 | Parameter | Type     | Description |
