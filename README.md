@@ -380,9 +380,9 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
   GET /reset/:resetCodeId
 ```
 
-| Parameter | Type     | Description         |
-| :-------- | :------- | :------------------ |
-| `id`      | `string` | Password reset code |
+| Parameter     | Type     | Description         |
+| :------------ | :------- | :------------------ |
+| `resetCodeId` | `string` | Password reset code |
 
 ## Setup
 
