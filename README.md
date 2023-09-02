@@ -402,14 +402,33 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 ### Scripts
 
-```http
-  npm build
-```
-> npm build
-
 Compile Typescript code into Javascript.
 
-<!-- `write-your-code-here` -->
+> npm run build
+
+Compile Typescript code into Javascript and spin up server.
+
+> npm run dev
+
+Spin up server.
+
+> npm run serve
+
+Create Prisma MySQL database schemas.
+
+> npm run migrate
+
+Execute seed file to populate database with sample users, teams, athletes, and lineups.
+
+> npm run seed
+
+Reset database with seed data.
+
+> npm run reseed.
+
+Launch Prisma Studio UI in browser.
+
+> npm run studio
 
 ## Project Status
 
