@@ -470,8 +470,8 @@ const sendEmail = (
             <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
               <tr>
                 <td class="email-masthead">
-                  <a href="https://example.com" class="f-fallback email-masthead_name">
-                  [Product Name]
+                  <a href="http://localhost:5173/" class="f-fallback email-masthead_name">
+                  gattaGo
                 </a>
                 </td>
               </tr>
@@ -512,8 +512,9 @@ const sendEmail = (
                             </tr>
                           </table>
                           ${
-                            resetCode &&
-                            "<p>If you did not request a password reset, please ignore this email.</p>"
+                            resetCode
+                              ? "<p>If you did not request a password reset, please ignore this email.</p>"
+                              : ""
                           }
                           <p>Thanks,
                             <br>The gattaGo team</p>
