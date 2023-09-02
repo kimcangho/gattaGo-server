@@ -4,17 +4,11 @@ interface MailOptionsData {
   from?: string;
   to: string;
   subject: string;
-  // text: string;
   email: string;
   html: string;
 }
 
-const sendEmail = (
-  email: string,
-  subject: string,
-  // text: string,
-  resetCode?: string
-) => {
+const sendEmail = (email: string, subject: string, resetCode?: string) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -555,8 +549,6 @@ const sendEmail = (
     </body>
   </html>`;
 
-  const sendPasswordResetConfirmationData: string = "";
-
   const mailOptions: MailOptionsData = {
     from: process.env.HOST_GMAIL,
     to: email,
@@ -567,7 +559,6 @@ const sendEmail = (
 
   transporter.sendMail(mailOptions, (err, _success) => {
     if (err) console.log(err);
-    else console.log("Email sent!");
   });
 };
 
