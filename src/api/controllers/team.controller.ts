@@ -5,13 +5,8 @@ import {
   checkForLineup,
   checkForTeam,
 } from "../middleware/checks";
-const {
-  team,
-  athlete,
-  lineup,
-  athletesInTeams,
-  athletesInLineups,
-} = new PrismaClient();
+const { team, athlete, lineup, athletesInTeams, athletesInLineups } =
+  new PrismaClient();
 import { faker } from "@faker-js/faker";
 
 //  *** Team Requests ***
@@ -113,6 +108,8 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
     },
   });
 
+  console.log(foundTeam?.eligibility);
+
   for (let i = 0; i < 30; i++) {
     let fakeEmail = "";
     while (true) {
@@ -131,7 +128,12 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
         email: fakeEmail,
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        eligibility: faker.helpers.arrayElement(["O", "W"]),
+        eligibility:
+          foundTeam?.eligibility === "women"
+            ? "W"
+            : foundTeam?.eligibility === "open"
+            ? "O"
+            : faker.helpers.arrayElement(["O", "W"]),
         paddleSide: faker.helpers.arrayElement(["L", "R", "B", "N"]),
         weight: faker.number.int({ min: 90, max: 240 }),
         notes: faker.lorem.lines({ min: 1, max: 2 }),
