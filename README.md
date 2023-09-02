@@ -402,55 +402,55 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 ### Scripts
 
-Compile Typescript code into Javascript.
+- Compile Typescript code into Javascript.
 
 > npm run build
 
-Compile Typescript code into Javascript and spin up server.
+- Compile Typescript code into Javascript and spin up server.
 
 > npm run dev
 
-Spin up server.
+- Spin up server.
 
 > npm run serve
 
-Create Prisma MySQL database schemas.
+- Create Prisma MySQL database schemas.
 
 > npm run migrate
 
-Execute seed file to populate database with sample users, teams, athletes, and lineups.
+- Execute seed file to populate database with sample users, teams, athletes, and lineups.
 
 > npm run seed
 
-Reset database with seed data.
+- Reset database with seed data.
 
 > npm run reseed.
 
-Launch Prisma Studio UI in browser.
+- Launch Prisma Studio UI in browser.
 
 > npm run studio
 
 ## Project Status
 
-Project is: _in progress_
-Currently working on: _documentation_
+Project is: _in progress_.
+Currently working on: _documentation_.
 
 ## Room for Improvement
 
 Room for improvement:
 
-- General refactoring and type-checking
+- General refactoring and type-checking.
 
 To do:
 
-- Reset password functionality (backend emailing with Typescript compatible library)
-- Eligibility restrictions for women-only teams
-- Team race day tab with exportable lineups, race plans, team site location
+- Reset password functionality (backend emailing with Typescript compatible library).
+- Eligibility restrictions for women-only teams.
+- Team race day tab with exportable lineups, race plans, team site location.
 
 Known issues:
 
-- Touch events interfering with scrolling in lineup page
-- Password reset email feature non-functional
+- Touch events interfering with scrolling in lineup page.
+- Password reset email feature non-functional.
 
 ## Contact
 
