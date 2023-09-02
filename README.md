@@ -95,7 +95,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Update team
 
-```http
+```
   PUT /teams/:teamId
 ```
 
