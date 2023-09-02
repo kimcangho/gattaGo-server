@@ -415,7 +415,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 ## Project Status
 
 Project is: _in progress_.  
-Currently working on: _documentation_.
+Currently working on: _cleanup_.
 
 ## Room for Improvement
 
