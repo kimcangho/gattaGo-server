@@ -9,7 +9,6 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 - [General Info](#general-information)
 - [Technologies Used](#technologies-used)
 - [Features](#features)
-- [Screenshots](#screenshots)
 - [Setup](#setup)
 - [Usage](#usage)
 - [Project Status](#project-status)
@@ -408,11 +407,13 @@ Room for improvement:
 To do:
 
 - Reset password functionality (backend emailing with Typescript compatible library)
+- Eligibility restrictions for women-only teams
+- Team race day tab with exportable lineups, race plans, team site location
 
 Known issues:
 
-- Touch events interfering with scrolling in lineup page.
-- Password reset email feature non-functional.
+- Touch events interfering with scrolling in lineup page
+- Password reset email feature non-functional
 
 ## Contact
 
