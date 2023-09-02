@@ -48,7 +48,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Get all teams managed by user
 
-```http
+```
   GET /teams/user/:userId
 ```
 
@@ -58,7 +58,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Create team for user to manage
 
-```http
+```
   POST /teams/user/:userId
 ```
 
@@ -75,7 +75,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Generate sample team for user (includes 30 athletes and 1 lineup)
 
-```http
+```
   POST /teams/user/:userId/generateFullTeam
 ```
 
@@ -85,7 +85,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Get team information
 
-```http
+```
   GET /teams/:teamId
 ```
 
@@ -112,7 +112,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Delete team
 
-```http
+```
   DELETE /teams/:teamId
 ```
 
@@ -122,7 +122,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Get team athletes
 
-```http
+```
   GET /teams/:teamId/athletes
 ```
 
@@ -132,7 +132,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Delete team athletes
 
-```http
+```
   DELETE /teams/:teamId/athletes
 ```
 
@@ -142,7 +142,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Create new athlete for team
 
-```http
+```
   POST /teams/:teamId/athletes/:athleteId
 ```
 
@@ -153,7 +153,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Delete athlete from team
 
-```http
+```
   DELETE /teams/:teamId/athletes/:athleteId
 ```
 
@@ -164,7 +164,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Get all lineups from team
 
-```http
+```
   GET /teams/:teamId/lineups
 ```
 
@@ -174,7 +174,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Create new lineup for team
 
-```http
+```
   POST /teams/:teamId/lineups
 ```
 
@@ -189,7 +189,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Delete all lineups from team
 
-```http
+```
   DELETE /teams/:teamId/lineups
 ```
 
@@ -199,7 +199,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Get lineup
 
-```http
+```
   GET /teams/:teamId/lineups/:lineupId
 ```
 
@@ -210,7 +210,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Update lineup
 
-```http
+```
    PUT /teams/:teamId/lineups/:lineupId
 ```
 
@@ -226,7 +226,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Delete lineup
 
-```http
+```
    DELETE /teams/:teamId/lineups/:lineupId
 ```
 
@@ -237,7 +237,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Get team dashboard details
 
-```http
+```
    GET /teams/:teamId/dashboard
 ```
 
@@ -249,7 +249,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Create new athlete
 
-```http
+```
   POST /athletes/
 ```
 
@@ -268,7 +268,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Get athlete
 
-```http
+```
   GET /athletes/:athleteId
 ```
 
@@ -278,7 +278,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Update athlete
 
-```http
+```
   PUT /athletes/:athleteId
 ```
 
@@ -300,7 +300,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Delete athlete
 
-```http
+```
   DELETE /athletes/:athleteId
 ```
 
@@ -312,7 +312,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Login user
 
-```http
+```
   POST /login/
 ```
 
@@ -323,7 +323,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Logout user
 
-```http
+```
   DELETE /logout/
 ```
 
@@ -333,7 +333,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Issue new refresh token
 
-```http
+```
   GET /refresh/
 ```
 
@@ -343,7 +343,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Register user
 
-```http
+```
   POST /register/
 ```
 
@@ -354,7 +354,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Send reset password email
 
-```http
+```
   POST /reset/
 ```
 
@@ -364,7 +364,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Update password
 
-```http
+```
   PUT /reset/
 ```
 
@@ -376,7 +376,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 #### Get user email for password reset
 
-```http
+```
   GET /reset/:resetCodeId
 ```
 
