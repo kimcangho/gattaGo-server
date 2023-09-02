@@ -2,7 +2,7 @@
 
 > gattaGo is a dragonboat team coaching tool designed to track teams, manage athletes and build boat lineups.
 
-NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gattaGo-client).
+NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gattaGo-client#readme).
 
 ## Table of Contents
 
@@ -38,8 +38,8 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 - cookie-parser - version 1.4.6
 - cors - version 2.8.5
 - dotenv - 16.0.3
-- Faker.js - version 8.0.2
-- Nodemon - version 2.0.22
+- faker.js - version 8.0.2
+- nodemon - version 2.0.22
 - ts-node - version 10.9.1
 
 ## API Reference
@@ -380,29 +380,9 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
   GET /reset/:resetCodeId
 ```
 
-| Parameter | Type     | Description |
-| :-------- | :------- | :---------- |
-| `id`      | `string` |             |
-
-## Screenshots
-
-Empty Overview Page
-![Empty Overview Page](https://res.cloudinary.com/di7kiyj3y/image/upload/v1692409325/gattago-empty-overview_miszyl.png)
-
-Team Overview Page
-![Team Overview Page](https://res.cloudinary.com/di7kiyj3y/image/upload/v1692409325/gattago-overview-team_thyzfs.png)
-
-Team Dashboard Page
-![Team Dashboard Page](https://res.cloudinary.com/di7kiyj3y/image/upload/v1692409325/gattago-dashboard_umznra.png)
-
-Team Roster Page
-![Team Roster Page](https://res.cloudinary.com/di7kiyj3y/image/upload/v1692409326/gattago-roster_opynqh.png)
-
-Team Lineup Page
-![Team Lineup Page](https://res.cloudinary.com/di7kiyj3y/image/upload/v1692409326/gattago-lineups_eyu4rd.png)
-
-Team Lineup Page with Mobile and Drag-and-Drop
-![Team Lineup Page with Mobile and Drag-and-Drop](https://res.cloudinary.com/di7kiyj3y/image/upload/v1692409326/gattago-lineups-responsive_oso1ph.png)
+| Parameter | Type     | Description         |
+| :-------- | :------- | :------------------ |
+| `id`      | `string` | Password reset code |
 
 ## Setup
 
