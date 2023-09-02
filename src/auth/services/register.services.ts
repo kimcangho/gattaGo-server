@@ -8,7 +8,7 @@ const findUser = async (email: string) => {
       email,
     },
   });
-  if (foundEmail) throw new Error();
+  if (!foundEmail) throw new Error();
 };
 
 const createUser = async (email: string, password: string) => {
