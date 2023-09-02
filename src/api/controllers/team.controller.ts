@@ -108,8 +108,6 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
     },
   });
 
-  console.log(foundTeam?.eligibility);
-
   for (let i = 0; i < 30; i++) {
     let fakeEmail = "";
     while (true) {
@@ -206,7 +204,6 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
       teamId: foundTeam!.id,
     },
   });
-  console.log(foundLineups);
 
   const shuffleRoster = async (foundRoster: any, index: number) => {
     return foundRoster;
@@ -225,7 +222,6 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
   };
 
   foundLineups.forEach(async (foundLineup, index) => {
-    console.log(typeof index);
     const shuffledRoster = await shuffleRoster(foundRoster, index);
     await populateRoster(shuffledRoster, foundLineup);
   });
