@@ -1,13 +1,13 @@
 import { Router } from "express";
 import {
   getUserEmail,
-  resetPassword,
+  sendResetPasswordEmail,
   updatePassword,
 } from "../controllers/reset.controller";
 
 const resetRouter: Router = Router();
 
-resetRouter.route("/").post(resetPassword).put(updatePassword);
+resetRouter.route("/").post(sendResetPasswordEmail).put(updatePassword);
 
 resetRouter.route("/:resetCodeId").get(getUserEmail);
 

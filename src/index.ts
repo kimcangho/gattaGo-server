@@ -19,7 +19,7 @@ const app: Express = express();
 const PORT: number | string = process.env.PORT! || 8888;
 
 app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+// app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 app.use(cookieParser());
