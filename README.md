@@ -26,19 +26,21 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 ## Technologies Used
 
-- React.js - version 18.2.0
-- TailwindCSS - version 3.3.2
-- Typescript - version 5.0.2
-- Vite.js - version 4.3.9
+- Express.js - version 4.18.2
+- Prisma - version 5.1.1
+- MySQL - version 8.0.33-arm64
+- Typescript - version 5.0.4
+- JSON Web Token - version 9.0.0
 
 ## Notable Libraries Used
 
-- axios - version 1.4.0
-- chart.js - version 4.3.3
-- dnd-kit - version 6.0.8
-- framer-motion - version 10.15.2
-- react-chart-js-2 - version 5.2.0
-- react-hook-form - version 7.44.3
+- bcrypt - version 5.1.0
+- cookie-parser - version 1.4.6
+- cors - version 2.8.5
+- dotenv - 16.0.3
+- Faker.js - version 8.0.2
+- Nodemon - version 2.0.22
+- ts-node - version 10.9.1
 
 ## API Reference
 
