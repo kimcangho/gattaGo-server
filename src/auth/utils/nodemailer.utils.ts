@@ -517,8 +517,10 @@ const sendEmail = (email: string, subject: string, resetCode?: string) => {
                             <tr>
                               <td>
                                 <p class="f-fallback sub">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
-                                <p class="f-fallback sub">http://localhost:5173/reset_password/${
-                                  resetCode ? resetCode : "login"
+                                <p class="f-fallback sub">http://localhost:5173/${
+                                  resetCode
+                                    ? `reset_password/${resetCode}`
+                                    : "login"
                                 }</p>
                               </td>
                             </tr>
