@@ -425,14 +425,13 @@ Room for improvement:
 
 To do:
 
-- Reset password functionality (backend emailing with Typescript compatible library).
+- Bug with login page user already registered state.
 - Eligibility restrictions for women-only teams.
 - Team race day tab with exportable lineups, race plans, team site location.
 
 Known issues:
 
 - Touch events interfering with scrolling in lineup page.
-- Password reset email feature non-functional.
 
 ## Contact
 
