@@ -406,6 +406,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
   npm build
 ```
 > npm build
+
 Compile Typescript code into Javascript.
 
 <!-- `write-your-code-here` -->
