@@ -7,7 +7,6 @@
     "build": "tsc",
     "dev": "tsc && node dist/index.js",
     "serve": "nodemon dist/index.js",
-    "authDev": "nodemon dist/auth.js & tsc -w",
     "migrate": "npx prisma migrate dev --name init",
     "seed": "npx prisma db seed",
     "reseed": "npx prisma migrate reset",

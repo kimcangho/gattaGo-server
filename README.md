@@ -38,6 +38,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 - cors - version 2.8.5
 - dotenv - 16.0.3
 - faker.js - version 8.0.2
+- nodemailer - version 6.9.3
 - nodemon - version 2.0.22
 - ts-node - version 10.9.1
 
@@ -385,11 +386,27 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 ## Setup
 
-Setup and installation instructions coming soon!
+1. Download or clone repository.
+2. Install application.
+   > npm i
+3. Create .env file and environment variables (refer to .env.sample files for environment variable names).
+4. Ensure that MySQL server is operational.
+5. Run script to compile Typescript code into Javascript.
+   > npm run build
+6. Run script to set up MySQL Prisma Schemas.
+   > npm run migrate
+7. Spin up back-end server.
+   > npm run serve
 
 ## Usage
 
-Details coming soon!
+### Scripts
+
+```http
+  npm build
+```
+> npm build
+Compile Typescript code into Javascript.
 
 <!-- `write-your-code-here` -->
 
