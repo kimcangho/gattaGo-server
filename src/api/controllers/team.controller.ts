@@ -5,13 +5,8 @@ import {
   checkForLineup,
   checkForTeam,
 } from "../middleware/checks";
-const {
-  team,
-  athlete,
-  lineup,
-  athletesInTeams,
-  athletesInLineups,
-} = new PrismaClient();
+const { team, athlete, lineup, athletesInTeams, athletesInLineups } =
+  new PrismaClient();
 import { faker } from "@faker-js/faker";
 
 //  *** Team Requests ***
@@ -131,7 +126,12 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
         email: fakeEmail,
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        eligibility: faker.helpers.arrayElement(["O", "W"]),
+        eligibility:
+          foundTeam?.eligibility === "women"
+            ? "W"
+            : foundTeam?.eligibility === "open"
+            ? "O"
+            : faker.helpers.arrayElement(["O", "W"]),
         paddleSide: faker.helpers.arrayElement(["L", "R", "B", "N"]),
         weight: faker.number.int({ min: 90, max: 240 }),
         notes: faker.lorem.lines({ min: 1, max: 2 }),
@@ -204,7 +204,6 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
       teamId: foundTeam!.id,
     },
   });
-  console.log(foundLineups);
 
   const shuffleRoster = async (foundRoster: any, index: number) => {
     return foundRoster;
@@ -223,7 +222,6 @@ const generateUserTeamAthletesLineups = async (req: Request, res: Response) => {
   };
 
   foundLineups.forEach(async (foundLineup, index) => {
-    console.log(typeof index);
     const shuffledRoster = await shuffleRoster(foundRoster, index);
     await populateRoster(shuffledRoster, foundLineup);
   });
