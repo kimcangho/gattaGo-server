@@ -405,7 +405,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 | Script            | Description                                                                             |
 | :---------------- | :-------------------------------------------------------------------------------------- |
 | `npm run build`   | Compile Typescript code into Javascript.                                                |
-| `npm run dev`     | Compile Typescript code into Javascript and spin up server.      |
+| `npm run dev`     | Compile Typescript code into Javascript and spin up server.                             |
 | `npm run serve`   | Spin up server.                                                                         |
 | `npm run migrate` | Create Prisma MySQL database schemas.                                                   |
 | `npm run seed`    | Execute seed file to populate database with sample users, teams, athletes, and lineups. |
@@ -425,11 +425,14 @@ Room for improvement:
 
 To do:
 
--  Optimize touch features for lineup page.
-
-Future Phase:
-
+- Optimize touch features for lineup page.
 - Team race day tab with exportable lineups, race plans, team site location.
+
+Future Phase Ideas:
+
+- User roles: managers (read+write), athletes (read-only), event organizers
+- Regatta and event support for event organizers
+- Live race day progressions and results using websockets
 
 Known issues:
 
