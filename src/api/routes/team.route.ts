@@ -42,7 +42,7 @@ router
 router
   .route("/:teamId/athletes")
   .get(getAllAthletesByTeamID) //  get all team athletes
-  .delete(deleteAllAthletesByTeamID); //  remove all athletes from team
+  // .delete(deleteAllAthletesByTeamID); //  remove all athletes from team
 
 //  Athlete ID
 router
@@ -55,7 +55,7 @@ router
   .route("/:teamId/lineups")
   .get(getAllTeamLineups) //  get all team lineups
   .post(postNewTeamLineup) //  create new team lineup
-  .delete(deleteAllTeamLineups); //  delete all team lineups
+  // .delete(deleteAllTeamLineups); //  delete all team lineups
 
 //  Lineup ID
 router
