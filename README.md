@@ -437,6 +437,7 @@ Future Phase Ideas:
 Known issues:
 
 - Touch events interfering with scrolling in lineup page.
+- Deployment issues where cookies are unable to be received by front-end from back-end.
 
 ## Contact
 
