@@ -12,7 +12,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 - [Setup](#setup)
 - [Usage](#usage)
 - [Project Status](#project-status)
-- [Room for Improvement](#room-for-improvement)
+- [Next Steps](#next-steps)
 - [Acknowledgements](#acknowledgements)
 - [Contact](#contact)
 
@@ -417,7 +417,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 Project is: _in progress_.  
 Currently working on: _cleanup_.
 
-## Room for Improvement
+## Next Steps
 
 Room for improvement:
 
@@ -425,8 +425,10 @@ Room for improvement:
 
 To do:
 
-- Bug with login page user already registered state.
-- Eligibility restrictions for women-only teams.
+-  Optimize touch features for lineup page.
+
+Future Phase:
+
 - Team race day tab with exportable lineups, race plans, team site location.
 
 Known issues:
