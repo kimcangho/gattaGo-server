@@ -430,9 +430,9 @@ To do:
 
 Future Phase Ideas:
 
-- User roles: managers (read+write), athletes (read-only), event organizers
-- Regatta and event support for event organizers
-- Live race day progressions and results using websockets
+- User roles: managers (read+write), athletes (read-only), event organizers.
+- Regatta and event support for event organizers.
+- Live race day progressions and results using websockets.
 
 Known issues:
 
