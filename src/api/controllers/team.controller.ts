@@ -833,6 +833,24 @@ const getRaceDayPlans = async (req: Request, res: Response) => {
 
 const createRaceDayPlan = async (req: Request, res: Response) => {
   const { teamId } = req.params;
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
+
+  const { name, startDate, endDate, location } = req.body;
+
+  const checkedTeam = await checkForTeam(teamId);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
+
+  const newRaceDayPlan = await raceDayPlans.create({
+    data: {
+      name,
+      startDate,
+      endDate,
+      location,
+      teamId,
+    },
+  });
+
+  return res.status(200).send(newRaceDayPlan);
 };
 
 //  Race Day Plan ID
