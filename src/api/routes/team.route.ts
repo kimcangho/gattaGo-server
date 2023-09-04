@@ -6,17 +6,21 @@ import {
   updateSingleTeamByID,
   deleteSingleTeamByID,
   getAllAthletesByTeamID,
-  deleteAllAthletesByTeamID,
+  // deleteAllAthletesByTeamID,
   addAthleteToTeamByID,
   deleteAthleteFromTeamByID,
   getAllTeamLineups,
   getSingleTeamLineup,
-  deleteAllTeamLineups,
+  // deleteAllTeamLineups,
   deleteSingleLineup,
   postNewTeamLineup,
   updateSingleLineup,
   getTeamDashboardDetails,
   generateUserTeamAthletesLineups,
+  getRaceDayPlans,
+  createRaceDayPlan,
+  editRaceDayPlan,
+  deleteRaceDayPlan,
 } from "../controllers/team.controller";
 
 const router: Router = Router();
@@ -39,10 +43,8 @@ router
   .delete(deleteSingleTeamByID); //  delete single team
 
 //  No Athlete ID
-router
-  .route("/:teamId/athletes")
-  .get(getAllAthletesByTeamID) //  get all team athletes
-  // .delete(deleteAllAthletesByTeamID); //  remove all athletes from team
+router.route("/:teamId/athletes").get(getAllAthletesByTeamID); //  get all team athletes
+// .delete(deleteAllAthletesByTeamID); //  remove all athletes from team
 
 //  Athlete ID
 router
@@ -54,8 +56,8 @@ router
 router
   .route("/:teamId/lineups")
   .get(getAllTeamLineups) //  get all team lineups
-  .post(postNewTeamLineup) //  create new team lineup
-  // .delete(deleteAllTeamLineups); //  delete all team lineups
+  .post(postNewTeamLineup); //  create new team lineup
+// .delete(deleteAllTeamLineups); //  delete all team lineups
 
 //  Lineup ID
 router
@@ -66,5 +68,17 @@ router
 
 //  Dashboard Specifics
 router.route("/:teamId/dashboard").get(getTeamDashboardDetails); //  get dashboard specs for team
+
+//  Race Day Plans - No ID
+router
+  .route("/:teamId/raceDayPlans/")
+  .get(getRaceDayPlans)
+  .post(createRaceDayPlan);
+
+//  Race Day Plans - ID
+router
+  .route("/:teamId/raceDayPlans/:raceDayPlanId")
+  .put(editRaceDayPlan)
+  .delete(deleteRaceDayPlan);
 
 export default router;

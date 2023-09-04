@@ -5,8 +5,14 @@ import {
   checkForLineup,
   checkForTeam,
 } from "../middleware/checks";
-const { team, athlete, lineup, athletesInTeams, athletesInLineups } =
-  new PrismaClient();
+const {
+  team,
+  athlete,
+  lineup,
+  athletesInTeams,
+  athletesInLineups,
+  raceDayPlans,
+} = new PrismaClient();
 import { faker } from "@faker-js/faker";
 
 //  *** Team Requests ***
@@ -239,15 +245,15 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  const foundTeam = await team.findUnique({
-    where: {
-      id: teamId,
-    },
-    include: {
-      lineups: true,
-      athletes: true,
-    },
-  });
+  // const foundTeam = await team.findUnique({
+  //   where: {
+  //     id: teamId,
+  //   },
+  //   include: {
+  //     lineups: true,
+  //     athletes: true,
+  //   },
+  // });
 
   const foundLineups = await lineup.findMany({
     where: {
@@ -808,6 +814,35 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
   });
 };
 
+//  No Race Day Plan ID
+const getRaceDayPlans = async (req: Request, res: Response) => {
+  const { teamId } = req.params;
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
+
+  const checkedTeam = await checkForTeam(teamId);
+  if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
+
+  const foundRaceDayPlans = await raceDayPlans.findMany({
+    where: {
+      teamId,
+    },
+  });
+
+  return res.status(200).send(foundRaceDayPlans);
+};
+
+const createRaceDayPlan = async (req: Request, res: Response) => {
+  const { teamId } = req.params;
+};
+
+//  Race Day Plan ID
+const editRaceDayPlan = async (req: Request, res: Response) => {
+  const { teamId, raceDayPlanId } = req.params;
+};
+const deleteRaceDayPlan = async (req: Request, res: Response) => {
+  const { teamId, raceDayPlanId } = req.params;
+};
+
 export {
   getAllUserTeams,
   createUserTeam,
@@ -826,4 +861,8 @@ export {
   updateSingleLineup,
   deleteSingleLineup,
   getTeamDashboardDetails,
+  getRaceDayPlans,
+  createRaceDayPlan,
+  editRaceDayPlan,
+  deleteRaceDayPlan,
 };
