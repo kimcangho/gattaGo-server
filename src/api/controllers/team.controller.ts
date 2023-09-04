@@ -857,8 +857,19 @@ const createRaceDayPlan = async (req: Request, res: Response) => {
 const editRaceDayPlan = async (req: Request, res: Response) => {
   const { teamId, raceDayPlanId } = req.params;
 };
+
 const deleteRaceDayPlan = async (req: Request, res: Response) => {
   const { teamId, raceDayPlanId } = req.params;
+  console.log(teamId, raceDayPlanId);
+  if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
+
+  await raceDayPlans.deleteMany({
+    where: {
+      id: raceDayPlanId,
+    },
+  });
+
+  return res.status(204).send({ msg: "Successfully deleted!" });
 };
 
 export {
