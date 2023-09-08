@@ -815,6 +815,7 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
 };
 
 //  No Race Day Plan ID
+//  To refactor, unused
 const getRaceDayPlans = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
@@ -831,6 +832,7 @@ const getRaceDayPlans = async (req: Request, res: Response) => {
   return res.status(200).send(foundRaceDayPlans);
 };
 
+//  To refactor, unused
 const createRaceDayPlan = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
@@ -858,6 +860,7 @@ const editRaceDayPlan = async (req: Request, res: Response) => {
   const { teamId, raceDayPlanId } = req.params;
 };
 
+//  To refactor, unused
 const deleteRaceDayPlan = async (req: Request, res: Response) => {
   const { teamId, raceDayPlanId } = req.params;
   console.log(teamId, raceDayPlanId);
