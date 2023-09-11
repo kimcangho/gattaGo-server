@@ -863,7 +863,6 @@ const editRaceDayPlan = async (req: Request, res: Response) => {
 //  To refactor, unused
 const deleteRaceDayPlan = async (req: Request, res: Response) => {
   const { teamId, raceDayPlanId } = req.params;
-  console.log(teamId, raceDayPlanId);
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   await raceDayPlans.deleteMany({
