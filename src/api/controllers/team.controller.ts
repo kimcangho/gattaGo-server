@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import {
   checkForAthlete,
   checkForLineup,
+  checkForRacePlan,
   checkForTeam,
 } from "../middleware/checks";
 const {
@@ -820,7 +821,6 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
 //  No Race Day Plan ID
 const getRacePlans = async (req: Request, res: Response) => {
   const { teamId } = req.params;
-  console.log("getting race plans!");
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
@@ -854,8 +854,6 @@ const createRacePlan = async (req: Request, res: Response) => {
       id: true,
     },
   });
-
-  console.log(newRacePlanId.id);
 
   //  Populate regatta sections
   if (regattaArr.length !== 0) {
@@ -929,19 +927,51 @@ const createRacePlan = async (req: Request, res: Response) => {
 //  Get single race plan
 const getSingleRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
-  if (!teamId || !racePlanId) return res.status(404).send({ msg: `Please include teamId and racePlanId!` });
+  if (!teamId || !racePlanId)
+    return res
+      .status(404)
+      .send({ msg: `Please include teamId and racePlanId!` });
+
+  const checkedTeam = await checkForTeam(teamId);
+  if (!checkedTeam)
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
+
+  const checkedRacePlan = await checkForRacePlan(racePlanId);
+  if (!checkedRacePlan)
+    return res.status(404).send({ msg: `Race plan ${racePlanId} not found!` });
+
+  const foundRacePlan = await racePlan.findUnique({
+    where: {
+      id: racePlanId,
+    },
+    include: {
+      regattaSection: true,
+      eventSection: true,
+      notesSection: true,
+    },
+  });
+
+  console.log(racePlanId);
+
+  return res.status(200).send(foundRacePlan);
 };
 
 //  To build out in later branch
 const editRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
-  if (!teamId || !racePlanId) return res.status(404).send({ msg: `Please include teamId and racePlanId!` });
+  if (!teamId || !racePlanId)
+    return res
+      .status(404)
+      .send({ msg: `Please include teamId and racePlanId!` });
 };
 
 const deleteRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
-  if (!teamId || !racePlanId) return res.status(404).send({ msg: `Please include teamId and racePlanId!` });
+  if (!teamId || !racePlanId)
+    return res
+      .status(404)
+      .send({ msg: `Please include teamId and racePlanId!` });
 
   await racePlan.deleteMany({
     where: {
@@ -972,6 +1002,7 @@ export {
   getTeamDashboardDetails,
   getRacePlans,
   createRacePlan,
+  getSingleRacePlan,
   editRacePlan,
   deleteRacePlan,
 };

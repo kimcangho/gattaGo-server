@@ -21,6 +21,7 @@ import {
   createRacePlan,
   editRacePlan,
   deleteRacePlan,
+  getSingleRacePlan,
 } from "../controllers/team.controller";
 
 const router: Router = Router();
@@ -78,6 +79,7 @@ router
 //  Race Day Plans - ID
 router
   .route("/:teamId/racePlans/:racePlanId")
+  .get(getSingleRacePlan)
   .put(editRacePlan)
   .delete(deleteRacePlan);
 
