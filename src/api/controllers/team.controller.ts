@@ -951,8 +951,6 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
     },
   });
 
-  console.log(racePlanId);
-
   return res.status(200).send(foundRacePlan);
 };
 
