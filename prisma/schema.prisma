@@ -135,17 +135,18 @@ model RacePlan {
   id   String @id @default(uuid())
   name String
 
-  Team           Team?                @relation(fields: [teamId], references: [id])
+  Team           Team?                @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId         String
   regattaSection RegattaPlanSection[]
   eventSection   EventPlanSection[]
   notesSection   NotesPlanSection[]
 
-  @@map(name: "racePlans")
+  @@map(name: "racePlan")
 }
 
 model RegattaPlanSection {
   id        String   @id @default(uuid())
+  order     Int
   name      String
   startDate DateTime
   endDate   DateTime
@@ -154,7 +155,7 @@ model RegattaPlanSection {
   email     String?
   phone     String?
 
-  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id])
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?
 
   @@map(name: "regattaPlanSection")
@@ -162,23 +163,25 @@ model RegattaPlanSection {
 
 model EventPlanSection {
   id        String   @id @default(uuid())
+  order     Int
   name      String
   startTime DateTime
   distance  String
   lane      Int
 
-  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id])
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?
 
   @@map(name: "eventPlanSection")
 }
 
 model NotesPlanSection {
-  id   String @id @default(uuid())
-  name String
-  body String @db.MediumText
+  id    String @id @default(uuid())
+  order Int
+  name  String
+  body  String @db.MediumText
 
-  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id])
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?
 
   @@map(name: "notesPlanSection")

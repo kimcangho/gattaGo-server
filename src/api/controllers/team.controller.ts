@@ -862,6 +862,7 @@ const createRacePlan = async (req: Request, res: Response) => {
     regattaArr.forEach(async (regattaPlan: any) => {
       const {
         name: regattaName,
+        order,
         startDate,
         endDate,
         address,
@@ -873,6 +874,7 @@ const createRacePlan = async (req: Request, res: Response) => {
       await regattaPlanSection.create({
         data: {
           name: regattaName,
+          order,
           startDate,
           endDate,
           address,
@@ -888,11 +890,12 @@ const createRacePlan = async (req: Request, res: Response) => {
   //  Populate event sections
   if (eventArr.length !== 0) {
     eventArr.forEach(async (eventPlan: any) => {
-      const { name: eventName, startTime, distance, lane } = eventPlan;
+      const { name: eventName, order, startTime, distance, lane } = eventPlan;
 
       await eventPlanSection.create({
         data: {
           name: eventName,
+          order,
           startTime,
           distance,
           lane,
@@ -905,11 +908,12 @@ const createRacePlan = async (req: Request, res: Response) => {
   //  Populate notes sections
   if (notesArr.length !== 0) {
     notesArr.forEach(async (notesPlan: any) => {
-      const { name: notesName, body } = notesPlan;
+      const { name: notesName, order, body } = notesPlan;
 
       await notesPlanSection.create({
         data: {
           name: notesName,
+          order,
           body,
           racePlanId: newRacePlanId.id,
         },
@@ -921,6 +925,13 @@ const createRacePlan = async (req: Request, res: Response) => {
 };
 
 //  Race Day Plan ID
+
+//  Get single race plan
+const getSingleRacePlan = async (req: Request, res: Response) => {
+  const { teamId, racePlanId } = req.params;
+};
+
+//  To build out in later branch
 const editRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
 };
