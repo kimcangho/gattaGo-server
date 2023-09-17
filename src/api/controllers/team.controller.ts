@@ -965,6 +965,8 @@ const editRacePlan = async (req: Request, res: Response) => {
 
 const deleteRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
+  console.log(`Deleting race plan ${racePlanId}`);
+
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
   if (!teamId || !racePlanId)
     return res
