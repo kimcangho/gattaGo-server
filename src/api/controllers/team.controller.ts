@@ -929,16 +929,19 @@ const createRacePlan = async (req: Request, res: Response) => {
 //  Get single race plan
 const getSingleRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
+  if (!teamId || !racePlanId) return res.status(404).send({ msg: `Please include teamId and racePlanId!` });
 };
 
 //  To build out in later branch
 const editRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
+  if (!teamId || !racePlanId) return res.status(404).send({ msg: `Please include teamId and racePlanId!` });
 };
 
 const deleteRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
+  if (!teamId || !racePlanId) return res.status(404).send({ msg: `Please include teamId and racePlanId!` });
 
   await racePlan.deleteMany({
     where: {
