@@ -30,17 +30,17 @@ model AuthRefreshToken {
 }
 
 model Team {
-  id           String            @id @default(uuid())
-  name         String            @db.VarChar(255)
-  division     String            @db.VarChar(255)
-  level        String            @db.VarChar(255)
-  eligibility  String            @db.VarChar(255)
-  createdAt    DateTime          @default(now())
-  lineups      Lineup[]
-  athletes     AthletesInTeams[]
-  raceDayPlans RaceDayPlans[]
-  user         User?             @relation(fields: [userId], references: [id])
-  userId       String?
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(255)
+  division    String            @db.VarChar(255)
+  level       String            @db.VarChar(255)
+  eligibility String            @db.VarChar(255)
+  createdAt   DateTime          @default(now())
+  lineups     Lineup[]
+  athletes    AthletesInTeams[]
+  racePlans   RacePlans[]
+  user        User?             @relation(fields: [userId], references: [id])
+  userId      String?
 
   @@map(name: "team")
 }
@@ -105,18 +105,6 @@ model PaddlerSkills {
   @@map(name: "paddlerSkills")
 }
 
-model RaceDayPlans {
-  id        String   @id @default(uuid())
-  name      String   @db.VarChar(255)
-  location  String   @db.VarChar(255)
-  startDate DateTime
-  endDate   DateTime
-  Team      Team?    @relation(fields: [teamId], references: [id])
-  teamId    String?
-
-  @@map(name: "raceDayPlans")
-}
-
 model AthletesInTeams {
   team      Team     @relation(fields: [teamId], references: [id])
   teamId    String
@@ -129,13 +117,68 @@ model AthletesInTeams {
 }
 
 model AthletesInLineups {
-  lineup    Lineup   @relation(fields: [lineupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  lineupId  String
-  athlete   Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   athleteId String
   position  Int
   updatedAt DateTime @default(now())
 
+  lineup   Lineup  @relation(fields: [lineupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lineupId String
+  athlete  Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
   @@id([lineupId, athleteId])
   @@map(name: "athletesInLineups")
+}
+
+//  Race plans
+
+model RacePlans {
+  id String @id @default(uuid())
+
+  Team           Team?                @relation(fields: [teamId], references: [id])
+  teamId         String
+  regattaSection RegattaPlanSection[]
+  eventSection   EventPlanSection[]
+  notesSection   NotesPlanSection[]
+
+  @@map(name: "racePlans")
+}
+
+model RegattaPlanSection {
+  id        String   @id @default(uuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  address   String?
+  contact   String?
+  email     String?
+  phone     String?
+
+  RacePlans   RacePlans? @relation(fields: [racePlansId], references: [id])
+  racePlansId String?
+
+  @@map(name: "regattaPlanSection")
+}
+
+model EventPlanSection {
+  id        String   @id @default(uuid())
+  name      String
+  startTime DateTime
+  distance  String
+  lane      Int
+
+  RacePlans   RacePlans? @relation(fields: [racePlansId], references: [id])
+  racePlansId String?
+
+  @@map(name: "eventPlanSection")
+}
+
+model NotesPlanSection {
+  id   String @id @default(uuid())
+  name String
+  body String @db.MediumText
+
+  RacePlans   RacePlans? @relation(fields: [racePlansId], references: [id])
+  racePlansId String?
+
+  @@map(name: "notesPlanSection")
 }
