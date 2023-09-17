@@ -38,7 +38,7 @@ model Team {
   createdAt   DateTime          @default(now())
   lineups     Lineup[]
   athletes    AthletesInTeams[]
-  racePlans   RacePlans[]
+  racePlans   RacePlan[]
   user        User?             @relation(fields: [userId], references: [id])
   userId      String?
 
@@ -131,8 +131,9 @@ model AthletesInLineups {
 
 //  Race plans
 
-model RacePlans {
-  id String @id @default(uuid())
+model RacePlan {
+  id   String @id @default(uuid())
+  name String
 
   Team           Team?                @relation(fields: [teamId], references: [id])
   teamId         String
@@ -153,8 +154,8 @@ model RegattaPlanSection {
   email     String?
   phone     String?
 
-  RacePlans   RacePlans? @relation(fields: [racePlansId], references: [id])
-  racePlansId String?
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id])
+  racePlanId String?
 
   @@map(name: "regattaPlanSection")
 }
@@ -166,8 +167,8 @@ model EventPlanSection {
   distance  String
   lane      Int
 
-  RacePlans   RacePlans? @relation(fields: [racePlansId], references: [id])
-  racePlansId String?
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id])
+  racePlanId String?
 
   @@map(name: "eventPlanSection")
 }
@@ -177,8 +178,8 @@ model NotesPlanSection {
   name String
   body String @db.MediumText
 
-  RacePlans   RacePlans? @relation(fields: [racePlansId], references: [id])
-  racePlansId String?
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id])
+  racePlanId String?
 
   @@map(name: "notesPlanSection")
 }

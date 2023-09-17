@@ -41,7 +41,7 @@ app.use("/logout", logoutRouter); //  logout user
 app.use("/reset", resetRouter); //  reset password
 app.use("/refresh", refreshRouter); //  refresh access token
 
-app.use(authenticateToken);
+// app.use(authenticateToken);
 app.use("/teams", team); //    team resource
 app.use("/athletes", athlete); //    athlete resource
 

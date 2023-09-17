@@ -11,7 +11,10 @@ const {
   lineup,
   athletesInTeams,
   athletesInLineups,
-  raceDayPlans,
+  racePlan,
+  regattaPlanSection,
+  eventPlanSection,
+  notesPlanSection,
 } = new PrismaClient();
 import { faker } from "@faker-js/faker";
 
@@ -815,59 +818,120 @@ const getTeamDashboardDetails = async (req: Request, res: Response) => {
 };
 
 //  No Race Day Plan ID
-//  To refactor, unused
-const getRaceDayPlans = async (req: Request, res: Response) => {
+const getRacePlans = async (req: Request, res: Response) => {
   const { teamId } = req.params;
+  console.log("getting race plans!");
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  const foundRaceDayPlans = await raceDayPlans.findMany({
+  const foundRacePlans = await racePlan.findMany({
     where: {
       teamId,
     },
   });
 
-  return res.status(200).send(foundRaceDayPlans);
+  return res.status(200).send(foundRacePlans);
 };
 
-//  To refactor, unused
-const createRaceDayPlan = async (req: Request, res: Response) => {
+//  Create race plan
+const createRacePlan = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
-  const { name, startDate, endDate, location } = req.body;
+  const { name, regattaArr, eventArr, notesArr } = req.body;
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  const newRaceDayPlan = await raceDayPlans.create({
+  const newRacePlanId = await racePlan.create({
     data: {
       name,
-      startDate,
-      endDate,
-      location,
       teamId,
+    },
+    select: {
+      id: true,
     },
   });
 
-  return res.status(200).send(newRaceDayPlan);
+  console.log(newRacePlanId.id);
+
+  //  Populate regatta sections
+  if (regattaArr.length !== 0) {
+    regattaArr.forEach(async (regattaPlan: any) => {
+      const {
+        name: regattaName,
+        startDate,
+        endDate,
+        address,
+        contact,
+        email,
+        phone,
+      } = regattaPlan;
+
+      await regattaPlanSection.create({
+        data: {
+          name: regattaName,
+          startDate,
+          endDate,
+          address,
+          contact,
+          email,
+          phone,
+          racePlanId: newRacePlanId.id,
+        },
+      });
+    });
+  }
+
+  //  Populate event sections
+  if (eventArr.length !== 0) {
+    eventArr.forEach(async (eventPlan: any) => {
+      const { name: eventName, startTime, distance, lane } = eventPlan;
+
+      await eventPlanSection.create({
+        data: {
+          name: eventName,
+          startTime,
+          distance,
+          lane,
+          racePlanId: newRacePlanId.id,
+        },
+      });
+    });
+  }
+
+  //  Populate notes sections
+  if (notesArr.length !== 0) {
+    notesArr.forEach(async (notesPlan: any) => {
+      const { name: notesName, body } = notesPlan;
+
+      await notesPlanSection.create({
+        data: {
+          name: notesName,
+          body,
+          racePlanId: newRacePlanId.id,
+        },
+      });
+    });
+  }
+
+  return res.status(200).send(newRacePlanId);
 };
 
 //  Race Day Plan ID
-const editRaceDayPlan = async (req: Request, res: Response) => {
-  const { teamId, raceDayPlanId } = req.params;
+const editRacePlan = async (req: Request, res: Response) => {
+  const { teamId, racePlanId } = req.params;
 };
 
-//  To refactor, unused
-const deleteRaceDayPlan = async (req: Request, res: Response) => {
-  const { teamId, raceDayPlanId } = req.params;
+const deleteRacePlan = async (req: Request, res: Response) => {
+  const { teamId, racePlanId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
 
-  await raceDayPlans.deleteMany({
+  await racePlan.deleteMany({
     where: {
-      id: raceDayPlanId,
+      id: racePlanId,
     },
   });
 
@@ -892,8 +956,8 @@ export {
   updateSingleLineup,
   deleteSingleLineup,
   getTeamDashboardDetails,
-  getRaceDayPlans,
-  createRaceDayPlan,
-  editRaceDayPlan,
-  deleteRaceDayPlan,
+  getRacePlans,
+  createRacePlan,
+  editRacePlan,
+  deleteRacePlan,
 };

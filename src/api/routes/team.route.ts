@@ -17,10 +17,10 @@ import {
   updateSingleLineup,
   getTeamDashboardDetails,
   generateUserTeamAthletesLineups,
-  getRaceDayPlans,
-  createRaceDayPlan,
-  editRaceDayPlan,
-  deleteRaceDayPlan,
+  getRacePlans,
+  createRacePlan,
+  editRacePlan,
+  deleteRacePlan,
 } from "../controllers/team.controller";
 
 const router: Router = Router();
@@ -71,14 +71,14 @@ router.route("/:teamId/dashboard").get(getTeamDashboardDetails); //  get dashboa
 
 //  Race Day Plans - No ID
 router
-  .route("/:teamId/raceDayPlans/")
-  .get(getRaceDayPlans)
-  .post(createRaceDayPlan);
+  .route("/:teamId/racePlans/")
+  .get(getRacePlans)
+  .post(createRacePlan);
 
 //  Race Day Plans - ID
 router
-  .route("/:teamId/raceDayPlans/:raceDayPlanId")
-  .put(editRaceDayPlan)
-  .delete(deleteRaceDayPlan);
+  .route("/:teamId/racePlans/:racePlanId")
+  .put(editRacePlan)
+  .delete(deleteRacePlan);
 
 export default router;
