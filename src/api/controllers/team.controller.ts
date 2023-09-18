@@ -13,6 +13,7 @@ const {
   athletesInTeams,
   athletesInLineups,
   racePlan,
+  planSection,
   regattaPlanSection,
   eventPlanSection,
   notesPlanSection,
@@ -839,47 +840,57 @@ const getRacePlans = async (req: Request, res: Response) => {
 const createRacePlan = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
+  console.log(`Creating new race plan for ${teamId}`);
+  const { name, planOrder, regattaArr, eventArr, notesArr } = req.body;
 
-  const { name, regattaArr, eventArr, notesArr } = req.body;
+  console.log(regattaArr);
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  const newRacePlanId = await racePlan.create({
+  //  Create race plan
+  const newRacePlan = await racePlan.create({
     data: {
       name,
       teamId,
     },
-    select: {
-      id: true,
-    },
+  });
+
+  await planOrder.forEach(async (section: any) => {
+    await planSection.create({
+      data: {
+        id: section.id,
+        section: section.section,
+        order: section.index,
+        racePlanId: newRacePlan.id,
+      },
+    });
   });
 
   //  Populate regatta sections
   if (regattaArr.length !== 0) {
-    regattaArr.forEach(async (regattaPlan: any) => {
+    await regattaArr.forEach(async (regattaPlan: any) => {
+      console.log(regattaPlan);
       const {
-        name: regattaName,
-        order,
-        startDate,
-        endDate,
-        address,
-        contact,
-        email,
-        phone,
+        regattaName,
+        regattaStartDate,
+        regattaEndDate,
+        regattaAddress,
+        regattaContact,
+        regattaEmail,
+        regattaPhone,
       } = regattaPlan;
 
       await regattaPlanSection.create({
         data: {
-          name: regattaName,
-          order,
-          startDate,
-          endDate,
-          address,
-          contact,
-          email,
-          phone,
-          racePlanId: newRacePlanId.id,
+          name: regattaName, //  actually sent as regattaName from frontend
+          startDate: regattaStartDate,
+          endDate: regattaEndDate,
+          address: regattaAddress,
+          contact: regattaContact,
+          email: regattaEmail,
+          phone: regattaPhone,
+          racePlanId: newRacePlan.id,
         },
       });
     });
@@ -887,17 +898,16 @@ const createRacePlan = async (req: Request, res: Response) => {
 
   //  Populate event sections
   if (eventArr.length !== 0) {
-    eventArr.forEach(async (eventPlan: any) => {
-      const { name: eventName, order, startTime, distance, lane } = eventPlan;
+    await eventArr.forEach(async (eventPlan: any) => {
+      const { name: eventName, startTime, distance, lane } = eventPlan;
 
       await eventPlanSection.create({
         data: {
           name: eventName,
-          order,
           startTime,
           distance,
           lane,
-          racePlanId: newRacePlanId.id,
+          racePlanId: newRacePlan.id,
         },
       });
     });
@@ -905,21 +915,34 @@ const createRacePlan = async (req: Request, res: Response) => {
 
   //  Populate notes sections
   if (notesArr.length !== 0) {
-    notesArr.forEach(async (notesPlan: any) => {
-      const { name: notesName, order, body } = notesPlan;
+    await notesArr.forEach(async (notesPlan: any) => {
+      const { name: notesName, body } = notesPlan;
 
       await notesPlanSection.create({
         data: {
           name: notesName,
-          order,
           body,
-          racePlanId: newRacePlanId.id,
+          racePlanId: newRacePlan.id,
         },
       });
     });
   }
 
-  return res.status(200).send(newRacePlanId);
+  const newFullRacePlan = await racePlan.findUnique({
+    where: {
+      id: newRacePlan.id,
+    },
+    include: {
+      regattaSection: true,
+      eventSection: true,
+      notesSection: true,
+      planSections: true,
+    },
+  });
+
+  // console.log(newFullRacePlan);
+
+  return res.status(200).send(newFullRacePlan);
 };
 
 //  Race Day Plan ID
@@ -948,9 +971,11 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
       regattaSection: true,
       eventSection: true,
       notesSection: true,
+      planSections: true,
     },
   });
 
+  // console.log(foundRacePlan);
   return res.status(200).send(foundRacePlan);
 };
 

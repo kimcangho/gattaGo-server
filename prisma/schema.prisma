@@ -140,16 +140,27 @@ model RacePlan {
   regattaSection RegattaPlanSection[]
   eventSection   EventPlanSection[]
   notesSection   NotesPlanSection[]
+  planSections   PlanSection[]
 
   @@map(name: "racePlan")
 }
 
+model PlanSection {
+  id      String @id
+  section String
+  order   Int
+
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
+  racePlanId String?
+
+  @@map(name: "planSection")
+}
+
 model RegattaPlanSection {
-  id        String   @id @default(uuid())
-  order     Int
+  id        String    @id @default(uuid())
   name      String
-  startDate DateTime
-  endDate   DateTime
+  startDate DateTime?
+  endDate   DateTime?
   address   String?
   contact   String?
   email     String?
@@ -162,12 +173,11 @@ model RegattaPlanSection {
 }
 
 model EventPlanSection {
-  id        String   @id @default(uuid())
-  order     Int
-  name      String
-  startTime DateTime
-  distance  String
-  lane      Int
+  id        String    @id @default(uuid())
+  name      String?
+  startTime DateTime?
+  distance  String?
+  lane      Int?
 
   RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?
@@ -176,10 +186,9 @@ model EventPlanSection {
 }
 
 model NotesPlanSection {
-  id    String @id @default(uuid())
-  order Int
-  name  String
-  body  String @db.MediumText
+  id   String  @id @default(uuid())
+  name String?
+  body String? @db.MediumText
 
   RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?
