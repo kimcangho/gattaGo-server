@@ -843,7 +843,7 @@ const createRacePlan = async (req: Request, res: Response) => {
   console.log(`Creating new race plan for ${teamId}`);
   const { name, planOrder, regattaArr, eventArr, notesArr } = req.body;
 
-  console.log(regattaArr);
+  console.log(notesArr);
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
@@ -861,6 +861,7 @@ const createRacePlan = async (req: Request, res: Response) => {
       data: {
         id: section.id,
         section: section.section,
+        sectionId: section.sectionId,
         order: section.index,
         racePlanId: newRacePlan.id,
       },
@@ -870,8 +871,8 @@ const createRacePlan = async (req: Request, res: Response) => {
   //  Populate regatta sections
   if (regattaArr.length !== 0) {
     await regattaArr.forEach(async (regattaPlan: any) => {
-      console.log(regattaPlan);
       const {
+        id,
         regattaName,
         regattaStartDate,
         regattaEndDate,
@@ -883,6 +884,7 @@ const createRacePlan = async (req: Request, res: Response) => {
 
       await regattaPlanSection.create({
         data: {
+          id,
           name: regattaName, //  actually sent as regattaName from frontend
           startDate: regattaStartDate,
           endDate: regattaEndDate,
@@ -899,10 +901,11 @@ const createRacePlan = async (req: Request, res: Response) => {
   //  Populate event sections
   if (eventArr.length !== 0) {
     await eventArr.forEach(async (eventPlan: any) => {
-      const { name: eventName, startTime, distance, lane } = eventPlan;
+      const { id, name: eventName, startTime, distance, lane } = eventPlan;
 
       await eventPlanSection.create({
         data: {
+          id,
           name: eventName,
           startTime,
           distance,
@@ -916,12 +919,13 @@ const createRacePlan = async (req: Request, res: Response) => {
   //  Populate notes sections
   if (notesArr.length !== 0) {
     await notesArr.forEach(async (notesPlan: any) => {
-      const { name: notesName, body } = notesPlan;
+      const { id, notesName, notesBody } = notesPlan;
 
       await notesPlanSection.create({
         data: {
-          name: notesName,
-          body,
+          id,
+          notesName,
+          notesBody,
           racePlanId: newRacePlan.id,
         },
       });
