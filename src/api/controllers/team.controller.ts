@@ -843,8 +843,6 @@ const createRacePlan = async (req: Request, res: Response) => {
   console.log(`Creating new race plan for ${teamId}`);
   const { name, planOrder, regattaArr, eventArr, notesArr } = req.body;
 
-  console.log(regattaArr);
-
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
@@ -983,18 +981,88 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
   return res.status(200).send(foundRacePlan);
 };
 
-//  To build out in later branch
-const editRacePlan = async (req: Request, res: Response) => {
+//  Currently in progress
+const updateRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
+  const { name, planOrder, regattaArr, eventArr, notesArr } = req.body; //  get incoming passed data from front-end
+  console.log(`updating race plan ${racePlanId}`);
+
   if (!teamId || !racePlanId)
     return res
       .status(404)
       .send({ msg: `Please include teamId and racePlanId!` });
+
+  const checkedTeam = await checkForTeam(teamId);
+  if (!checkedTeam)
+    return res.status(404).send({ msg: `Team ${teamId} not found!` });
+
+  const checkedRacePlan = await checkForRacePlan(racePlanId);
+  if (!checkedRacePlan)
+    return res.status(404).send({ msg: `Race Plan ${racePlanId} not found!` });
+
+  await racePlan.update({
+    where: {
+      id: racePlanId,
+    },
+    data: {
+      name,
+    },
+  });
+
+  //  iterate through plan section to get array of notes in race plan - OK
+  const planNotesSectionArr = await planSection.findMany({
+    where: {
+      racePlanId,
+      section: "Notes",
+    },
+  });
+  //  get array of existing notes from race plan
+  const currentNotesSectionArr = await notesPlanSection.findMany({
+    where: {
+      racePlanId,
+    },
+  });
+  //  iterate through notes section arr to delete
+  currentNotesSectionArr.forEach(async (notesSection) => {
+    if (!notesArr.find((note: any) => notesSection.id === note.id)) {
+      {
+        await notesPlanSection.delete({
+          where: {
+            id: notesSection.id,
+          },
+        });
+        await planSection.delete({
+          where: {
+            id: notesSection.id,
+          },
+        });
+      }
+    }
+  });
+
+  //  update remaining
+  notesArr.forEach(async (notesUnit: any) => {
+    // console.log(notesUnit.notesName);
+    // console.log(notesUnit.notesBody);
+    //  update found notesUnit ids
+    await notesPlanSection.update({
+      where: {
+        id: notesUnit.id,
+      },
+      data: {
+        notesName: notesUnit.notesName,
+        notesBody: notesUnit.notesBody,
+      },
+    });
+  });
+
+  //  return success statement
+  console.log("update success!");
+  return res.status(200).send({ name, racePlanId });
 };
 
 const deleteRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
-  console.log(`Deleting race plan ${racePlanId}`);
 
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
   if (!teamId || !racePlanId)
@@ -1032,6 +1100,6 @@ export {
   getRacePlans,
   createRacePlan,
   getSingleRacePlan,
-  editRacePlan,
+  updateRacePlan,
   deleteRacePlan,
 };

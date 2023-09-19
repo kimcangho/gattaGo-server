@@ -19,7 +19,7 @@ import {
   generateUserTeamAthletesLineups,
   getRacePlans,
   createRacePlan,
-  editRacePlan,
+  updateRacePlan,
   deleteRacePlan,
   getSingleRacePlan,
 } from "../controllers/team.controller";
@@ -80,7 +80,7 @@ router
 router
   .route("/:teamId/racePlans/:racePlanId")
   .get(getSingleRacePlan)
-  .put(editRacePlan)
+  .put(updateRacePlan)
   .delete(deleteRacePlan);
 
 export default router;
