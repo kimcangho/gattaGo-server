@@ -159,13 +159,13 @@ model PlanSection {
 
 model RegattaPlanSection {
   id        String    @id
-  name      String
-  startDate DateTime?
-  endDate   DateTime?
-  address   String?
-  contact   String?
-  email     String?
-  phone     String?
+  regattaName      String
+  regattaStartDate DateTime?
+  regattaEndDate   DateTime?
+  regattaAddress   String?
+  regattaContact   String?
+  regattaEmail     String?
+  regattaPhone     String?
 
   RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?
@@ -174,11 +174,11 @@ model RegattaPlanSection {
 }
 
 model EventPlanSection {
-  id        String    @id
-  name      String?
-  startTime DateTime?
-  distance  String?
-  lane      Int?
+  id            String    @id
+  eventName     String?
+  eventTime     DateTime?
+  eventDistance String?
+  eventLane     String?
 
   RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?

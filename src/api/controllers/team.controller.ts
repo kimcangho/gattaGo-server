@@ -843,7 +843,7 @@ const createRacePlan = async (req: Request, res: Response) => {
   console.log(`Creating new race plan for ${teamId}`);
   const { name, planOrder, regattaArr, eventArr, notesArr } = req.body;
 
-  console.log(notesArr);
+  console.log(regattaArr);
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
@@ -885,13 +885,13 @@ const createRacePlan = async (req: Request, res: Response) => {
       await regattaPlanSection.create({
         data: {
           id,
-          name: regattaName, //  actually sent as regattaName from frontend
-          startDate: regattaStartDate,
-          endDate: regattaEndDate,
-          address: regattaAddress,
-          contact: regattaContact,
-          email: regattaEmail,
-          phone: regattaPhone,
+          regattaName,
+          regattaStartDate,
+          regattaEndDate,
+          regattaAddress,
+          regattaContact,
+          regattaEmail,
+          regattaPhone,
           racePlanId: newRacePlan.id,
         },
       });
@@ -901,15 +901,15 @@ const createRacePlan = async (req: Request, res: Response) => {
   //  Populate event sections
   if (eventArr.length !== 0) {
     await eventArr.forEach(async (eventPlan: any) => {
-      const { id, name: eventName, startTime, distance, lane } = eventPlan;
+      const { id, eventName, eventTime, eventDistance, eventLane } = eventPlan;
 
       await eventPlanSection.create({
         data: {
           id,
-          name: eventName,
-          startTime,
-          distance,
-          lane,
+          eventName,
+          eventTime,
+          eventDistance,
+          eventLane,
           racePlanId: newRacePlan.id,
         },
       });
