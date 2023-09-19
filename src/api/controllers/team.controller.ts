@@ -1009,7 +1009,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
     },
   });
 
-  //  Regatta section update
+  //  Regatta section update - Handle adding a new section
   const currentRegattaSectionArr = await regattaPlanSection.findMany({
     where: {
       racePlanId,
