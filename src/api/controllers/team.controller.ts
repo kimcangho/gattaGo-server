@@ -1010,14 +1010,12 @@ const updateRacePlan = async (req: Request, res: Response) => {
     },
   });
 
-  //  Regatta section update - Handle adding a new section
+
   const existingRegattaSectionArr = await regattaPlanSection.findMany({
     where: {
       racePlanId,
     },
   });
-
-  //  iterate through regatta plan section of race plan
   existingRegattaSectionArr.forEach(async (regattaSection) => {
     //  iterate through regattaArr from client
     //  if not found -> delete or create
@@ -1038,7 +1036,6 @@ const updateRacePlan = async (req: Request, res: Response) => {
       }
     }
   });
-  //  update
   regattaArr.forEach(async (regattaUnit: any) => {
     const {
       id,
@@ -1066,10 +1063,26 @@ const updateRacePlan = async (req: Request, res: Response) => {
     });
   });
 
-  const currentEventSectionArr = await eventPlanSection.findMany({
+  const existingEventSectionArr = await eventPlanSection.findMany({
     where: {
       racePlanId,
     },
+  });
+  existingEventSectionArr.forEach(async (eventSection) => {
+    if (!eventArr.find((event: any) => eventSection.id === event.id)) {
+      {
+        await eventPlanSection.delete({
+          where: {
+            id: eventSection.id,
+          },
+        });
+        await planSection.delete({
+          where: {
+            id: eventSection.id,
+          },
+        });
+      }
+    }
   });
   eventArr.forEach(async (eventUnit: any) => {
     const { id, eventName, eventTime, eventDistance, eventLane } = eventUnit;
@@ -1086,29 +1099,13 @@ const updateRacePlan = async (req: Request, res: Response) => {
       },
     });
   });
-  currentEventSectionArr.forEach(async (eventSection) => {
-    if (!eventArr.find((event: any) => eventSection.id === event.id)) {
-      {
-        await eventPlanSection.delete({
-          where: {
-            id: eventSection.id,
-          },
-        });
-        await planSection.delete({
-          where: {
-            id: eventSection.id,
-          },
-        });
-      }
-    }
-  });
-
-  const currentNotesSectionArr = await notesPlanSection.findMany({
+  
+  const existingNotesSectionArr = await notesPlanSection.findMany({
     where: {
       racePlanId,
     },
   });
-  currentNotesSectionArr.forEach(async (notesSection) => {
+  existingNotesSectionArr.forEach(async (notesSection) => {
     if (!notesArr.find((note: any) => notesSection.id === note.id)) {
       {
         await notesPlanSection.delete({
