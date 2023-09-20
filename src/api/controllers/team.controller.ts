@@ -1117,42 +1117,13 @@ const updateRacePlan = async (req: Request, res: Response) => {
     });
   });
 
-  //  Current Iteration
+  //  New Iteration - Notes
   let existingNotesSectionArr = await notesPlanSection.findMany({
     where: {
       racePlanId,
     },
   });
-  // existingNotesSectionArr.forEach(async (notesSection) => {
-  //   if (!notesArr.find((note: any) => notesSection.id === note.id)) {
-  //     {
-  //       await notesPlanSection.delete({
-  //         where: {
-  //           id: notesSection.id,
-  //         },
-  //       });
-  //       await planSection.delete({
-  //         where: {
-  //           id: notesSection.id,
-  //         },
-  //       });
-  //     }
-  //   }
-  // });
-  // notesArr.forEach(async (notesUnit: any) => {
-  //   const { id, notesName, notesBody } = notesUnit;
-  //   await notesPlanSection.update({
-  //     where: {
-  //       id,
-  //     },
-  //     data: {
-  //       notesName,
-  //       notesBody,
-  //     },
-  //   });
-  // });
 
-  //  New Iteration
   const updateNotesArr: any[] = [];
   console.log(existingNotesSectionArr, notesArr, updateNotesArr);
 
