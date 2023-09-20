@@ -984,7 +984,7 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
 //  Currently in progress
 const updateRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
-  let { name, regattaArr, eventArr, notesArr } = req.body; //  get incoming passed data from front-end
+  let { name, planOrder, regattaArr, eventArr, notesArr } = req.body; //  get incoming passed data from front-end
   console.log(`updating race plan ${racePlanId}`);
 
   if (!teamId || !racePlanId)
@@ -1010,6 +1010,23 @@ const updateRacePlan = async (req: Request, res: Response) => {
     },
   });
 
+  //  delete current note plan section
+  await planSection.deleteMany({
+    where: { racePlanId },
+  });
+
+  // re-create note plan section
+  await planOrder.forEach(async (section: any, index: number) => {
+    await planSection.create({
+      data: {
+        id: section.id,
+        section: section.section,
+        sectionId: section.sectionId,
+        order: index,
+        racePlanId,
+      },
+    });
+  });
 
   const existingRegattaSectionArr = await regattaPlanSection.findMany({
     where: {
@@ -1020,8 +1037,8 @@ const updateRacePlan = async (req: Request, res: Response) => {
     //  iterate through regattaArr from client
     //  if not found -> delete or create
     if (!regattaArr.find((regatta: any) => regattaSection.id === regatta.id)) {
-      //  check if regattaSection id from regatta plan section is 
-      
+      //  check if regattaSection id from regatta plan section is
+
       {
         await regattaPlanSection.delete({
           where: {
@@ -1099,37 +1116,95 @@ const updateRacePlan = async (req: Request, res: Response) => {
       },
     });
   });
-  
-  const existingNotesSectionArr = await notesPlanSection.findMany({
+
+  //  Current Iteration
+  let existingNotesSectionArr = await notesPlanSection.findMany({
     where: {
       racePlanId,
     },
   });
-  existingNotesSectionArr.forEach(async (notesSection) => {
-    if (!notesArr.find((note: any) => notesSection.id === note.id)) {
-      {
-        await notesPlanSection.delete({
-          where: {
-            id: notesSection.id,
-          },
-        });
-        await planSection.delete({
-          where: {
-            id: notesSection.id,
-          },
-        });
-      }
+  // existingNotesSectionArr.forEach(async (notesSection) => {
+  //   if (!notesArr.find((note: any) => notesSection.id === note.id)) {
+  //     {
+  //       await notesPlanSection.delete({
+  //         where: {
+  //           id: notesSection.id,
+  //         },
+  //       });
+  //       await planSection.delete({
+  //         where: {
+  //           id: notesSection.id,
+  //         },
+  //       });
+  //     }
+  //   }
+  // });
+  // notesArr.forEach(async (notesUnit: any) => {
+  //   const { id, notesName, notesBody } = notesUnit;
+  //   await notesPlanSection.update({
+  //     where: {
+  //       id,
+  //     },
+  //     data: {
+  //       notesName,
+  //       notesBody,
+  //     },
+  //   });
+  // });
+
+  //  New Iteration
+  const updateNotesArr: any[] = [];
+  console.log(existingNotesSectionArr, notesArr, updateNotesArr);
+
+  notesArr.forEach(async (note: any) => {
+    const foundNote = existingNotesSectionArr.find(
+      (existingNote) => existingNote.id === note.id
+    );
+
+    if (foundNote) {
+      updateNotesArr.push(note);
+      notesArr = notesArr.filter(
+        (noteSection: any) => noteSection.id !== note.id
+      );
+      existingNotesSectionArr = existingNotesSectionArr.filter(
+        (existingNote) => {
+          return existingNote.id !== note.id;
+        }
+      );
     }
   });
-  notesArr.forEach(async (notesUnit: any) => {
-    const { id, notesName, notesBody } = notesUnit;
+
+  console.log("delete", existingNotesSectionArr);
+  existingNotesSectionArr.forEach(async (existingNote) => {
+    await notesPlanSection.delete({
+      where: {
+        id: existingNote.id,
+      },
+    });
+  });
+
+  console.log("create", notesArr);
+  notesArr.forEach(async (incomingNote: any) => {
+    await notesPlanSection.create({
+      data: {
+        id: incomingNote.id,
+        notesName: incomingNote.notesName,
+        notesBody: incomingNote.notesBody,
+        racePlanId,
+      },
+    });
+  });
+
+  console.log("update", updateNotesArr);
+  updateNotesArr.forEach(async (updateNote) => {
     await notesPlanSection.update({
       where: {
-        id,
+        id: updateNote.id,
       },
       data: {
-        notesName,
-        notesBody,
+        notesName: updateNote.notesName,
+        notesBody: updateNote.notesBody,
+        racePlanId,
       },
     });
   });
