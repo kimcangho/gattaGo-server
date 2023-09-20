@@ -984,7 +984,7 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
 //  Currently in progress
 const updateRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
-  const { name, regattaArr, eventArr, notesArr } = req.body; //  get incoming passed data from front-end
+  let { name, regattaArr, eventArr, notesArr } = req.body; //  get incoming passed data from front-end
   console.log(`updating race plan ${racePlanId}`);
 
   if (!teamId || !racePlanId)
@@ -1000,6 +1000,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
   if (!checkedRacePlan)
     return res.status(404).send({ msg: `Race Plan ${racePlanId} not found!` });
 
+  //  Update raceplan name
   await racePlan.update({
     where: {
       id: racePlanId,
@@ -1010,13 +1011,19 @@ const updateRacePlan = async (req: Request, res: Response) => {
   });
 
   //  Regatta section update - Handle adding a new section
-  const currentRegattaSectionArr = await regattaPlanSection.findMany({
+  const existingRegattaSectionArr = await regattaPlanSection.findMany({
     where: {
       racePlanId,
     },
   });
-  currentRegattaSectionArr.forEach(async (regattaSection) => {
+
+  //  iterate through regatta plan section of race plan
+  existingRegattaSectionArr.forEach(async (regattaSection) => {
+    //  iterate through regattaArr from client
+    //  if not found -> delete or create
     if (!regattaArr.find((regatta: any) => regattaSection.id === regatta.id)) {
+      //  check if regattaSection id from regatta plan section is 
+      
       {
         await regattaPlanSection.delete({
           where: {
@@ -1031,6 +1038,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
       }
     }
   });
+  //  update
   regattaArr.forEach(async (regattaUnit: any) => {
     const {
       id,
@@ -1063,6 +1071,21 @@ const updateRacePlan = async (req: Request, res: Response) => {
       racePlanId,
     },
   });
+  eventArr.forEach(async (eventUnit: any) => {
+    const { id, eventName, eventTime, eventDistance, eventLane } = eventUnit;
+
+    await eventPlanSection.update({
+      where: {
+        id,
+      },
+      data: {
+        eventName,
+        eventTime,
+        eventDistance,
+        eventLane,
+      },
+    });
+  });
   currentEventSectionArr.forEach(async (eventSection) => {
     if (!eventArr.find((event: any) => eventSection.id === event.id)) {
       {
@@ -1078,20 +1101,6 @@ const updateRacePlan = async (req: Request, res: Response) => {
         });
       }
     }
-  });
-  eventArr.forEach(async (eventUnit: any) => {
-    const { id, eventName, eventTime, eventDistance, eventLane } = eventUnit;
-    await eventPlanSection.update({
-      where: {
-        id,
-      },
-      data: {
-        eventName,
-        eventTime,
-        eventDistance,
-        eventLane,
-      },
-    });
   });
 
   const currentNotesSectionArr = await notesPlanSection.findMany({
