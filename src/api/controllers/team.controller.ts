@@ -842,6 +842,7 @@ const createRacePlan = async (req: Request, res: Response) => {
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
   console.log(`Creating new race plan for ${teamId}`);
   const { name, planOrder, regattaArr, eventArr, notesArr } = req.body;
+  console.log(planOrder);
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
@@ -854,13 +855,14 @@ const createRacePlan = async (req: Request, res: Response) => {
     },
   });
 
-  await planOrder.forEach(async (section: any) => {
+  await planOrder.forEach(async (section: any, index: number) => {
+    console.log(section, index)
     await planSection.create({
       data: {
         id: section.id,
         section: section.section,
         sectionId: section.sectionId,
-        order: section.index,
+        order: index,
         racePlanId: newRacePlan.id,
       },
     });
@@ -986,6 +988,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
   let { name, planOrder, regattaArr, eventArr, notesArr } = req.body; //  get incoming passed data from front-end
   console.log(`updating race plan ${racePlanId}`);
+  console.log(planOrder);
 
   if (!teamId || !racePlanId)
     return res
@@ -1202,7 +1205,6 @@ const updateRacePlan = async (req: Request, res: Response) => {
     }
   });
 
-  
   existingNotesSectionArr.forEach(async (existingNote) => {
     await notesPlanSection.delete({
       where: {
