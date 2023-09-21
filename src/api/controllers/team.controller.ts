@@ -842,13 +842,13 @@ const createRacePlan = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
   console.log(`Creating new race plan for ${teamId}`);
-  const { name, planOrder, regattaArr, eventArr, notesArr } = req.body;
-  console.log(planOrder);
+  const { name, planOrder, regattaArr, eventArr, lineupArr, notesArr } =
+    req.body;
+  // console.log(planOrder);
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  //  Create race plan
   const newRacePlan = await racePlan.create({
     data: {
       name,
@@ -857,7 +857,6 @@ const createRacePlan = async (req: Request, res: Response) => {
   });
 
   await planOrder.forEach(async (section: any, index: number) => {
-    console.log(section, index);
     await planSection.create({
       data: {
         id: section.id,
@@ -917,6 +916,22 @@ const createRacePlan = async (req: Request, res: Response) => {
     });
   }
 
+    //  Populate lineup sections
+    if (lineupArr.length !== 0) {
+      await lineupArr.forEach(async (lineupPlan: any) => {
+        const { id, lineupName, lineupId } = lineupPlan;
+  
+        await lineupPlanSection.create({
+          data: {
+            id,
+            lineupName,
+            lineupId,
+            racePlanId: newRacePlan.id,
+          },
+        });
+      });
+    }
+
   //  Populate notes sections
   if (notesArr.length !== 0) {
     await notesArr.forEach(async (notesPlan: any) => {
@@ -940,6 +955,7 @@ const createRacePlan = async (req: Request, res: Response) => {
     include: {
       regattaSection: true,
       eventSection: true,
+      lineupSection: true,
       notesSection: true,
       planSections: true,
     },
@@ -971,14 +987,14 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
       id: racePlanId,
     },
     include: {
+      planSections: true,
       regattaSection: true,
       eventSection: true,
+      lineupSection: true,
       notesSection: true,
-      planSections: true,
     },
   });
 
-  // console.log(foundRacePlan);
   return res.status(200).send(foundRacePlan);
 };
 
