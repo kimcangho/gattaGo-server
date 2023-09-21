@@ -16,6 +16,7 @@ const {
   planSection,
   regattaPlanSection,
   eventPlanSection,
+  lineupPlanSection,
   notesPlanSection,
 } = new PrismaClient();
 import { faker } from "@faker-js/faker";
@@ -856,7 +857,7 @@ const createRacePlan = async (req: Request, res: Response) => {
   });
 
   await planOrder.forEach(async (section: any, index: number) => {
-    console.log(section, index)
+    console.log(section, index);
     await planSection.create({
       data: {
         id: section.id,
@@ -944,8 +945,6 @@ const createRacePlan = async (req: Request, res: Response) => {
     },
   });
 
-  // console.log(newFullRacePlan);
-
   return res.status(200).send(newFullRacePlan);
 };
 
@@ -986,7 +985,7 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
 //  Currently in progress
 const updateRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
-  let { name, planOrder, regattaArr, eventArr, notesArr } = req.body; //  get incoming passed data from front-end
+  let { name, planOrder, regattaArr, eventArr, lineupArr, notesArr } = req.body; //  get incoming passed data from front-end
   console.log(`updating race plan ${racePlanId}`);
   console.log(planOrder);
 
@@ -1031,7 +1030,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
     });
   });
 
-  //  New Iteration - Regattas
+  //  New Iteration - Regatta
   let existingRegattaSectionArr = await regattaPlanSection.findMany({
     where: {
       racePlanId,
@@ -1112,12 +1111,11 @@ const updateRacePlan = async (req: Request, res: Response) => {
         regattaContact,
         regattaEmail,
         regattaPhone,
-        racePlanId,
       },
     });
   });
 
-  //  New Iteration - Events
+  //  New Iteration - Event
   let existingEventSectionArr = await eventPlanSection.findMany({
     where: {
       racePlanId,
@@ -1175,7 +1173,62 @@ const updateRacePlan = async (req: Request, res: Response) => {
         eventTime,
         eventDistance,
         eventLane,
+      },
+    });
+  });
+
+  //  New Iteration - Lineup
+  let existingLineupSectionArr = await lineupPlanSection.findMany({
+    where: {
+      racePlanId,
+    },
+  });
+  const updateLineupArr: any[] = [];
+  lineupArr.forEach(async (lineup: any) => {
+    const foundLineup = existingLineupSectionArr.find(
+      (existingLineup) => existingLineup.id === lineup.id
+    );
+
+    if (foundLineup) {
+      updateLineupArr.push(lineup);
+      lineupArr = lineupArr.filter(
+        (lineupSection: any) => lineupSection.id !== lineup.id
+      );
+      existingLineupSectionArr = existingLineupSectionArr.filter(
+        (existingLineup) => {
+          return existingLineup.id !== lineup.id;
+        }
+      );
+    }
+  });
+
+  existingLineupSectionArr.forEach(async (existingLineup) => {
+    await lineupPlanSection.delete({
+      where: {
+        id: existingLineup.id,
+      },
+    });
+  });
+  lineupArr.forEach(async (incomingLineup: any) => {
+    const { id, lineupName, lineupId } = incomingLineup;
+    await lineupPlanSection.create({
+      data: {
+        id,
+        lineupName,
+        lineupId,
         racePlanId,
+      },
+    });
+  });
+  updateLineupArr.forEach(async (updateLineup) => {
+    const { id, lineupName, lineupId } = updateLineup;
+    await lineupPlanSection.update({
+      where: {
+        id,
+      },
+      data: {
+        lineupName,
+        lineupId,
       },
     });
   });
@@ -1232,7 +1285,6 @@ const updateRacePlan = async (req: Request, res: Response) => {
       data: {
         notesName,
         notesBody,
-        racePlanId,
       },
     });
   });

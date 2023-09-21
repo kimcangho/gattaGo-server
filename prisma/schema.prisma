@@ -192,7 +192,7 @@ model LineupPlanSection {
   lineupName String?
   lineupId   String?
 
-  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id])
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?
 }
 
