@@ -916,21 +916,21 @@ const createRacePlan = async (req: Request, res: Response) => {
     });
   }
 
-    //  Populate lineup sections
-    if (lineupArr.length !== 0) {
-      await lineupArr.forEach(async (lineupPlan: any) => {
-        const { id, lineupName, lineupId } = lineupPlan;
-  
-        await lineupPlanSection.create({
-          data: {
-            id,
-            lineupName,
-            lineupId,
-            racePlanId: newRacePlan.id,
-          },
-        });
+  //  Populate lineup sections
+  if (lineupArr.length !== 0) {
+    await lineupArr.forEach(async (lineupPlan: any) => {
+      const { id, lineupName, lineupId } = lineupPlan;
+
+      await lineupPlanSection.create({
+        data: {
+          id,
+          lineupName,
+          lineupId,
+          racePlanId: newRacePlan.id,
+        },
       });
-    }
+    });
+  }
 
   //  Populate notes sections
   if (notesArr.length !== 0) {
@@ -1218,6 +1218,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
     }
   });
 
+  console.log("delete", existingLineupSectionArr);
   existingLineupSectionArr.forEach(async (existingLineup) => {
     await lineupPlanSection.delete({
       where: {
@@ -1225,6 +1226,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
       },
     });
   });
+  console.log("create", lineupArr);
   lineupArr.forEach(async (incomingLineup: any) => {
     const { id, lineupName, lineupId } = incomingLineup;
     await lineupPlanSection.create({
@@ -1236,6 +1238,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
       },
     });
   });
+  console.log("update", updateLineupArr);
   updateLineupArr.forEach(async (updateLineup) => {
     const { id, lineupName, lineupId } = updateLineup;
     await lineupPlanSection.update({
