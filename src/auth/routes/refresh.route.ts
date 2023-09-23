@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { refreshToken } from "../controllers/refresh.controller";
+// import { Router } from "express";
+// import { refreshToken } from "../controllers/refresh.controller";
 
-const refreshRouter: Router = Router();
+// const refreshRouter: Router = Router();
 
-refreshRouter.route("/").get(refreshToken);
+// refreshRouter.route("/").get(refreshToken);
 
-export default refreshRouter;
+// export default refreshRouter;

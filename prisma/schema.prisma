@@ -22,12 +22,12 @@ model PasswordReset {
   expiresAt DateTime
 }
 
-model AuthRefreshToken {
-  id    String @id
-  email String @unique @db.VarChar(255)
+// model AuthRefreshToken {
+//   id    String @id
+//   email String @unique @db.VarChar(255)
 
-  @@map(name: "authRefreshToken")
-}
+//   @@map(name: "authRefreshToken")
+// }
 
 model Team {
   id          String            @id @default(uuid())

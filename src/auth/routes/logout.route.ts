@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { logoutUser } from "../controllers/logout.controller";
+// import { Router } from "express";
+// import { logoutUser } from "../controllers/logout.controller";
 
-const logoutRouter: Router = Router();
+// const logoutRouter: Router = Router();
 
-logoutRouter.route("/").delete(logoutUser);
+// logoutRouter.route("/").delete(logoutUser);
 
-export default logoutRouter;
+// export default logoutRouter;
