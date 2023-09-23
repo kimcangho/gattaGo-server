@@ -29,15 +29,14 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 - Prisma - version 5.1.1
 - MySQL - version 8.0.33-arm64
 - Typescript - version 5.0.4
-- JSON Web Token - version 9.0.0
 
 ## Notable Libraries Used
 
 - bcrypt - version 5.1.0
-- cookie-parser - version 1.4.6
 - cors - version 2.8.5
 - dotenv - 16.0.3
 - faker.js - version 8.0.2
+- JSON Web Token - version 9.0.0
 - nodemailer - version 6.9.3
 - nodemon - version 2.0.22
 - ts-node - version 10.9.1
@@ -414,19 +413,20 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 
 ## Project Status
 
-Project is: _in progress_.  
-Currently working on: _cleanup_.
+Project is: _in progress (phase1)_.  
+Currently working on: _race plan (weather and map sections)_.
 
 ## Next Steps
 
 Room for improvement:
 
-- General refactoring and type-checking.
+- Separate database calls into services for team controller.
+- General type-checking.
 
 To do:
 
+- Team race plan tab (weather and map sections, export race plan feature)
 - Optimize touch features for lineup page.
-- Team race day tab with exportable lineups, race plans, team site location.
 
 Future Phase Ideas:
 
@@ -436,8 +436,7 @@ Future Phase Ideas:
 
 Known issues:
 
-- Touch events interfering with scrolling in lineup page.
-- Deployment issues where cookies are unable to be received by front-end from back-end.
+- Deployment issues where cookies are unable to be received by front-end from back-end. _removed refresh token and cookie handling logic_
 
 ## Contact
 
