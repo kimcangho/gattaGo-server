@@ -30,39 +30,7 @@ const findPassword = async (email: string) => {
   return foundUser!.password;
 };
 
-// const deleteRefreshToken = async (email: string) => {
-//   await authRefreshToken.deleteMany({
-//     where: {
-//       email,
-//     },
-//   });
-// };
-
-// const addRefreshToken = async (id: string, email: string) => {
-//   await authRefreshToken.create({
-//     data: {
-//       id,
-//       email,
-//     },
-//   });
-// };
-
-// const updateRefreshToken = async (id: string, email: string) => {
-//   await authRefreshToken.update({
-//     where: {
-//       email,
-//     },
-//     data: {
-//       id,
-//     },
-//   });
-// };
-
 export {
-  // findRefreshToken,
   findUser,
   findPassword,
-  // deleteRefreshToken,
-  // addRefreshToken,
-  // updateRefreshToken
 };
