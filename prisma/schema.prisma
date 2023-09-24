@@ -132,6 +132,7 @@ model RacePlan {
   teamId         String
   planSections   PlanSection[]
   regattaSection RegattaPlanSection[]
+  mapSection     MapPlanSection[]
   eventSection   EventPlanSection[]
   lineupSection  LineupPlanSection[]
   notesSection   NotesPlanSection[]
@@ -165,6 +166,19 @@ model RegattaPlanSection {
   racePlanId String?
 
   @@map(name: "regattaPlanSection")
+}
+
+model MapPlanSection {
+  id           String @id
+  mapName      String
+  mapLatitude  Float
+  mapLongitude Float
+  mapZoom      Float
+
+  RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
+  racePlanId String?
+
+  @@map(name: "mapPlanSection")
 }
 
 model EventPlanSection {
