@@ -15,6 +15,7 @@ const {
   racePlan,
   planSection,
   regattaPlanSection,
+  mapPlanSection,
   eventPlanSection,
   lineupPlanSection,
   notesPlanSection,
@@ -842,9 +843,8 @@ const createRacePlan = async (req: Request, res: Response) => {
   const { teamId } = req.params;
   if (!teamId) return res.status(404).send({ msg: `Please include teamId!` });
   console.log(`Creating new race plan for ${teamId}`);
-  const { name, planOrder, regattaArr, eventArr, lineupArr, notesArr } =
+  const { name, planOrder, regattaArr, mapArr, eventArr, lineupArr, notesArr } =
     req.body;
-  // console.log(planOrder);
 
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
@@ -892,6 +892,24 @@ const createRacePlan = async (req: Request, res: Response) => {
           regattaContact,
           regattaEmail,
           regattaPhone,
+          racePlanId: newRacePlan.id,
+        },
+      });
+    });
+  }
+
+  //  Populate map sections
+  if (mapArr.length !== 0) {
+    await mapArr.forEach(async (mapPlan: any) => {
+      const { id, mapName, mapLatitude, mapLongitude, mapZoom } = mapPlan;
+
+      await mapPlanSection.create({
+        data: {
+          id,
+          mapName,
+          mapLatitude,
+          mapLongitude,
+          mapZoom,
           racePlanId: newRacePlan.id,
         },
       });
@@ -954,6 +972,7 @@ const createRacePlan = async (req: Request, res: Response) => {
     },
     include: {
       regattaSection: true,
+      mapSection: true,
       eventSection: true,
       lineupSection: true,
       notesSection: true,
@@ -989,6 +1008,7 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
     include: {
       planSections: true,
       regattaSection: true,
+      mapSection: true,
       eventSection: true,
       lineupSection: true,
       notesSection: true,
@@ -998,10 +1018,11 @@ const getSingleRacePlan = async (req: Request, res: Response) => {
   return res.status(200).send(foundRacePlan);
 };
 
-//  Currently in progress
+//  Update Race Plan
 const updateRacePlan = async (req: Request, res: Response) => {
   const { teamId, racePlanId } = req.params;
-  let { name, planOrder, regattaArr, eventArr, lineupArr, notesArr } = req.body; //  get incoming passed data from front-end
+  let { name, planOrder, regattaArr, mapArr, eventArr, lineupArr, notesArr } =
+    req.body; //  get incoming passed data from front-end
   console.log(`updating race plan ${racePlanId}`);
   console.log(planOrder);
 
@@ -1028,7 +1049,7 @@ const updateRacePlan = async (req: Request, res: Response) => {
     },
   });
 
-  //  delete current note plan section
+  //  delete existing plan section
   await planSection.deleteMany({
     where: { racePlanId },
   });
@@ -1127,6 +1148,63 @@ const updateRacePlan = async (req: Request, res: Response) => {
         regattaContact,
         regattaEmail,
         regattaPhone,
+      },
+    });
+  });
+
+  //  New Iteration - Map
+  let existingMapSectionArr = await mapPlanSection.findMany({
+    where: {
+      racePlanId,
+    },
+  });
+  const updateMapArr: any[] = [];
+  mapArr.forEach(async (map: any) => {
+    const foundMap = existingMapSectionArr.find(
+      (existingMap) => existingMap.id === map.id
+    );
+
+    if (foundMap) {
+      updateMapArr.push(map);
+      mapArr = mapArr.filter((mapSection: any) => mapSection.id !== map.id);
+      existingMapSectionArr = existingMapSectionArr.filter((existingMap) => {
+        return existingMap.id !== map.id;
+      });
+    }
+  });
+
+  existingMapSectionArr.forEach(async (existingMap) => {
+    const { id } = existingMap;
+    await mapPlanSection.delete({
+      where: {
+        id,
+      },
+    });
+  });
+  mapArr.forEach(async (incomingMap: any) => {
+    const { id, mapName, mapLatitude, mapLongitude, mapZoom } = incomingMap;
+    await mapPlanSection.create({
+      data: {
+        id,
+        mapName,
+        mapLatitude,
+        mapLongitude,
+        mapZoom,
+        racePlanId,
+      },
+    });
+  });
+  updateMapArr.forEach(async (updateMap) => {
+    const { id, mapName, mapLatitude, mapLongitude, mapZoom } = updateMap;
+    await mapPlanSection.update({
+      where: {
+        id,
+      },
+      data: {
+        mapName,
+        mapLatitude,
+        mapLongitude,
+        mapZoom,
       },
     });
   });
