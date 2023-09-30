@@ -26,7 +26,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 ## Technologies Used
 
 - Express.js - version 4.18.2
-- Prisma - version 5.1.1
+- Prisma - version 5.3.1
 - MySQL - version 8.0.33-arm64
 - Typescript - version 5.0.4
 
@@ -414,7 +414,7 @@ NOTE: for front-end documentation, see [here](https://github.com/kimcangho/gatta
 ## Project Status
 
 Project is: _in progress (phase1)_.  
-Currently working on: _race plan (weather and map sections)_.
+Currently working on: _deployment_.
 
 ## Next Steps
 
@@ -422,14 +422,15 @@ Room for improvement:
 
 - Separate database calls into services for team controller.
 - General type-checking.
+- Optimize touch features for lineup page.
 
 To do:
 
-- Team race plan tab (weather and map sections, export race plan feature)
-- Optimize touch features for lineup page.
+- Deploy application.
 
 Future Phase Ideas:
 
+- Race plan weather section.
 - User roles: managers (read+write), athletes (read-only), event organizers.
 - Regatta and event support for event organizers.
 - Live race day progressions and results using websockets.

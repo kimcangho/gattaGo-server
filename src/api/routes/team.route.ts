@@ -45,7 +45,6 @@ router
 
 //  No Athlete ID
 router.route("/:teamId/athletes").get(getAllAthletesByTeamID); //  get all team athletes
-// .delete(deleteAllAthletesByTeamID); //  remove all athletes from team
 
 //  Athlete ID
 router
@@ -58,7 +57,6 @@ router
   .route("/:teamId/lineups")
   .get(getAllTeamLineups) //  get all team lineups
   .post(postNewTeamLineup); //  create new team lineup
-// .delete(deleteAllTeamLineups); //  delete all team lineups
 
 //  Lineup ID
 router
@@ -71,10 +69,7 @@ router
 router.route("/:teamId/dashboard").get(getTeamDashboardDetails); //  get dashboard specs for team
 
 //  Race Day Plans - No ID
-router
-  .route("/:teamId/racePlans/")
-  .get(getRacePlans)
-  .post(createRacePlan);
+router.route("/:teamId/racePlans/").get(getRacePlans).post(createRacePlan);
 
 //  Race Day Plans - ID
 router
