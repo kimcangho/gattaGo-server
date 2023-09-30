@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/index.js",
     "build": "tsc",
     "dev": "tsc && node dist/index.js",
     "serve": "nodemon dist/index.js",
     "migrate": "npx prisma migrate dev --name init",
     "seed": "npx prisma db seed",
     "reseed": "npx prisma migrate reset",
-    "studio": "npx prisma studio"
+    "studio": "npx prisma studio",
+    "postinstall": "tsc"
   },
   "keywords": [],
   "prisma": {
@@ -39,5 +41,8 @@
     "prisma": "^5.3.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
