@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
     // origin: ["http://localhost:5173", "https://gatta-go-client.vercel.app/"],
-    origin: "*",
+    origin: "https://gatta-go-client.vercel.app/",
     credentials: true,
   })
 );
