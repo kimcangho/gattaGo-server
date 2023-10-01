@@ -252,16 +252,6 @@ const getSingleTeamByID = async (req: Request, res: Response) => {
   const checkedTeam = await checkForTeam(teamId);
   if (!checkedTeam) return res.status(404).send({ msg: "Team not found!" });
 
-  // const foundTeam = await team.findUnique({
-  //   where: {
-  //     id: teamId,
-  //   },
-  //   include: {
-  //     lineups: true,
-  //     athletes: true,
-  //   },
-  // });
-
   const foundLineups = await lineup.findMany({
     where: {
       teamId,
