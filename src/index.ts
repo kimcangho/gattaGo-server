@@ -23,6 +23,7 @@ app.use(
   cors({
     // origin: ["http://localhost:5173", "https://gatta-go-client.vercel.app/"],
     origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
     // credentials: true,
   })
 );
