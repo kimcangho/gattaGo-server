@@ -20,7 +20,10 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-  cors({ origin: ["http://localhost:5173", "https://gatta-go-client.vercel.app/"] })
+  cors({
+    origin: ["http://localhost:5173", "https://gatta-go-client.vercel.app/"],
+    credentials: true,
+  })
 );
 
 app.get("/", (_req: Request, res: Response) => {
