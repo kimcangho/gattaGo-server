@@ -32,6 +32,10 @@ app.get("/", (_req: Request, res: Response) => {
   res.send(`Paddles up! gattaGo server is taking it away on PORT ${PORT}! 🚣🏼`);
 });
 
+app.get("/ping", (req: Request, res: Response) => {
+  res.send("pinged!");
+});
+
 app.use("/register", registerRouter); //  register user to database
 app.use("/login", loginRouter); //  login user and issue access token
 app.use("/reset", resetRouter); //  reset user password by email
