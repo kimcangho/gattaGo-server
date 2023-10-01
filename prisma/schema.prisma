@@ -2,8 +2,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
+
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -56,7 +61,7 @@ model Athlete {
   paddleSide    String              @db.VarChar(255)
   weight        Int?
   email         String              @unique @db.VarChar(255)
-  notes         String              @db.MediumText
+  notes         String              @db.Text
   isAvailable   Boolean
   isManager     Boolean
   createdAt     DateTime            @default(now())
@@ -206,7 +211,7 @@ model LineupPlanSection {
 model NotesPlanSection {
   id        String  @id
   notesName String?
-  notesBody String? @db.MediumText
+  notesBody String? @db.Text
 
   RacePlan   RacePlan? @relation(fields: [racePlanId], references: [id], onDelete: Cascade)
   racePlanId String?
