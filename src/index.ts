@@ -19,6 +19,12 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use((_req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 app.use(
   cors({
     // origin: ["http://localhost:5173", "https://gatta-go-client.vercel.app/"],
