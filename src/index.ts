@@ -20,7 +20,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-  cors({ origin: ["http://localhost:5173", "https://gattaGo.netlify.app"] })
+  cors({ origin: ["http://localhost:5173", "https://gatta-go-client-1akchmkoc-kimcangho.vercel.app/"] })
 );
 
 app.get("/", (_req: Request, res: Response) => {
